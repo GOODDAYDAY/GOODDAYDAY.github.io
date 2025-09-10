@@ -217,3 +217,5 @@ cython_debug/
 *.log*
 
 .DS_Store
+
+public/*
