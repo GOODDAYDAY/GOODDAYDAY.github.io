@@ -2,7 +2,7 @@ name: Deploy Hugo to GitHub Pages
 on:
   push:  # 触发条件：推送代码到main分支
     branches:
-      - main
+      - master
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest  # 使用Ubuntu环境
