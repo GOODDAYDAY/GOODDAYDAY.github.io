@@ -1,10 +1,227 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>LoveIt</title>
-        <link>http://localhost:61927/</link>
+        <title>GoodyHao&#39;s Blog</title>
+        <link>http://localhost:1313/</link>
         <description>Elegance Never Fades</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor>
-            <webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-            <atom:link href="http://localhost:61927/index.xml" rel="self" type="application/rss+xml" />
-        </channel>
+            <webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 10 Sep 2025 22:11:17 &#43;0800</lastBuildDate>
+            <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+        <item>
+    <title>[Github] 1. Deploy GitHub Blog Site</title>
+    <link>http://localhost:1313/2025/09/1.-deploy-github-blog-site/</link>
+    <pubDate>Wed, 10 Sep 2025 22:11:17 &#43;0800</pubDate>
+    <author>GoodyHao</author>
+    <guid>http://localhost:1313/2025/09/1.-deploy-github-blog-site/</guid>
+    <description><![CDATA[<h1 id="github-1-deploy-github-blog-site">[Github] 1. Deploy GitHub Blog Site</h1>
+<h2 id="1-intro">1. intro</h2>
+<ul>
+<li>GitHub Pages is a static site hosting service that takes HTML, CSS, and JavaScript files straight from a repository on GitHub, optionally runs the files through a build process, and publishes a website.</li>
+</ul>
+<h2 id="2-pre-work">2. pre-work</h2>
+<h3 id="21-create-a-repository">2.1 create a repository</h3>
+<ul>
+<li>Create a repository named <code>your_github_username.github.io</code>, where <code>your_github_username</code> is your GitHub username. For example, if your GitHub username is <code>octocat</code>, the repository name should be <code>octocat.github.io</code>.</li>
+</ul>
+<h3 id="22-hugo-install">2.2 hugo install</h3>
+<ul>
+<li>Download the latest version of Hugo from the <a href="https://gohugo.io/installation/" target="_blank" rel="noopener noreffer ">official Hugo releases page</a></li>
+</ul>
+<h2 id="3-create-a-blog-site">3. create a blog site</h2>
+<h3 id="31-hugo-init-site">3.1 <a href="https://gohugo.io/getting-started/quick-start/" target="_blank" rel="noopener noreffer ">hugo init site</a></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># create directory</span>
+</span></span><span class="line"><span class="cl">mkdir your_github_username.github.io
+</span></span><span class="line"><span class="cl"><span class="c1"># cd to directory</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> your_github_username.github.io
+</span></span><span class="line"><span class="cl"><span class="c1"># init site</span>
+</span></span><span class="line"><span class="cl">hugo new site .
+</span></span><span class="line"><span class="cl"><span class="c1"># git init, make sure it&#39;s a git repository</span>
+</span></span><span class="line"><span class="cl">git init
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="32-add-a-theme">3.2 <a href="https://themes.gohugo.io/" target="_blank" rel="noopener noreffer ">add a theme</a></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># add a theme, here we use LoveIt theme.</span>
+</span></span><span class="line"><span class="cl">git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
+</span></span><span class="line"><span class="cl"><span class="c1"># now, there should be a .gitmodules file in your directory. if not, you need to run `git init` first.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># copy the exampleSite config file to the root directory</span>
+</span></span><span class="line"><span class="cl">cp themes/LoveIt/exampleSite/hugo.toml .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33-modify-the-config-file">3.3 modify the config file</h3>
+<ul>
+<li>modify the config file hugo.toml</li>
+</ul>
+<h4 id="331-bashurl">3.3.1 bashURL</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="nx">baseURL</span> <span class="p">=</span> <span class="s2">&#34;https://gooddayday.github.io&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="332-themes-directory">3.3.2 themes directory</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="c"># themes directory</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 主题目录</span>
+</span></span><span class="line"><span class="cl"><span class="nx">themesDir</span> <span class="p">=</span> <span class="s2">&#34;./themes&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="333-website-title">3.3.3 website title</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="c"># website title</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 网站标题</span>
+</span></span><span class="line"><span class="cl"><span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;GoodyHao&#39;s Blog&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="334-website-images">3.3.4 website images</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="c"># website images for Open Graph and Twitter Cards</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 网站图片, 用于 Open Graph 和 Twitter Cards</span>
+</span></span><span class="line"><span class="cl"><span class="nx">images</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;/logo.jpg&#34;</span><span class="p">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="335-website-icon">3.3.5 website icon</h4>
+<ul>
+<li>put icon file in the <code>static</code> directory</li>
+</ul>
+<h2 id="4-github-deploy">4. github deploy</h2>
+<h3 id="41-create-a-workflow-file">4.1 create a workflow file</h3>
+<ul>
+<li>create a file <code>.github/workflows/deploy.yaml</code>, and add the following content:</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Deploy Hugo to GitHub Pages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w">  </span><span class="c"># 触发条件：推送代码到master分支</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">master</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">jobs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">build-and-deploy</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu-latest </span><span class="w"> </span><span class="c"># 使用Ubuntu环境</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 1. 检出仓库代码（递归拉取主题submodule）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/checkout@v4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">submodules</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 2. 安装Hugo（使用extended版本，支持SASS）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Setup Hugo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">peaceiris/actions-hugo@v2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">hugo-version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;latest&#39;</span><span class="w">  </span><span class="c"># 或指定版本（如&#39;0.147.2&#39;）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">extended</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 3. 缓存依赖（加快后续构建速度）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">actions/cache@v3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">            resources/_gen
+</span></span></span><span class="line"><span class="cl"><span class="sd">            public</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">${{ runner.os }}-hugo-${{ hashFiles(&#39;**/go.sum&#39;) }}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">restore-keys</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">            ${{ runner.os }}-hugo-</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 4. 构建Hugo站点（开启压缩）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Build Hugo site</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">hugo --minify</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c"># 5. 部署到GitHub Pages（自动推送public目录到gh-pages分支）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Deploy to GitHub Pages</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l">peaceiris/actions-gh-pages@v4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">github_token</span><span class="p">:</span><span class="w"> </span><span class="l">${{ secrets.GITHUB_TOKEN  }} </span><span class="w"> </span><span class="c"># GitHub自动提供的Token（无需手动创建）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">publish_dir</span><span class="p">:</span><span class="w"> </span><span class="l">./public </span><span class="w"> </span><span class="c"># 指向Hugo生成的静态文件目录</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">force_orphan</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">  </span><span class="c"># 强制创建新提交（避免分支历史混乱）</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>github repository settings -&gt; pages -&gt; source -&gt; select <code>gh-pages</code> branch and <code>/ (root)</code> folder -&gt; save</li>
+</ul>
+<p></p>]]></description>
+</item>
+</channel>
 </rss>

@@ -1,10 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>LoveIt</title>
-        <link>http://localhost:61927/zh-cn/</link>
+        <title>GoodyHao&#39;s Blog</title>
+        <link>http://localhost:1313/zh-cn/</link>
         <description>Elegance Never Fades</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor>
             <webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-            <atom:link href="http://localhost:61927/zh-cn/index.xml" rel="self" type="application/rss+xml" />
+            <atom:link href="http://localhost:1313/zh-cn/index.xml" rel="self" type="application/rss+xml" />
         </channel>
 </rss>
