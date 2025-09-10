@@ -798,6 +798,7 @@ languageCode = "en"
 languageName = "English"
 hasCJKLanguage = false
 copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+contentDir = "content"
 [languages.en.menu]
 [[languages.en.menu.main]]
 weight = 1
@@ -886,93 +887,94 @@ GitHub = "GOODDAYDAY"
 # id = "@xxxx"
 # prefix = "https://mastodon.technology/"
 
-[languages.zh-cn]
-weight = 2
-languageCode = "zh-CN"
-languageName = "简体中文"
-hasCJKLanguage = true
-copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
-[languages.zh-cn.menu]
-[[languages.zh-cn.menu.main]]
-weight = 1
-identifier = "posts"
-pre = ""
-post = ""
-name = "所有文章"
-url = "/posts/"
-title = ""
-[[languages.zh-cn.menu.main]]
-weight = 2
-identifier = "tags"
-pre = ""
-post = ""
-name = "标签"
-url = "/tags/"
-title = ""
-[[languages.zh-cn.menu.main]]
-weight = 3
-identifier = "categories"
-pre = ""
-post = ""
-name = "分类"
-url = "/categories/"
-title = ""
-[[languages.zh-cn.menu.main]]
-weight = 4
-identifier = "documentation"
-pre = ""
-name = "文档"
-url = "/categories/documentation/"
-title = ""
-[[languages.zh-cn.menu.main]]
-weight = 5
-identifier = "about"
-pre = ""
-post = ""
-name = "关于"
-url = "/about/"
-title = ""
-[[languages.zh-cn.menu.main]]
-weight = 6
-identifier = "github"
-pre = "<i class='fab fa-github fa-fw' aria-hidden='true'></i>"
-post = ""
-name = ""
-url = "https://github.com/GOODDAYDAY/GOODDAYDAY.github.io"
-title = "GitHub"
-[languages.zh-cn.params]
-[languages.zh-cn.params.search]
-enable = true
-type = "algolia"
-contentLength = 4000
-placeholder = ""
-maxResultLength = 10
-snippetLength = 50
-highlightTag = "em"
-absoluteURL = false
-[languages.zh-cn.params.search.algolia]
-index = "index.zh-cn"
-appID = "PASDMWALPK"
-searchKey = "b42948e51daaa93df92381c8e2ac0f93"
-[languages.zh-cn.params.home]
-rss = 10
-[languages.zh-cn.params.home.profile]
-enable = true
-gravatarEmail = ""
-avatarURL = "/images/logo.jpg"
-title = ""
-subtitle = "Elegance Never Fades"
-typeit = true
-social = true
-disclaimer = ""
-[languages.zh-cn.params.social]
-GitHub = "GOODDAYDAY"
-# Weibo = "xxxx"
-# Steam = "xxxx"
-# Zhihu = "xxxx"
-# Douban = "xxxx"
-# Devto = "xxxx"
-# Bilibili = "xxxx"
-# Email = "xxxx@xxxx.com"
-# Phone = "555-555-555"
-# RSS = true
+# [languages.zh-cn]
+# weight = 2
+# languageCode = "zh-CN"
+# languageName = "简体中文"
+# hasCJKLanguage = true
+# copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+# contentDir = "content"
+# [languages.zh-cn.menu]
+# [[languages.zh-cn.menu.main]]
+# weight = 1
+# identifier = "posts"
+# pre = ""
+# post = ""
+# name = "所有文章"
+# url = "/posts/"
+# title = ""
+# [[languages.zh-cn.menu.main]]
+# weight = 2
+# identifier = "tags"
+# pre = ""
+# post = ""
+# name = "标签"
+# url = "/tags/"
+# title = ""
+# [[languages.zh-cn.menu.main]]
+# weight = 3
+# identifier = "categories"
+# pre = ""
+# post = ""
+# name = "分类"
+# url = "/categories/"
+# title = ""
+# [[languages.zh-cn.menu.main]]
+# weight = 4
+# identifier = "documentation"
+# pre = ""
+# name = "文档"
+# url = "/categories/documentation/"
+# title = ""
+# [[languages.zh-cn.menu.main]]
+# weight = 5
+# identifier = "about"
+# pre = ""
+# post = ""
+# name = "关于"
+# url = "/about/"
+# title = ""
+# [[languages.zh-cn.menu.main]]
+# weight = 6
+# identifier = "github"
+# pre = "<i class='fab fa-github fa-fw' aria-hidden='true'></i>"
+# post = ""
+# name = ""
+# url = "https://github.com/GOODDAYDAY/GOODDAYDAY.github.io"
+# title = "GitHub"
+# [languages.zh-cn.params]
+# [languages.zh-cn.params.search]
+# enable = true
+# type = "algolia"
+# contentLength = 4000
+# placeholder = ""
+# maxResultLength = 10
+# snippetLength = 50
+# highlightTag = "em"
+# absoluteURL = false
+# [languages.zh-cn.params.search.algolia]
+# index = "index.zh-cn"
+# appID = "PASDMWALPK"
+# searchKey = "b42948e51daaa93df92381c8e2ac0f93"
+# [languages.zh-cn.params.home]
+# rss = 10
+# [languages.zh-cn.params.home.profile]
+# enable = true
+# gravatarEmail = ""
+# avatarURL = "/images/logo.jpg"
+# title = ""
+# subtitle = "Elegance Never Fades"
+# typeit = true
+# social = true
+# disclaimer = ""
+# [languages.zh-cn.params.social]
+# GitHub = "GOODDAYDAY"
+# # Weibo = "xxxx"
+# # Steam = "xxxx"
+# # Zhihu = "xxxx"
+# # Douban = "xxxx"
+# # Devto = "xxxx"
+# # Bilibili = "xxxx"
+# # Email = "xxxx@xxxx.com"
+# # Phone = "555-555-555"
+# # RSS = true
