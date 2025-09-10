@@ -135,7 +135,17 @@ jobs:
 
 ![github-page-setting.png](/images/1.%20deploy%20github%20blog%20site.md/github-page-setting.png)
 
-- no need to create token, github will create a token named `GITHUB_TOKEN` automatically.
+- need to set token
+
+![2. github-generate-token-setting-1.png](/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png)
+
+- generate new token with `repo` and `workflow` permissions
+
+![2. github-generate-token-setting-2.png](/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png)
+
+- add token to github secrets with name `TOKEN_GITHUB`
+
+![3. github-token-setting.png](/images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png)
 
 ### 4.2 push code to github
 
@@ -147,4 +157,10 @@ git commit -m "first commit"
 # push to github
 git push -u origin master
 ```
+
+### 4.3 check the workflow
+
+- check the workflow in github actions
+
+![4. github-workflow-check.png](/images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png)
 

@@ -33,7 +33,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/localhost:1313\/2025\/09\/1.-deploy-github-blog-site\/"
-        },"image": ["http:\/\/localhost:1313\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  498 ,
+        },"image": ["http:\/\/localhost:1313\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  515 ,
         "url": "http:\/\/localhost:1313\/2025\/09\/1.-deploy-github-blog-site\/","datePublished": "2025-09-10T22:11:17+08:00","dateModified": "2025-09-10T22:11:17+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
             "@type": "Organization",
             "name": "xxxx","logo": "http:\/\/localhost:1313\/images\/logo.jpg"},"author": {
@@ -113,7 +113,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">[Github] 1. Deploy GitHub Blog Site</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>GoodyHao</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-09-10">2025-09-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;498 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-09-10">2025-09-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;515 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -148,6 +148,7 @@
       <ul>
         <li><a href="#41-create-a-workflow-file">4.1 create a workflow file</a></li>
         <li><a href="#42-push-code-to-github">4.2 push code to github</a></li>
+        <li><a href="#43-check-the-workflow">4.3 check the workflow</a></li>
       </ul>
     </li>
   </ul>
@@ -370,8 +371,38 @@
         alt="/images/1.%20deploy%20github%20blog%20site.md/github-page-setting.png"
         title="github-page-setting.png" /></p>
 <ul>
-<li>no need to create token, github will create a token named <code>GITHUB_TOKEN</code> automatically.</li>
+<li>need to set token</li>
 </ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png"
+        data-srcset="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png, /images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png 1.5x, /images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png 2x"
+        data-sizes="auto"
+        alt="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png"
+        title="2. github-generate-token-setting-1.png" /></p>
+<ul>
+<li>generate new token with <code>repo</code> and <code>workflow</code> permissions</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png"
+        data-srcset="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png, /images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png 1.5x, /images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png 2x"
+        data-sizes="auto"
+        alt="/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png"
+        title="2. github-generate-token-setting-2.png" /></p>
+<ul>
+<li>add token to github secrets with name <code>TOKEN_GITHUB</code></li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png"
+        data-srcset="/images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png, /images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png 1.5x, /images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png 2x"
+        data-sizes="auto"
+        alt="/images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png"
+        title="3. github-token-setting.png" /></p>
 <h3 id="42-push-code-to-github">4.2 push code to github</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -391,7 +422,19 @@
 </span></span><span class="line"><span class="cl">git push -u origin master
 </span></span></code></pre></td></tr></table>
 </div>
-</div></div><div class="post-footer" id="post-footer">
+</div><h3 id="43-check-the-workflow">4.3 check the workflow</h3>
+<ul>
+<li>check the workflow in github actions</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png"
+        data-srcset="/images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png, /images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png 1.5x, /images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png 2x"
+        data-sizes="auto"
+        alt="/images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png"
+        title="4. github-workflow-check.png" /></p>
+</div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
