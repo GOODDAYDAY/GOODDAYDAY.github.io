@@ -37,6 +37,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN  }}  # GitHub自动提供的Token（无需手动创建）
+          github_token: ${{ secrets.TOKEN_GITHUB  }}  # GitHub自动提供的Token（无需手动创建）
           publish_dir: ./public  # 指向Hugo生成的静态文件目录
           force_orphan: true  # 强制创建新提交（避免分支历史混乱）
