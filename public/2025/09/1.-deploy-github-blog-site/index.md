@@ -37,6 +37,10 @@ git init
 ```bash
 # add a theme, here we use LoveIt theme.
 git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
+# now the git is main branch which is not stable, we need to checkout to the latest stable version.
+cd themes/LoveIt
+git checkout v0.3.0
+cd ../..
 # now, there should be a .gitmodules file in your directory. if not, you need to run `git init` first.
 # copy the exampleSite config file to the root directory
 cp themes/LoveIt/exampleSite/hugo.toml .

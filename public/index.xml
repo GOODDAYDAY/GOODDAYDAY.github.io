@@ -58,10 +58,18 @@
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># add a theme, here we use LoveIt theme.</span>
 </span></span><span class="line"><span class="cl">git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
+</span></span><span class="line"><span class="cl"><span class="c1"># now the git is main branch which is not stable, we need to checkout to the latest stable version.</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> themes/LoveIt
+</span></span><span class="line"><span class="cl">git checkout v0.3.0
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> ../..
 </span></span><span class="line"><span class="cl"><span class="c1"># now, there should be a .gitmodules file in your directory. if not, you need to run `git init` first.</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># copy the exampleSite config file to the root directory</span>
 </span></span><span class="line"><span class="cl">cp themes/LoveIt/exampleSite/hugo.toml .
