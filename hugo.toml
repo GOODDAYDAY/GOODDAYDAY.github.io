@@ -509,9 +509,9 @@ clientSecret = ""
 # Valine comment config (https://github.com/xCss/Valine)
 # Valine 评论系统设置 (https://github.com/xCss/Valine)
 [params.page.comment.valine]
-enable = true
-appId = "QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI"
-appKey = "WBmoGyJtbqUswvfLh6L8iEBr"
+enable = false
+appId = ""
+appKey = ""
 placeholder = ""
 avatar = "mp"
 meta = ""
@@ -523,7 +523,7 @@ visitor = true
 recordIP = true
 highlight = true
 enableQQ = false
-serverURLs = "https://valine.hugoloveit.com"
+serverURLs = ""
 # emoji data file name, default is "google.yml"
 # ["apple.yml", "google.yml", "facebook.yml", "twitter.yml"]
 # located in "themes/LoveIt/assets/lib/valine/emoji/" directory
@@ -575,11 +575,11 @@ darkTheme = "github-dark"
 [params.page.comment.giscus]
 # You can refer to the official documentation of giscus to use the following configuration.
 # 你可以参考官方文档来使用下列配置
-enable = false
-repo = ""
-repoId = ""
+enable = true
+repo = "GOODDAYDAY/GOODDAYDAY.github.io"
+repoId = "R_kgDOPtWtCQ"
 category = "Announcements"
-categoryId = ""
+categoryId = "DIC_kwDOPtWtCc4CvteQ"
 # automatically adapt the current theme i18n configuration when empty
 # 为空时自动适配当前主题 i18n 配置
 lang = ""
