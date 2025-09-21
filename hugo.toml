@@ -289,7 +289,7 @@ paginate = 6
 # 主页的社交信息设置
 [params.social]
 GitHub = "GOODDAYDAY"
-# Linkedin = ""
+Linkedin = "tian-hao-898b35383"
 # Twitter = ""
 # Instagram = ""
 # Facebook = ""
@@ -466,7 +466,7 @@ fullscreen = true
 enable = true
 Twitter = true
 Facebook = true
-Linkedin = false
+Linkedin = true
 Whatsapp = false
 Pinterest = false
 Tumblr = false
