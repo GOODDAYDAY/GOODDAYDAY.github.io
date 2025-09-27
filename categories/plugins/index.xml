@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Plugins on GoodyHao's Blog</title><link>https://gooddayday.github.io/categories/plugins/</link><description>Recent content in Plugins on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 28 Sep 2025 01:05:16 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/categories/plugins/index.xml" rel="self" type="application/rss+xml"/><item><title>[Github] 2. MyBatis Generator Custom Plugins</title><link>https://gooddayday.github.io/2025/09/8.2-mybatis-generator-custom-plugins-en/</link><pubDate>Wed, 24 Sep 2025 23:46:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/2025/09/8.2-mybatis-generator-custom-plugins-en/</guid><description>&lt;h1 id="github-2-mybatis-generator-custom-plugins"&gt;[Github] 2. MyBatis Generator Custom Plugins&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;🔗 Project Repository&lt;/strong&gt;: &lt;a href="https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins" target="_blank" rel="noopener noreffer "&gt;mybatis-generator-custome-plugins&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with
+MySQL-specific features, DTO layer generation, and automatic Service layer generation.&lt;/p&gt;
+&lt;h2 id="-features-overview"&gt;🚀 Features Overview&lt;/h2&gt;
+&lt;p&gt;This plugin collection includes 6 custom plugins:&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Plugin Name&lt;/th&gt;
+ &lt;th&gt;Description&lt;/th&gt;
+ &lt;th&gt;Key Features&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;InsertIgnoreIntoPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL INSERT IGNORE statement support&lt;/td&gt;
+ &lt;td&gt;Batch insert ignoring duplicate records&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;InsertOnDuplicateKeyPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL ON DUPLICATE KEY UPDATE support&lt;/td&gt;
+ &lt;td&gt;Auto update on insert conflicts&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ReplaceIntoPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL REPLACE INTO statement support&lt;/td&gt;
+ &lt;td&gt;Replace insert operations&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;DtoGeneratorPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;DTO layer code generation&lt;/td&gt;
+ &lt;td&gt;Lombok annotations, Entity conversion methods&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ServiceGeneratorPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Service layer code generation&lt;/td&gt;
+ &lt;td&gt;Interface + Implementation, Complete CRUD operations&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;CustomerMapperPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Custom Mapper generation&lt;/td&gt;
+ &lt;td&gt;Extended native Mapper functionality&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="-dependency-analysis"&gt;📦 Dependency Analysis&lt;/h2&gt;
+&lt;h3 id="core-dependencies"&gt;Core Dependencies&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;&amp;lt;!-- MyBatis Generator Core Dependency --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.generator&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-core&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.4.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c"&gt;&amp;lt;!-- MyBatis Dynamic SQL Support --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.dynamic-sql&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-dynamic-sql&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.5.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c"&gt;&amp;lt;!-- MyBatis Spring Boot Integration --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.spring.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-spring-boot-starter&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.0.5&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="maven-plugin-configuration"&gt;Maven Plugin Configuration&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.generator&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.4.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;verbose&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/verbose&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;overwrite&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/overwrite&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;dependencies&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.goody.utils&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-custome-plugins&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.0.0&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/dependencies&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="-plugin-details"&gt;🔧 Plugin Details&lt;/h2&gt;
+&lt;h3 id="1-mysql-extension-plugins"&gt;1. MySQL Extension Plugins&lt;/h3&gt;
+&lt;h4 id="insertignoreintoplugin"&gt;InsertIgnoreIntoPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Adds &lt;code&gt;INSERT IGNORE&lt;/code&gt; statement support to Mapper&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Generated Methods&lt;/strong&gt;: &lt;code&gt;insertIgnoreCustom()&lt;/code&gt;, &lt;code&gt;insertIgnoreBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Cases&lt;/strong&gt;: Ignore primary key conflicts during batch inserts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="insertonduplicatekeyplugin"&gt;InsertOnDuplicateKeyPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Adds &lt;code&gt;ON DUPLICATE KEY UPDATE&lt;/code&gt; statement support to Mapper&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Generated Methods&lt;/strong&gt;: &lt;code&gt;insertOnDuplicateKeyCustom()&lt;/code&gt;, &lt;code&gt;insertOnDuplicateKeyBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Cases&lt;/strong&gt;: Auto update records on duplicate key conflicts during insert&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="replaceintoplugin"&gt;ReplaceIntoPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Adds &lt;code&gt;REPLACE INTO&lt;/code&gt; statement support to Mapper&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Generated Methods&lt;/strong&gt;: &lt;code&gt;replaceIntoCustom()&lt;/code&gt;, &lt;code&gt;replaceIntoBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Cases&lt;/strong&gt;: Replace existing records or insert new ones&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="2-dto-layer-generation-plugin"&gt;2. DTO Layer Generation Plugin&lt;/h3&gt;
+&lt;h4 id="dtogeneratorplugin"&gt;DtoGeneratorPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Automatically generates DTO classes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Features&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Lombok annotation support (&lt;code&gt;@Data&lt;/code&gt;, &lt;code&gt;@Builder&lt;/code&gt;, &lt;code&gt;@AllArgsConstructor&lt;/code&gt;, &lt;code&gt;@NoArgsConstructor&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Auto-generated &lt;code&gt;fromEntity()&lt;/code&gt; and &lt;code&gt;toEntity()&lt;/code&gt; conversion methods&lt;/li&gt;
+&lt;li&gt;Package structure: &lt;code&gt;*.model.dto&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="3-service-layer-generation-plugin"&gt;3. Service Layer Generation Plugin&lt;/h3&gt;
+&lt;h4 id="servicegeneratorplugin"&gt;ServiceGeneratorPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Automatically generates Service interfaces and implementation classes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Features&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Complete CRUD operation methods&lt;/li&gt;
+&lt;li&gt;Support for single and composite primary keys&lt;/li&gt;
+&lt;li&gt;Spring annotation support (&lt;code&gt;@Service&lt;/code&gt;, &lt;code&gt;@Autowired&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Package structure: &lt;code&gt;*.service.interfaces&lt;/code&gt; and &lt;code&gt;*.service.impl&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="4-custom-mapper-plugin"&gt;4. Custom Mapper Plugin&lt;/h3&gt;
+&lt;h4 id="customermapperplugin"&gt;CustomerMapperPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Function&lt;/strong&gt;: Generates extended Mapper interfaces&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Package structure&lt;/strong&gt;: &lt;code&gt;*.dao.customer&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="-usage-guide"&gt;💻 Usage Guide&lt;/h2&gt;
+&lt;h3 id="step-1-add-dependencies"&gt;Step 1: Add Dependencies&lt;/h3&gt;
+&lt;p&gt;Add the plugin to your project:&lt;/p&gt;</description></item><item><title>[Github] 2. MyBatis Generator 自定义插件</title><link>https://gooddayday.github.io/2025/09/8.1-mybatis-generator-custom-plugins-zh/</link><pubDate>Wed, 24 Sep 2025 23:46:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/2025/09/8.1-mybatis-generator-custom-plugins-zh/</guid><description>&lt;h1 id="github-2-mybatis-generator-自定义插件"&gt;[Github] 2. MyBatis Generator 自定义插件&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;🔗 项目地址&lt;/strong&gt;: &lt;a href="https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins" target="_blank" rel="noopener noreffer "&gt;mybatis-generator-custome-plugins&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。&lt;/p&gt;
+&lt;h2 id="-功能概览"&gt;🚀 功能概览&lt;/h2&gt;
+&lt;p&gt;本插件集合包含以下6个自定义插件：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;插件名称&lt;/th&gt;
+ &lt;th&gt;功能描述&lt;/th&gt;
+ &lt;th&gt;核心特性&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;InsertIgnoreIntoPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL INSERT IGNORE语句支持&lt;/td&gt;
+ &lt;td&gt;批量插入忽略重复记录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;InsertOnDuplicateKeyPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL ON DUPLICATE KEY UPDATE支持&lt;/td&gt;
+ &lt;td&gt;插入冲突时自动更新&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ReplaceIntoPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;MySQL REPLACE INTO语句支持&lt;/td&gt;
+ &lt;td&gt;替换插入操作&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;DtoGeneratorPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;DTO层代码生成&lt;/td&gt;
+ &lt;td&gt;Lombok注解，Entity转换方法&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;ServiceGeneratorPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;Service层代码生成&lt;/td&gt;
+ &lt;td&gt;接口+实现，完整CRUD操作&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;code&gt;CustomerMapperPlugin&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;自定义Mapper生成&lt;/td&gt;
+ &lt;td&gt;扩展原生Mapper功能&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="-依赖分析"&gt;📦 依赖分析&lt;/h2&gt;
+&lt;h3 id="核心依赖"&gt;核心依赖&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;&amp;lt;!-- MyBatis Generator核心依赖 --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.generator&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-core&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.4.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;&amp;lt;!-- MyBatis Dynamic SQL支持 --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.dynamic-sql&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-dynamic-sql&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.5.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;&amp;lt;!-- MyBatis Spring Boot集成 --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.spring.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-spring-boot-starter&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;3.0.5&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="maven插件配置"&gt;Maven插件配置&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.mybatis.generator&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.4.2&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;verbose&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/verbose&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;overwrite&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/overwrite&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;dependencies&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;com.goody.utils&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;mybatis-generator-custome-plugins&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;version&amp;gt;&lt;/span&gt;1.0.0&lt;span class="nt"&gt;&amp;lt;/version&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/dependencies&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="-插件详述"&gt;🔧 插件详述&lt;/h2&gt;
+&lt;h3 id="1-mysql扩展插件"&gt;1. MySQL扩展插件&lt;/h3&gt;
+&lt;h4 id="insertignoreintoplugin"&gt;InsertIgnoreIntoPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 为Mapper添加&lt;code&gt;INSERT IGNORE&lt;/code&gt;语句支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生成方法&lt;/strong&gt;: &lt;code&gt;insertIgnoreCustom()&lt;/code&gt;, &lt;code&gt;insertIgnoreBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用场景&lt;/strong&gt;: 批量插入时忽略主键冲突记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="insertonduplicatekeyplugin"&gt;InsertOnDuplicateKeyPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 为Mapper添加&lt;code&gt;ON DUPLICATE KEY UPDATE&lt;/code&gt;语句支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生成方法&lt;/strong&gt;: &lt;code&gt;insertOnDuplicateKeyCustom()&lt;/code&gt;, &lt;code&gt;insertOnDuplicateKeyBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用场景&lt;/strong&gt;: 插入时遇到重复键则更新记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="replaceintoplugin"&gt;ReplaceIntoPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 为Mapper添加&lt;code&gt;REPLACE INTO&lt;/code&gt;语句支持&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生成方法&lt;/strong&gt;: &lt;code&gt;replaceIntoCustom()&lt;/code&gt;, &lt;code&gt;replaceIntoBatchCustom()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用场景&lt;/strong&gt;: 存在则替换，不存在则插入&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="2-dto层生成插件"&gt;2. DTO层生成插件&lt;/h3&gt;
+&lt;h4 id="dtogeneratorplugin"&gt;DtoGeneratorPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 自动生成DTO类&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Lombok注解支持(&lt;code&gt;@Data&lt;/code&gt;, &lt;code&gt;@Builder&lt;/code&gt;, &lt;code&gt;@AllArgsConstructor&lt;/code&gt;, &lt;code&gt;@NoArgsConstructor&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;自动生成&lt;code&gt;fromEntity()&lt;/code&gt;和&lt;code&gt;toEntity()&lt;/code&gt;转换方法&lt;/li&gt;
+&lt;li&gt;包结构: &lt;code&gt;*.model.dto&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="3-service层生成插件"&gt;3. Service层生成插件&lt;/h3&gt;
+&lt;h4 id="servicegeneratorplugin"&gt;ServiceGeneratorPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 自动生成Service接口和实现类&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特性&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;完整CRUD操作方法&lt;/li&gt;
+&lt;li&gt;支持单主键和联合主键&lt;/li&gt;
+&lt;li&gt;Spring注解支持(&lt;code&gt;@Service&lt;/code&gt;, &lt;code&gt;@Autowired&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;包结构: &lt;code&gt;*.service.interfaces&lt;/code&gt; 和 &lt;code&gt;*.service.impl&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="4-自定义mapper插件"&gt;4. 自定义Mapper插件&lt;/h3&gt;
+&lt;h4 id="customermapperplugin"&gt;CustomerMapperPlugin&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;功能&lt;/strong&gt;: 生成扩展Mapper接口&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;包结构&lt;/strong&gt;: &lt;code&gt;*.dao.customer&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="-使用方法"&gt;💻 使用方法&lt;/h2&gt;
+&lt;h3 id="步骤1-添加依赖"&gt;步骤1: 添加依赖&lt;/h3&gt;
+&lt;p&gt;将插件添加到你的项目中：&lt;/p&gt;</description></item></channel></rss>

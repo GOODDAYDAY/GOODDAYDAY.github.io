@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RAFT on GoodyHao's Blog</title><link>https://gooddayday.github.io/tags/raft/</link><description>Recent content in RAFT on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 28 Sep 2025 01:05:16 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/tags/raft/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus</title><link>https://gooddayday.github.io/2025/09/9.2-understanding_raft_algorithm-en/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/2025/09/9.2-understanding_raft_algorithm-en/</guid><description>&lt;h1 id="cluster-1-raft-algorithm-a-complete-evolution-from-single-node-to-distributed-consensus"&gt;[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus&lt;/h1&gt;
+&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RAFT (Raft Consensus Algorithm) is a distributed consensus algorithm designed to solve the problem of achieving data state agreement among multiple nodes in distributed systems.&lt;/li&gt;
+&lt;li&gt;Compared to the renowned Paxos algorithm, RAFT&amp;rsquo;s design philosophy emphasizes &amp;ldquo;understandability&amp;rdquo; through clear role separation and straightforward state transitions, making it easier for developers to comprehend and implement.&lt;/li&gt;
+&lt;li&gt;This article demonstrates the complete evolution of the RAFT algorithm from single-node to multi-node clusters through 11 detailed diagrams, covering key scenarios including normal operation, failure handling, network partitions, and conflict resolution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="core-raft-concepts"&gt;Core RAFT Concepts&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Before diving into the analysis, let&amp;rsquo;s familiarize ourselves with several core concepts of RAFT:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Node States&lt;/strong&gt;:&lt;/p&gt;</description></item><item><title>[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进</title><link>https://gooddayday.github.io/2025/09/9.1-understanding_raft_algorithm-zh/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/2025/09/9.1-understanding_raft_algorithm-zh/</guid><description>&lt;h1 id="cluster-1-浅谈raft算法从单节点到分布式共识的完整演进"&gt;[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进&lt;/h1&gt;
+&lt;h2 id="引言"&gt;引言&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。&lt;/li&gt;
+&lt;li&gt;相比于著名的Paxos算法，RAFT的设计理念是&amp;quot;可理解性&amp;quot;（understandability），通过清晰的角色划分和简洁的状态转换，让开发者更容易理解和实现。&lt;/li&gt;
+&lt;li&gt;本文将通过11个详细的图例，展示RAFT算法从单节点到多节点集群的完整演进过程，包括正常运行、故障处理、网络分区和冲突解决等关键场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="raft核心概念"&gt;RAFT核心概念&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;在深入分析之前，让我们先了解RAFT的几个核心概念：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;节点状态(Node States)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Leader（领导者）&lt;/strong&gt;：负责处理客户端请求，向其他节点复制日志条目&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Follower（跟随者）&lt;/strong&gt;：被动接收Leader的日志复制请求&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Candidate（候选者）&lt;/strong&gt;：Leader选举过程中的临时状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;关键数据结构&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Log（日志）&lt;/strong&gt;：存储操作命令的有序序列&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Term（任期）&lt;/strong&gt;：单调递增的逻辑时钟，用于检测过期信息&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CommitIndex（提交索引）&lt;/strong&gt;：已知被提交的最高日志条目索引&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ApplyIndex/LastApplied（应用索引）&lt;/strong&gt;：已应用到状态机的最高日志条目索引&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;State（状态机）&lt;/strong&gt;：实际的业务数据状态&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="阶段一单节点启动图1"&gt;阶段一：单节点启动（图1）&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Node1启动为Leader，初始状态：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- Log=[]（空日志）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- Term=0（初始任期）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- CommitIndex=0, ApplyIndex=0（无已提交/应用的条目）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- State={}（空状态机）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/9.%20raft/1.%20single%20node.svg"
+ data-srcset="https://gooddayday.github.io/images/9.%20raft/1.%20single%20node.svg, https://gooddayday.github.io/images/9.%20raft/1.%20single%20node.svg 1.5x, https://gooddayday.github.io/images/9.%20raft/1.%20single%20node.svg 2x"
+ data-sizes="auto"
+ alt="/images/9.%20raft/1.%20single%20node.svg"
+ title="1. single node.svg" /&gt;&lt;/p&gt;
+&lt;p&gt;单节点集群中，节点自动成为Leader，因为它构成了&amp;quot;多数派&amp;quot;（1 &amp;gt; 1/2）。这是RAFT算法的一个重要特性：任何时刻最多只能有一个Leader。&lt;/p&gt;
+&lt;h2 id="阶段二处理客户端请求图2"&gt;阶段二：处理客户端请求（图2）&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;客户端请求：x=1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;处理流程：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1. Leader将&amp;#34;x=1&amp;#34;追加到日志（Log=[x=1]）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2. 更新Term=1（在某些实现中，term在接收客户端请求时更新）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3. 单节点立即提交（CommitIndex=1）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;4. 应用到状态机（ApplyIndex=1, State={x:1}）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/9.%20raft/2.%20add%20value.svg"
+ data-srcset="https://gooddayday.github.io/images/9.%20raft/2.%20add%20value.svg, https://gooddayday.github.io/images/9.%20raft/2.%20add%20value.svg 1.5x, https://gooddayday.github.io/images/9.%20raft/2.%20add%20value.svg 2x"
+ data-sizes="auto"
+ alt="/images/9.%20raft/2.%20add%20value.svg"
+ title="2. add value.svg" /&gt;&lt;/p&gt;</description></item></channel></rss>
