@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a Hugo-based static blog site hosted on GitHub Pages. The site uses the LoveIt theme and is configured for English content with Chinese/bilingual support capability.
+This is a Hugo-based static blog site hosted on GitHub Pages. The site uses the LoveIt theme and is configured for
+English content with Chinese/bilingual support capability.
 
 ## Architecture
 
@@ -17,6 +18,7 @@ This is a Hugo-based static blog site hosted on GitHub Pages. The site uses the 
 ## Common Development Commands
 
 ### Local Development
+
 ```bash
 # Start local development server
 hugo server --buildDrafts --disableFastRender
@@ -29,6 +31,7 @@ hugo --minify
 ```
 
 ### Content Management
+
 ```bash
 # Create new blog post
 hugo new posts/post-title.md
@@ -38,6 +41,7 @@ hugo --buildDrafts
 ```
 
 ### Deployment
+
 - Automatic deployment via GitHub Actions on push to `master` branch
 - Manual workflow trigger available in GitHub Actions tab
 - Deployment target: `gh-pages` branch
@@ -57,6 +61,7 @@ hugo --buildDrafts
 ## Configuration Notes
 
 ### Hugo Configuration (`hugo.toml`)
+
 - **Base URL**: `https://gooddayday.github.io`
 - **Theme**: LoveIt with light default theme
 - **Language**: English primary, Chinese support available but commented out
@@ -64,12 +69,14 @@ hugo --buildDrafts
 - **Content**: Blog-focused with posts, tags, categories, and documentation sections
 
 ### Theme Customization
+
 - Custom taxonomy templates in `layouts/taxonomy/` for proper tag/category pages
 - Social links configured for GitHub profile
 - Search functionality configured for Algolia
 - Comment system using Valine with specific app configuration
 
 ### Deployment Configuration
+
 - GitHub Actions workflow in `.github/workflows/deploy.yaml`
 - Uses Hugo extended version with caching for performance
 - Deploys to `gh-pages` branch using `TOKEN_GITHUB` secret
@@ -78,7 +85,9 @@ hugo --buildDrafts
 ## Content Guidelines
 
 ### Blog Post Structure
+
 Posts should include frontmatter with:
+
 ```yaml
 date = '2025-09-10T22:11:17+08:00'
 draft = false
@@ -88,6 +97,7 @@ tags = ["tag1", "tag2", "tag3"]
 ```
 
 ### Asset Management
+
 - Images stored in `static/images/` directory
 - Reference images with absolute paths: `/images/filename.png`
 - Icons and favicons in `static/` root
