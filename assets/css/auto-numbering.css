@@ -213,6 +213,60 @@
 
 /* 暗黑模式下编号颜色保持与文字一致，无需特殊设置 */
 
+/* 确保标题层级大小正确显示 */
+.single .content h1,
+.page .content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.single .content h2,
+.page .content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.single .content h3,
+.page .content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.single .content h4,
+.page .content h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.single .content h5,
+.page .content h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.single .content h6,
+.page .content h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
 /* 可选：禁用某些特殊标题的编号 */
 .no-numbering h1:before,
 .no-numbering h2:before,
