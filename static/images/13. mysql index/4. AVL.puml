@@ -1,0 +1,37 @@
+@startmindmap
+<style>
+mindmapDiagram {
+  node {
+    BackgroundColor lightblue
+    BorderColor black
+    FontColor black
+  }
+  :depth(1) {
+    BackgroundColor lightgreen
+  }
+  :depth(2) {
+    BackgroundColor lightyellow
+  }
+  :depth(3) {
+    BackgroundColor lightpink
+  }
+}
+</style>
+
+* 50
+** 30
+*** 20
+**** 10
+**** 25
+*** 40
+**** 35
+**** 45
+** 70
+*** 60
+**** 55
+**** 65
+*** 80
+**** 75
+**** 90
+
+@endmindmap

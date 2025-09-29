@@ -1,0 +1,45 @@
+@startuml
+!theme plain
+skinparam backgroundColor white
+skinparam defaultFontColor black
+skinparam defaultFontSize 12
+
+title Full-Text Index
+
+left to right direction
+
+package "B+Tree Index (Primary Key)" {
+  rectangle "Root Node" as btree_root
+  note top of btree_root
+    10 | 20 | 30
+  end note
+
+  rectangle "Leaf Node 1" as leaf1
+  rectangle "Leaf Node 2" as leaf2
+  rectangle "Leaf Node 3" as leaf3
+
+  note bottom of leaf1
+    id=5, name="Alice", age=25
+  end note
+  note bottom of leaf2
+    id=15, name="Bob", age=30
+  end note
+  note bottom of leaf3
+    id=25, name="Carol", age=35
+  end note
+
+  btree_root --> leaf1
+  btree_root --> leaf2
+  btree_root --> leaf3
+
+  leaf1 --> leaf2 : linked list
+  leaf2 --> leaf3 : linked list
+
+  note bottom of leaf3
+    **B+Tree Features:**
+    • Stores complete row data
+    • Good for: WHERE id = 15
+    • Range queries: WHERE id BETWEEN 10 AND 20
+  end note
+}
+@enduml
