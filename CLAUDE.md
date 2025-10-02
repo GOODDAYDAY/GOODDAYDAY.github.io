@@ -4,16 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a Hugo-based static blog site hosted on GitHub Pages. The site uses the LoveIt theme and is configured for
-English content with Chinese/bilingual support capability.
+This is a Hugo-based bilingual static blog site hosted on GitHub Pages. The site uses the LoveIt theme with full support for both English and Chinese content.
 
 ## Architecture
 
-- **Hugo Static Site Generator**: Version-agnostic Hugo setup with extended features
+- **Hugo Static Site Generator**: Uses latest extended version with SASS support
 - **LoveIt Theme**: Git submodule at `themes/LoveIt` (pinned to v0.3.0)
-- **Content Structure**: Markdown posts in `content/posts/` with frontmatter metadata
+- **Bilingual Content Structure**:
+  - English posts: `content/en/posts/`
+  - Chinese posts: `content/zh/posts/`
+  - Non-English posts: `content/posts/` (legacy structure)
 - **Deployment**: GitHub Actions workflow automatically builds and deploys to GitHub Pages
-- **Configuration**: Single `hugo.toml` file with comprehensive theme and site settings
+- **Configuration**: Single `hugo.toml` file with multilingual configuration for both English and Chinese
 
 ## Common Development Commands
 
@@ -33,8 +35,11 @@ hugo --minify
 ### Content Management
 
 ```bash
-# Create new blog post
-hugo new posts/post-title.md
+# Create new English blog post
+hugo new en/posts/post-title.md
+
+# Create new Chinese blog post
+hugo new zh/posts/post-title.md
 
 # Build site and check output
 hugo --buildDrafts
@@ -49,13 +54,19 @@ hugo --buildDrafts
 ## File Structure
 
 ```
-├── content/posts/           # Blog posts in Markdown
-├── static/                  # Static assets (images, icons)
-├── layouts/taxonomy/        # Custom taxonomy templates (tags, categories)
+├── content/
+│   ├── en/posts/           # English blog posts
+│   ├── zh/posts/           # Chinese blog posts (简体中文)
+│   └── posts/              # Legacy posts (non-English/non-Chinese)
+├── static/
+│   └── images/             # Blog post images organized by post title
+├── layouts/
+│   ├── partials/           # Custom partial templates
+│   └── shortcodes/         # Custom Hugo shortcodes
 ├── themes/LoveIt/          # Theme submodule
-├── .github/workflows/      # GitHub Actions deployment
-├── hugo.toml              # Main configuration file
-└── public/                # Generated site (excluded from git)
+├── .github/workflows/      # GitHub Actions deployment workflow
+├── hugo.toml              # Main configuration file (multilingual setup)
+└── public/                # Generated site (git-ignored)
 ```
 
 ## Configuration Notes
@@ -64,16 +75,20 @@ hugo --buildDrafts
 
 - **Base URL**: `https://gooddayday.github.io`
 - **Theme**: LoveIt with light default theme
-- **Language**: English primary, Chinese support available but commented out
-- **Features**: Git info enabled, search via Algolia, comments via Valine
-- **Content**: Blog-focused with posts, tags, categories, and documentation sections
+- **Languages**:
+  - English (en): Primary language at `/en/`, contentDir: `content/en`
+  - Chinese (zh-cn): Secondary language at `/zh-cn/`, contentDir: `content/zh`
+  - Both languages have separate Algolia search indexes
+- **Features**: Git info enabled, search via Algolia, comments via giscus
+- **Menu Items**: Posts, Tags, Categories, Docs, About, GitHub (for both languages)
 
 ### Theme Customization
 
-- Custom taxonomy templates in `layouts/taxonomy/` for proper tag/category pages
-- Social links configured for GitHub profile
-- Search functionality configured for Algolia
-- Comment system using Valine with specific app configuration
+- Custom partials in `layouts/partials/` for extending theme functionality
+- Custom shortcodes in `layouts/shortcodes/` for reusable content components
+- Social links configured for GitHub and LinkedIn
+- Search functionality configured for Algolia with separate indexes per language
+- Comment system using giscus (GitHub Discussions-based)
 
 ### Deployment Configuration
 
@@ -88,32 +103,47 @@ hugo --buildDrafts
 
 Posts should include frontmatter with:
 
-```yaml
+```toml
++++
 date = '2025-09-10T22:11:17+08:00'
 draft = false
 title = 'Post Title'
 categories = ["category1", "category2"]
 tags = ["tag1", "tag2", "tag3"]
++++
 ```
+
+### Bilingual Content Workflow
+
+- **Creating Posts**: Always create both English and Chinese versions with matching filenames
+  - English: `content/en/posts/filename.md`
+  - Chinese: `content/zh/posts/filename.md`
+- **Translations**: When translating content, maintain the same frontmatter structure and file numbering
 
 ### Asset Management
 
-- Images stored in `static/images/` directory
-- Reference images with absolute paths: `/images/filename.png`
+- Images stored in `static/images/` directory, organized by post title
+- Reference images with absolute paths: `/images/post-title/filename.png` or `/images/post-title/filename.svg`
+- Supports both raster images (PNG, JPG) and vector graphics (SVG)
 - Icons and favicons in `static/` root
 
 ## Development Workflow
 
-1. **Local Development**: Use `hugo server --buildDrafts` for live preview
-2. **Content Creation**: Create posts with `hugo new posts/filename.md`
+1. **Local Development**: Use `hugo server --buildDrafts --disableFastRender` for live preview with drafts
+2. **Content Creation**:
+   - Create English post: `hugo new en/posts/filename.md`
+   - Create Chinese post: `hugo new zh/posts/filename.md`
+   - Or manually create both language versions
 3. **Testing**: Build locally with `hugo --buildDrafts` before committing
-4. **Deployment**: Push to `master` branch triggers automatic deployment
-5. **Verification**: Check GitHub Actions for build status and live site
+4. **Deployment**: Push to `master` branch triggers automatic deployment via GitHub Actions
+5. **Verification**: Check GitHub Actions workflow status and live site at `https://gooddayday.github.io`
 
 ## Important Notes
 
 - The `public/` directory is git-ignored as it's generated during deployment
-- Theme is pinned to LoveIt v0.3.0 for stability
-- Chinese language support is available but currently disabled in configuration
-- Custom taxonomy templates are required for proper tag/category page generation
+- Theme is pinned to LoveIt v0.3.0 for stability (git submodule)
+- **Language URL Structure**: `defaultContentLanguageInSubdir = true` means all languages have URL prefixes (`/en/`, `/zh-cn/`)
+- **Algolia Search**: Configured with separate search indexes for English (`index.en`) and Chinese (`index.zh-cn`)
+- **Comments**: Using giscus connected to GitHub Discussions (repo: `GOODDAYDAY/GOODDAYDAY.github.io`)
 - GitHub token (`TOKEN_GITHUB`) must be configured in repository secrets for deployment
+- Theme submodule must be initialized: `git submodule update --init --recursive`

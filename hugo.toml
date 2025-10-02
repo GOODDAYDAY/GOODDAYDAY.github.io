@@ -600,6 +600,9 @@ darkTheme = "dark"
 # Auto numbering CSS for headings
 # 标题自动编号CSS
 autoNumbering = "css/auto-numbering.css"
+# SVG full width display
+# SVG 图片全宽显示
+svgFullWidth = "css/svg-fullwidth.css"
 # someCSS = "some.css"
 # located in "assets/" 位于 "assets/"
 # Or 或者

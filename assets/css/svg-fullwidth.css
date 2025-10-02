@@ -1,0 +1,84 @@
+/*
+ * SVG 全宽显示 CSS
+ * 让博客文章中的 SVG 图片以 100% 宽度展示，同时限制最大高度
+ */
+
+/* SVG 图片全宽显示 */
+.single .content img[src$=".svg"],
+.page .content img[src$=".svg"],
+.single .content img[src*=".svg"],
+.page .content img[src*=".svg"] {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 600px;  /* 限制最大高度为 600px */
+    object-fit: contain;  /* 保持纵横比，图片完整显示 */
+    display: block;
+    margin: 1.5rem auto;
+}
+
+/* 确保 SVG 容器也是全宽 */
+.single .content p > img[src$=".svg"],
+.page .content p > img[src$=".svg"],
+.single .content p > img[src*=".svg"],
+.page .content p > img[src*=".svg"] {
+    width: 100%;
+}
+
+/* 图片链接包裹的 SVG */
+.single .content a > img[src$=".svg"],
+.page .content a > img[src$=".svg"],
+.single .content a > img[src*=".svg"],
+.page .content a > img[src*=".svg"] {
+    width: 100%;
+}
+
+/* figure 标签中的 SVG */
+.single .content figure img[src$=".svg"],
+.page .content figure img[src$=".svg"],
+.single .content figure img[src*=".svg"],
+.page .content figure img[src*=".svg"] {
+    width: 100%;
+}
+
+/* 响应式设计 - 移动端优化 */
+@media (max-width: 768px) {
+    .single .content img[src$=".svg"],
+    .page .content img[src$=".svg"],
+    .single .content img[src*=".svg"],
+    .page .content img[src*=".svg"] {
+        margin: 1rem auto;
+        max-height: 400px;  /* 移动端限制更小的高度 */
+    }
+}
+
+/* 平板设备优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .single .content img[src$=".svg"],
+    .page .content img[src$=".svg"],
+    .single .content img[src*=".svg"],
+    .page .content img[src*=".svg"] {
+        max-height: 500px;  /* 平板设备适中的高度 */
+    }
+}
+
+/* 可选: 为 SVG 添加轻微阴影效果 */
+.single .content img[src$=".svg"],
+.page .content img[src$=".svg"],
+.single .content img[src*=".svg"],
+.page .content img[src*=".svg"] {
+    /* 取消注释以启用阴影效果
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    */
+}
+
+/* 暗黑模式下的 SVG 优化 */
+[theme=dark] .single .content img[src$=".svg"],
+[theme=dark] .page .content img[src$=".svg"],
+[theme=dark] .single .content img[src*=".svg"],
+[theme=dark] .page .content img[src*=".svg"] {
+    /* SVG 在暗黑模式下可能需要调整
+    filter: brightness(0.9);
+    */
+}
