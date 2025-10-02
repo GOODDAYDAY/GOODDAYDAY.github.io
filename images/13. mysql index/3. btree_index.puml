@@ -1,0 +1,53 @@
+@startuml B-Tree Index Structure
+!theme plain
+
+title B-Tree Index Structure (Order 3)
+
+package "Root Node" {
+  rectangle "Keys: 30|60\nData: D30|D60\nPointers:\nP1|P2|P3" as root
+}
+
+package "Internal Nodes" {
+  rectangle "Keys: 10|20\nData: D10|D20\nPointers:\nP4|P5|P6" as internal1
+  rectangle "Keys: 40|50\nData: D40|D50\nPointers:\nP7|P8|P9" as internal2
+  rectangle "Keys: 70|80\nData: D70|D80\nPointers:\nP10|P11|P12" as internal3
+}
+
+package "Leaf Nodes" {
+  rectangle "Keys: 5|8\nData: D5|D8\nPointers:\nP13|P14|P15" as leaf1
+  rectangle "Keys: 15|18\nData: D15|D18\nPointers:\nP16|P17|P18" as leaf2
+  rectangle "Keys: 25|28\nData: D25|D28\nPointers:\nP19|P20|P21" as leaf3
+  rectangle "Keys: 35|38\nData: D35|D38\nPointers:\nP22|P23|P24" as leaf4
+  rectangle "Keys: 45|48\nData: D45|D48\nPointers:\nP25|P26|P27" as leaf5
+  rectangle "Keys: 55|58\nData: D55|D58\nPointers:\nP28|P29|P30" as leaf6
+  rectangle "Keys: 65|68\nData: D65|D68\nPointers:\nP31|P32|P33" as leaf7
+  rectangle "Keys: 75|78\nData: D75|D78\nPointers:\nP34|P35|P36" as leaf8
+  rectangle "Keys: 85|88\nData: D85|D88\nPointers:\nP37|P38|P39" as leaf9
+}
+
+' Tree structure
+root -down-> internal1
+root -down-> internal2
+root -down-> internal3
+
+internal1 -down-> leaf1
+internal1 -down-> leaf2
+internal1 -down-> leaf3
+
+internal2 -down-> leaf4
+internal2 -down-> leaf5
+internal2 -down-> leaf6
+
+internal3 -down-> leaf7
+internal3 -down-> leaf8
+internal3 -down-> leaf9
+
+note bottom
+  - B-Tree stores data in ALL nodes (internal + leaf)
+  - Each node can have multiple keys and children
+  - All leaf nodes are at the same level
+  - Supports range queries and sequential access
+  - Different from B+Tree which only stores data in leaves
+end note
+
+@enduml

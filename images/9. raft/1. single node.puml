@@ -1,0 +1,28 @@
+@startuml
+!theme plain
+
+skinparam rectangle {
+    BackgroundColor LightYellow
+    BorderColor Red
+}
+
+skinparam node {
+    BackgroundColor LightBlue
+    BorderColor Black
+}
+
+
+rectangle "raft" {
+    node "Node1 [Leader]" as N1 {
+        artifact "Log=[]" as N1_1
+        artifact "Term=0" as N1_2
+        artifact "CommitIndex=0" as N1_3
+        artifact "ApplyIndex=0" as N1_4
+        artifact "State={}" as N1_5
+    }
+    N1_1 -D- N1_2
+    N1_2 -D- N1_3
+    N1_3 -D- N1_4
+    N1_4 -D- N1_5
+}
+@enduml
