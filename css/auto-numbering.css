@@ -1,0 +1,278 @@
+/*
+ * 自动标题编号 CSS
+ * 为博客文章中的标题添加自动递增编号
+ * H1标题（文章标题）不显示编号，从H2开始
+ */
+
+/* 重置计数器 - 文章内容区域和目录区域 */
+.single .content,
+.page .content,
+.toc {
+    counter-reset: h2-counter;
+}
+
+/* 各级标题的计数器设置 - 从H2开始 */
+.single .content h2,
+.page .content h2 {
+    counter-reset: h3-counter;
+    counter-increment: h2-counter;
+}
+
+.single .content h3,
+.page .content h3 {
+    counter-reset: h4-counter;
+    counter-increment: h3-counter;
+}
+
+.single .content h4,
+.page .content h4 {
+    counter-reset: h5-counter;
+    counter-increment: h4-counter;
+}
+
+.single .content h5,
+.page .content h5 {
+    counter-reset: h6-counter;
+    counter-increment: h5-counter;
+}
+
+.single .content h6,
+.page .content h6 {
+    counter-increment: h6-counter;
+}
+
+/* 显示编号 - 在标题前添加数字（从H2开始） */
+.single .content h2:before,
+.page .content h2:before {
+    content: counter(h2-counter) ". ";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.single .content h3:before,
+.page .content h3:before {
+    content: counter(h2-counter) "." counter(h3-counter) " ";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.single .content h4:before,
+.page .content h4:before {
+    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) " ";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.single .content h5:before,
+.page .content h5:before {
+    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) " ";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.single .content h6:before,
+.page .content h6:before {
+    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) "." counter(h6-counter) " ";
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+/* 目录（TOC）编号支持 */
+.toc-content {
+    counter-reset: toc-h2-counter;
+}
+
+.toc-content > ol,
+.toc-content > ul {
+    counter-reset: toc-h2-counter;
+}
+
+.toc-content li[data-level="2"] {
+    counter-increment: toc-h2-counter;
+    counter-reset: toc-h3-counter;
+}
+
+.toc-content li[data-level="3"] {
+    counter-increment: toc-h3-counter;
+    counter-reset: toc-h4-counter;
+}
+
+.toc-content li[data-level="4"] {
+    counter-increment: toc-h4-counter;
+    counter-reset: toc-h5-counter;
+}
+
+.toc-content li[data-level="5"] {
+    counter-increment: toc-h5-counter;
+    counter-reset: toc-h6-counter;
+}
+
+.toc-content li[data-level="6"] {
+    counter-increment: toc-h6-counter;
+}
+
+/* TOC 链接编号显示 */
+.toc-content li[data-level="2"] > a:before {
+    content: counter(toc-h2-counter) ". ";
+    font-weight: bold;
+}
+
+.toc-content li[data-level="3"] > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) " ";
+    font-weight: bold;
+}
+
+.toc-content li[data-level="4"] > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) " ";
+    font-weight: bold;
+}
+
+.toc-content li[data-level="5"] > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) "." counter(toc-h5-counter) " ";
+    font-weight: bold;
+}
+
+.toc-content li[data-level="6"] > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) "." counter(toc-h5-counter) "." counter(toc-h6-counter) " ";
+    font-weight: bold;
+}
+
+/* 通用TOC编号（备用选择器） */
+#TableOfContents {
+    counter-reset: toc-h2-counter;
+}
+
+#TableOfContents ol,
+#TableOfContents ul {
+    counter-reset: inherit;
+}
+
+#TableOfContents li {
+    counter-increment: toc-counter;
+}
+
+#TableOfContents > ol > li,
+#TableOfContents > ul > li {
+    counter-increment: toc-h2-counter;
+    counter-reset: toc-h3-counter;
+}
+
+#TableOfContents > ol > li > ol > li,
+#TableOfContents > ul > li > ul > li {
+    counter-increment: toc-h3-counter;
+    counter-reset: toc-h4-counter;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li,
+#TableOfContents > ul > li > ul > li > ul > li {
+    counter-increment: toc-h4-counter;
+    counter-reset: toc-h5-counter;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li > ol > li,
+#TableOfContents > ul > li > ul > li > ul > li > ul > li {
+    counter-increment: toc-h5-counter;
+    counter-reset: toc-h6-counter;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li > ol > li > ol > li,
+#TableOfContents > ul > li > ul > li > ul > li > ul > li > ul > li {
+    counter-increment: toc-h6-counter;
+}
+
+/* TOC 链接编号显示 - 通用版本 */
+#TableOfContents > ol > li > a:before,
+#TableOfContents > ul > li > a:before {
+    content: counter(toc-h2-counter) ". ";
+    font-weight: bold;
+}
+
+#TableOfContents > ol > li > ol > li > a:before,
+#TableOfContents > ul > li > ul > li > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) " ";
+    font-weight: bold;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li > a:before,
+#TableOfContents > ul > li > ul > li > ul > li > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) " ";
+    font-weight: bold;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li > ol > li > a:before,
+#TableOfContents > ul > li > ul > li > ul > li > ul > li > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) "." counter(toc-h5-counter) " ";
+    font-weight: bold;
+}
+
+#TableOfContents > ol > li > ol > li > ol > li > ol > li > ol > li > a:before,
+#TableOfContents > ul > li > ul > li > ul > li > ul > li > ul > li > a:before {
+    content: counter(toc-h2-counter) "." counter(toc-h3-counter) "." counter(toc-h4-counter) "." counter(toc-h5-counter) "." counter(toc-h6-counter) " ";
+    font-weight: bold;
+}
+
+/* 暗黑模式下编号颜色保持与文字一致，无需特殊设置 */
+
+/* 确保标题层级大小正确显示 */
+.single .content h1,
+.page .content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.single .content h2,
+.page .content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.single .content h3,
+.page .content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.single .content h4,
+.page .content h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.single .content h5,
+.page .content h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.single .content h6,
+.page .content h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* 可选：禁用某些特殊标题的编号 */
+.no-numbering h1:before,
+.no-numbering h2:before,
+.no-numbering h3:before,
+.no-numbering h4:before,
+.no-numbering h5:before,
+.no-numbering h6:before {
+    content: none !important;
+}
