@@ -1,6 +1,6 @@
 +++
 date = '2025-11-27T11:49:17+08:00'
-draft = true
+draft = false
 title = '[Algorithm] 1. 动态规划'
 categories = ["Algorithm"]
 tags = ["Algorithm"]
@@ -110,9 +110,9 @@ $$1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 \quad \mathbf{+\ 1} = ?$$
 
 ---
 
-### 爬楼梯（LeetCode 70）
+#### 爬楼梯（LeetCode 70）
 
-#### **问题：**
+##### **问题：**
 
 你正在爬楼梯。需要 `n` 步才能到达顶部。
 每次你可以爬 **1 步**或 **2 步**。
@@ -125,7 +125,7 @@ $$1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 \quad \mathbf{+\ 1} = ?$$
         2. 1 步 + 2 步
         3. 2 步 + 1 步
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 到达第 $i$ 级楼梯的不同方法数。
 * **2. 方程：** 这是一个**求和**问题。你有两个选择：
@@ -167,9 +167,9 @@ public class ClimbingStairs {
 
 ---
 
-### 不同路径（LeetCode 62）
+#### 不同路径（LeetCode 62）
 
-#### **问题：**
+##### **问题：**
 
 机器人位于 `m x n` 网格上。机器人最初位于**左上角**（即 `grid[0][0]`）。
 机器人试图移动到**右下角**（即 `grid[m-1][n-1]`）。
@@ -185,7 +185,7 @@ $$
 C_{m+n-2}^{m-1}
 $$
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][j]` = 到达单元格 $(i, j)$ 的唯一路径数。
 * **2. 方程：** 这是一个**求和**问题。你有两个选择：
@@ -226,9 +226,9 @@ public class UniquePaths {
 
 ---
 
-### 不同路径 II（LeetCode 63）
+#### 不同路径 II（LeetCode 63）
 
-#### **问题：**
+##### **问题：**
 
 类似于不同路径，但现在网格有**障碍物**。障碍物标记为 `1`，空白空间标记为 `0`。
 机器人采取的路径不能包括任何是障碍物的方格。
@@ -236,7 +236,7 @@ public class UniquePaths {
 * **输入：** `obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]`
 * **输出：** `2`
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][j]` = 到达 $(i, j)$ 的路径数。
 * **2. 方程：** 与不同路径相同，但跳过有障碍物的单元格。
@@ -288,9 +288,9 @@ public class UniquePathsII {
 
 ---
 
-### 解码方法（LeetCode 91）
+#### 解码方法（LeetCode 91）
 
-#### **问题：**
+##### **问题：**
 
 包含字母 `A-Z` 的消息可以使用映射 `'A' -> "1"`, `'B' -> "2"`, ..., `'Z' -> "26"` 编码为数字。
 给定一个只包含数字的字符串 `s`，返回**解码它的方法数**。
@@ -299,7 +299,7 @@ public class UniquePathsII {
 * **输出：** `2`
     * *解释：* "12" 可以解码为 "AB"（1 2）或 "L"（12）。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 解码 `s[0...i]` 的方法数。
 * **2. 方程：** 这是一个**求和**问题。你有两个选择：
@@ -355,9 +355,9 @@ public class DecodeWays {
 
 ---
 
-### 斐波那契数（LeetCode 509）
+#### 斐波那契数（LeetCode 509）
 
-#### **问题：**
+##### **问题：**
 
 斐波那契数形成一个序列，其中每个数字是前两个数字的和：
 * `F(0) = 0, F(1) = 1`
@@ -369,7 +369,7 @@ public class DecodeWays {
 * **输出：** `3`
     * *解释：* F(4) = F(3) + F(2) = 2 + 1 = 3
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[n]` = 第 $n$ 个斐波那契数。
 * **2. 方程：** 这是一个**求和**问题。
@@ -409,9 +409,9 @@ public class Fibonacci {
 
 ---
 
-### 计数排序元音字符串（LeetCode 1641）
+#### 计数排序元音字符串（LeetCode 1641）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数 `n`，返回长度为 `n` 的字符串数，这些字符串仅由元音（`a, e, i, o, u`）组成并且是**按字典顺序排序**的。
 
@@ -419,7 +419,7 @@ public class Fibonacci {
 * **输出：** `15`
     * *解释：* 15 个排序字符串是："aa", "ae", "ai", "ao", "au", "ee", "ei", "eo", "eu", "ii", "io", "iu", "oo", "ou", "uu"。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[n][vowel]` = 长度为 `n` 的排序字符串数，从索引 `vowel` 或更后的元音开始。
 * **2. 方程：** 这是一个**求和**问题。对于每个元音，求和所有可能性。
@@ -470,9 +470,9 @@ public class CountSortedVowelStrings {
 
 ---
 
-### 最小爬楼梯成本（LeetCode 746）
+#### 最小爬楼梯成本（LeetCode 746）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `cost`，其中 `cost[i]` 是楼梯上第 $i$ 级的成本。一旦你支付了成本，你可以爬 **1 或 2 步**。
 你可以从索引 `0` 或索引 `1` 开始。
@@ -484,7 +484,7 @@ public class CountSortedVowelStrings {
         1. 支付 15 并爬两步到达顶部。
            总成本是 15。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = **到达**第 $i$ 级的最小成本。
 * **2. 方程：** 这是一个 **min** 问题。你有两个选择：
@@ -531,9 +531,9 @@ public class MinCostClimbingStairs {
 
 ---
 
-### 打家劫舍（LeetCode 198）
+#### 打家劫舍（LeetCode 198）
 
-#### **问题：**
+##### **问题：**
 
 你是一个专业的强盗，计划沿着街道抢劫房屋。每个房子都藏有一定数量的钱。阻止你的唯一限制是相邻的房屋有连接的安全系统，**如果在同一晚上两个相邻的房屋被闯入，它将自动联系警察**。
 
@@ -544,7 +544,7 @@ public class MinCostClimbingStairs {
     * *解释：* 抢劫 1 号房（钱 = 1），然后抢劫 3 号房（钱 = 3）。
       你可以抢劫的总金额 = 1 + 3 = 4。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 从房屋 `0...i` 中可以抢劫的最大金额。
 * **2. 方程：** 这是一个 **max** 问题。对于房屋 $i$，你有两个选择：
@@ -593,9 +593,9 @@ public class HouseRobber {
 
 ---
 
-### 零钱兑换（LeetCode 322）
+#### 零钱兑换（LeetCode 322）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `coins`，表示不同面额的硬币，以及一个整数 `amount`，表示总金额。
 返回组成该金额所需的**最少硬币数**。
@@ -605,7 +605,7 @@ public class HouseRobber {
 * **输出：** `3`
     * *解释：* 11 = 5 + 5 + 1（3 个硬币）。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[amount]` = 组成此金额所需的最少硬币数。
 * **2. 方程：** 这是一个 **min** 问题。尝试每个硬币：
@@ -657,9 +657,9 @@ public class CoinChange {
 
 ---
 
-### 最长递增子序列（LeetCode 300）
+#### 最长递增子序列（LeetCode 300）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `nums`，返回最长严格递增子序列的长度。
 
@@ -667,7 +667,7 @@ public class CoinChange {
 * **输出：** `4`
     * *解释：* 最长递增子序列是 [2,3,7,101]。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 以索引 $i$ 结尾的最长递增子序列的长度。
 * **2. 方程：** 这是一个 **max** 问题。对于每个先前元素，检查我们是否可以扩展：
@@ -719,9 +719,9 @@ public class LongestIncreasingSubsequence {
 
 ---
 
-### 最长公共子序列（LeetCode 1143）
+#### 最长公共子序列（LeetCode 1143）
 
-#### **问题：**
+##### **问题：**
 
 给定两个字符串 `text1` 和 `text2`，返回它们的最长**公共子序列**的长度。如果没有公共子序列，返回 `0`。
 
@@ -732,7 +732,7 @@ public class LongestIncreasingSubsequence {
 * **输出：** `3`
     * *解释：* 最长公共子序列是 "ace"，其长度为 3。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][j]` = `text1[0...i]` 和 `text2[0...j]` 之间的 LCS 长度。
 * **2. 方程：** 这是一个 **max** 问题。两种情况：
@@ -787,9 +787,9 @@ public class LongestCommonSubsequence {
 
 ---
 
-### 最大子数组（LeetCode 53）
+#### 最大子数组（LeetCode 53）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `nums`，找到具有最大和的连续子数组并返回其和。
 
@@ -797,7 +797,7 @@ public class LongestCommonSubsequence {
 * **输出：** `6`
     * *解释：* 子数组 [4,-1,2,1] 的最大和 = 6。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 以索引 $i$ 结尾的子数组的最大和。
 * **2. 方程：** 这是一个 **max** 问题。在每个位置：
@@ -852,9 +852,9 @@ public class MaximumSubarray {
 
 ---
 
-### 单词拆分（LeetCode 139）
+#### 单词拆分（LeetCode 139）
 
-#### **问题：**
+##### **问题：**
 
 给定一个字符串 `s` 和一个字符串字典 `wordDict`，如果 `s` 可以分段为一个或多个字典单词的空格分隔序列，则返回 `true`。
 
@@ -862,7 +862,7 @@ public class MaximumSubarray {
 * **输出：** `true`
     * *解释：* 返回 true，因为 "leetcode" 可以分段为 "leet code"。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 子字符串 `s[i...]` 是否可以分段。
 * **2. 方程：** 这是一个**存在性**问题。尝试每个单词：
@@ -914,9 +914,9 @@ public class WordBreak {
 
 ---
 
-### 分割等和子集（LeetCode 416）
+#### 分割等和子集（LeetCode 416）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `nums`，如果你可以将数组分成两个子集，使得两个子集中元素的和相等，则返回 `true`。
 
@@ -924,7 +924,7 @@ public class WordBreak {
 * **输出：** `true`
     * *解释：* 数组可以分成 [1, 5, 5] 和 [11]。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][sum]` = 我们是否可以使用索引 `i` 及之后的元素实现 `sum`。
 * **2. 方程：** 这是一个**存在性**问题。对于每个元素：
@@ -985,9 +985,9 @@ public class PartitionEqualSubsetSum {
 
 ---
 
-### 目标和（LeetCode 494）
+#### 目标和（LeetCode 494）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `nums` 和一个整数 `target`。
 你想通过在 `nums` 中的每个整数前添加 `'+'` 或 `'-'`，然后连接所有整数来构建一个表达式。
@@ -997,7 +997,7 @@ public class PartitionEqualSubsetSum {
 * **输出：** `5`
     * *解释：* 有 5 种方式：-1+1+1+1+1, +1-1+1+1+1, +1+1-1+1+1, +1+1+1-1+1, +1+1+1+1-1
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][sum]` = 使用索引 `i` 及之后的元素实现 `sum` 的方法数。
 * **2. 方程：** 这是一个**求和**问题（计数方法）。对于每个数字：
@@ -1054,9 +1054,9 @@ public class TargetSum {
 
 ---
 
-### 跳跃游戏（LeetCode 55）
+#### 跳跃游戏（LeetCode 55）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数数组 `nums`。你最初位于数组的**第一个索引**，数组中的每个元素表示你在该位置的最大跳跃长度。
 如果你可以到达最后一个索引，则返回 `true`，否则返回 `false`。
@@ -1065,7 +1065,7 @@ public class TargetSum {
 * **输出：** `true`
     * *解释：* 从索引 0 跳 1 步到索引 1，然后跳 3 步到最后一个索引。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i]` = 我们是否可以从位置 $i$ 到达最后一个索引。
 * **2. 方程：** 这是一个**存在性**问题。尝试所有可能的跳跃：
@@ -1113,9 +1113,9 @@ public class CanJump {
 
 ---
 
-### 完全平方数（LeetCode 279）
+#### 完全平方数（LeetCode 279）
 
-#### **问题：**
+##### **问题：**
 
 给定一个整数 `n`，返回和为 `n` 的完全平方数的最少数量。
 
@@ -1123,7 +1123,7 @@ public class CanJump {
 * **输出：** `3`
     * *解释：* 12 = 4 + 4 + 4。
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[n]` = 和为 $n$ 的完全平方数的最少数量。
 * **2. 方程：** 这是一个 **min** 问题。尝试所有完全平方数：
@@ -1168,9 +1168,9 @@ public class PerfectSquares {
 
 ---
 
-### 石子游戏（LeetCode 877）
+#### 石子游戏（LeetCode 877）
 
-#### **问题：**
+##### **问题：**
 
 Alice 和 Bob 玩一个石子游戏。有偶数堆石子排成一行，每堆有正整数个石子。
 目标是以最多的石子结束。玩家轮流，Alice 先手。在每一轮中，玩家从开头或结尾取整堆。
@@ -1179,7 +1179,7 @@ Alice 和 Bob 玩一个石子游戏。有偶数堆石子排成一行，每堆有
 * **输入：** `piles = [5,3,4,5]`
 * **输出：** `true`
 
-#### **解决方案（自顶向下）**
+##### **解决方案（自顶向下）**
 
 * **1. 数组定义：** `memo[i][j]` = 对于堆 `i...j` 的最大得分差（当前玩家 - 对手）。
 * **2. 方程：** 这是一个 **max** 问题。选择左侧或右侧：
@@ -1274,7 +1274,7 @@ public class StoneGame {
 
 ---
 
-### 爬楼梯（自底向上）
+#### 爬楼梯（自底向上）
 
 ```java
 public class ClimbingStairsBottomUp {
@@ -1328,7 +1328,7 @@ public int climbStairsOptimized(int n) {
 
 ---
 
-### 不同路径（自底向上）
+#### 不同路径（自底向上）
 
 ```java
 public class UniquePathsBottomUp {
@@ -1380,7 +1380,7 @@ public int uniquePathsOptimized(int m, int n) {
 
 ---
 
-### 不同路径 II（自底向上）
+#### 不同路径 II（自底向上）
 
 ```java
 public class UniquePathsIIBottomUp {
@@ -1433,7 +1433,7 @@ public class UniquePathsIIBottomUp {
 
 ---
 
-### 解码方法（自底向上）
+#### 解码方法（自底向上）
 
 ```java
 public class DecodeWaysBottomUp {
@@ -1483,7 +1483,7 @@ public class DecodeWaysBottomUp {
 
 ---
 
-### 斐波那契数（自底向上）
+#### 斐波那契数（自底向上）
 
 ```java
 public class FibonacciBottomUp {
@@ -1537,7 +1537,7 @@ public int fibOptimized(int n) {
 
 ---
 
-### 计数排序元音字符串（自底向上）
+#### 计数排序元音字符串（自底向上）
 
 ```java
 public class CountSortedVowelStringsBottomUp {
@@ -1599,7 +1599,7 @@ public int countVowelStringsSimple(int n) {
 
 ---
 
-### 最小爬楼梯成本（自底向上）
+#### 最小爬楼梯成本（自底向上）
 
 ```java
 public class MinCostClimbingStairsBottomUp {
@@ -1636,7 +1636,7 @@ public class MinCostClimbingStairsBottomUp {
 
 ---
 
-### 打家劫舍（自底向上）
+#### 打家劫舍（自底向上）
 
 ```java
 public class HouseRobberBottomUp {
@@ -1676,7 +1676,7 @@ public class HouseRobberBottomUp {
 
 ---
 
-### 零钱兑换（自底向上）
+#### 零钱兑换（自底向上）
 
 ```java
 public class CoinChangeBottomUp {
@@ -1709,7 +1709,7 @@ public class CoinChangeBottomUp {
 
 ---
 
-### 最长递增子序列（自底向上）
+#### 最长递增子序列（自底向上）
 
 ```java
 public class LongestIncreasingSubsequenceBottomUp {
@@ -1747,7 +1747,7 @@ public class LongestIncreasingSubsequenceBottomUp {
 
 ---
 
-### 最长公共子序列（自底向上）
+#### 最长公共子序列（自底向上）
 
 ```java
 public class LongestCommonSubsequenceBottomUp {
@@ -1788,7 +1788,7 @@ public class LongestCommonSubsequenceBottomUp {
 
 ---
 
-### 最大子数组（自底向上）
+#### 最大子数组（自底向上）
 
 ```java
 public class MaximumSubarrayBottomUp {
@@ -1838,7 +1838,7 @@ public int maxSubArrayOptimized(int[] nums) {
 
 ---
 
-### 单词拆分（自底向上）
+#### 单词拆分（自底向上）
 
 ```java
 public class WordBreakBottomUp {
@@ -1877,7 +1877,7 @@ public class WordBreakBottomUp {
 
 ---
 
-### 分割等和子集（自底向上）
+#### 分割等和子集（自底向上）
 
 ```java
 public class PartitionEqualSubsetSumBottomUp {
@@ -1917,7 +1917,7 @@ public class PartitionEqualSubsetSumBottomUp {
 
 ---
 
-### 目标和（自底向上）
+#### 目标和（自底向上）
 
 ```java
 public class TargetSumBottomUp {
@@ -1956,7 +1956,7 @@ public class TargetSumBottomUp {
 
 ---
 
-### 跳跃游戏（自底向上）
+#### 跳跃游戏（自底向上）
 
 ```java
 public class CanJumpBottomUp {
@@ -2007,7 +2007,7 @@ public boolean canJumpGreedy(int[] nums) {
 
 ---
 
-### 完全平方数（自底向上）
+#### 完全平方数（自底向上）
 
 ```java
 public class PerfectSquaresBottomUp {
@@ -2038,7 +2038,7 @@ public class PerfectSquaresBottomUp {
 
 ---
 
-### 石子游戏（自底向上）
+#### 石子游戏（自底向上）
 
 ```java
 public class StoneGameBottomUp {
@@ -2133,7 +2133,3 @@ public class StoneGameBottomUp {
    - 从简单问题开始（斐波那契、爬楼梯）
    - 进阶到中等难度（打家劫舍、零钱兑换）
    - 掌握困难问题（LCS、石子游戏）
-
----
-
-**记住：** 动态规划不是魔法。它只是带缓存的有组织的问题解决。掌握这些模式，动态规划将成为你的超能力。
