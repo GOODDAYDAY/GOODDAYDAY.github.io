@@ -1,0 +1,44 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title Slave Election - Choosing New Master
+
+participant "Slave A1\n(Most data)" as slaveA1 #C8E6C9
+participant "Slave A2" as slaveA2 #C8E6C9
+participant "Master B" as masterB #FFCDD2
+participant "Master C" as masterC #FFCDD2
+
+note over slaveA1, slaveA2
+  <b>Master A is FAIL</b>
+  Slaves compete to become new master
+end note
+
+slaveA1 -> slaveA1 : Calculate delay:\n500ms + random(0,500ms)\n+ RANK * 1000ms
+
+note right of slaveA1
+  RANK = 0 (most up-to-date)
+  Starts first!
+end note
+
+slaveA2 -> slaveA2 : Calculate delay:\nRANK = 1\nStarts 1s later
+
+slaveA1 -> masterB : FAILOVER_AUTH_REQUEST\n"Vote for me for slots 0-5460"
+slaveA1 -> masterC : FAILOVER_AUTH_REQUEST
+
+masterB -> masterB : Check:\n1. Haven't voted this epoch\n2. Master A really FAIL\n3. Epoch valid
+
+masterB --> slaveA1 : FAILOVER_AUTH_ACK
+masterC --> slaveA1 : FAILOVER_AUTH_ACK
+
+note over slaveA1 #E8F5E9
+  <b>Majority votes received!</b>
+  A1 becomes new master
+end note
+
+slaveA1 -> slaveA1 : 1. Increment configEpoch\n2. Take over slots 0-5460\n3. Broadcast PONG
+
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Redis Cluster - Multi-Master Architecture
+
+rectangle "Redis Cluster" as cluster #F3E5F5 {
+    together {
+        database "Master A\nSlots 0-5460" as masterA #FFCDD2
+        database "Master B\nSlots 5461-10922" as masterB #FFCDD2
+        database "Master C\nSlots 10923-16383" as masterC #FFCDD2
+    }
+
+    together {
+        database "Slave A1" as slaveA #C8E6C9
+        database "Slave B1" as slaveB #C8E6C9
+        database "Slave C1" as slaveC #C8E6C9
+    }
+}
+
+masterA -down-> slaveA : Replicate
+masterB -down-> slaveB : Replicate
+masterC -down-> slaveC : Replicate
+
+masterA <-right-> masterB : Gossip
+masterB <-right-> masterC : Gossip
+
+note bottom of cluster
+  <b>Key Features:</b>
+  - Decentralized (No ZooKeeper)
+  - Multi-Master (Horizontal Scaling)
+  - Automatic Failover
+end note
+
+@enduml

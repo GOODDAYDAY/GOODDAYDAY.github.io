@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam componentStyle rectangle
+
+title Single Node Era
+
+rectangle "Application" as app #E3F2FD
+database "Redis Master\n(All Data)" as master #FFCDD2
+
+app -down-> master : Read/Write
+
+note right of master
+  <b>Problems:</b>
+  - Single Point of Failure (SPOF)
+  - Memory limited to single machine
+  - Write throughput bottleneck
+end note
+
+@enduml

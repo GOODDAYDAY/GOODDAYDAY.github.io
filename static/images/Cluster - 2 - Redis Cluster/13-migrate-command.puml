@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title MIGRATE Command Internals
+
+participant "Node A\n(Source)" as nodeA #FFCDD2
+participant "Node B\n(Target)" as nodeB #C8E6C9
+
+nodeA -> nodeA : 1. DUMP key1\n(serialize to RDB format)
+
+nodeA -> nodeB : 2. RESTORE key1 0 <serialized-data>
+
+note right of nodeB
+  Key created on target
+  with same TTL
+end note
+
+nodeB --> nodeA : 3. OK
+
+nodeA -> nodeA : 4. DEL key1\n(remove from source)
+
+note over nodeA, nodeB #FFFDE7
+  <b>Warning:</b> MIGRATE is <color:red>blocking</color>!
+  Large keys (big hash/list) can block
+  the source node for seconds!
+end note
+
+note over nodeA, nodeB
+  <b>Atomicity:</b>
+  Key appears on target and disappears
+  from source atomically
+end note
+
+@enduml

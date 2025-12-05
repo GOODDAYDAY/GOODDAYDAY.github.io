@@ -1,0 +1,32 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Hash Slot Distribution (16384 Slots)
+
+rectangle "16384 Hash Slots" as slots #E8EAF6 {
+    rectangle "Slots 0-5460" as slot1 #FFCDD2
+    rectangle "Slots 5461-10922" as slot2 #C8E6C9
+    rectangle "Slots 10923-16383" as slot3 #BBDEFB
+}
+
+database "Node A" as nodeA #FFCDD2
+database "Node B" as nodeB #C8E6C9
+database "Node C" as nodeC #BBDEFB
+
+slot1 -down-> nodeA
+slot2 -down-> nodeB
+slot3 -down-> nodeC
+
+note top of slots
+  <b>Formula:</b> slot = CRC16(key) mod 16384
+
+  <b>Why 16384?</b>
+  - Gossip message: 16384 bits = 2KB (acceptable)
+  - Max around 1000 nodes, 16 slots/node minimum
+  - Fits in CPU cache line
+end note
+
+@enduml

@@ -147,3 +147,4 @@ tags = ["tag1", "tag2", "tag3"]
 - **Comments**: Using giscus connected to GitHub Discussions (repo: `GOODDAYDAY/GOODDAYDAY.github.io`)
 - GitHub token (`TOKEN_GITHUB`) must be configured in repository secrets for deployment
 - Theme submodule must be initialized: `git submodule update --init --recursive`
+- Content no need for sequence number, it will be generated automatically.

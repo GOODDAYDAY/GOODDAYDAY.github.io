@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Hash Tags - Forcing Keys to Same Slot
+
+rectangle "Without Hash Tags" as without #FFEBEE {
+    rectangle "user:1001:profile (slot 12345)" as k1
+    rectangle "user:1001:orders (slot 8976)" as k2
+    rectangle "user:1001:cart (slot 3421)" as k3
+}
+
+database "Node A" as nodeA1 #FFCDD2
+database "Node B" as nodeB1 #C8E6C9
+database "Node C" as nodeC1 #BBDEFB
+
+k1 -down-> nodeA1
+k2 -down-> nodeB1
+k3 -down-> nodeC1
+
+note right of without
+  <color:red><b>Problem:</b></color>
+  Keys scattered across
+  different nodes!
+  Cannot do MGET/Lua
+end note
+
+rectangle "With Hash Tags" as with #E8F5E9 {
+    rectangle "{user:1001}:profile" as t1
+    rectangle "{user:1001}:orders" as t2
+    rectangle "{user:1001}:cart" as t3
+}
+
+database "Node A\n(All Same Slot)" as nodeA2 #C8E6C9
+
+t1 -down-> nodeA2
+t2 -down-> nodeA2
+t3 -down-> nodeA2
+
+note right of with
+  <color:green><b>Solution:</b></color>
+  Only hash content in {}
+  All keys go to same slot!
+  MGET/Lua works!
+end note
+
+@enduml

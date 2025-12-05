@@ -1,0 +1,36 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title CAP Theorem - Redis Cluster Choice
+
+rectangle "CAP Triangle" as cap {
+    rectangle "<b>Consistency</b>\nAll nodes see same data" as C #E3F2FD
+    rectangle "<b>Availability</b>\nEvery request gets response" as A #C8E6C9
+    rectangle "<b>Partition Tolerance</b>\nSystem works despite network splits" as P #FFF9C4
+}
+
+C -[hidden]down-> A
+C -[hidden]down-> P
+
+rectangle "CP Systems" as cp #BBDEFB {
+    rectangle "ZooKeeper\netcd\nConsul" as cpSystems
+}
+
+rectangle "AP Systems" as ap #FFCDD2 {
+    rectangle "<b>Redis Cluster</b>\nCassandra\nDynamoDB" as apSystems
+}
+
+C -down-> cp : Choose
+A -down-> ap : Choose
+
+note bottom of ap
+  <b>Redis Cluster chooses AP:</b>
+  - Serves requests during partitions
+  - May return stale/lost data
+  - Consistency can be violated
+end note
+
+@enduml
