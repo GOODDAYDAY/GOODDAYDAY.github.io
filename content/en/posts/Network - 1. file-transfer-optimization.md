@@ -6,8 +6,6 @@ categories = ["network"]
 tags = ["network", "tcpdump"]
 +++
 
-# [Network] 1. File Transfer Optimization Sharing
-
 ## Background (Sensitive Data Masked)
 
 - Due to various requirements, we need to upload data to overseas OSS for storage. So we developed a proxy service to maintain data and perform encryption operations. During this process, we discovered that data upload and download were very slow. After a series of investigations, we finally located the root cause of the problem and provided a solution. We're now sharing the troubleshooting process.

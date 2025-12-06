@@ -6,8 +6,6 @@ categories = ["Github", "Efficiency"]
 tags = ["Github", "Efficiency"]
 +++
 
-# [Github] 3. Basic-Check：参数验证框架
-
 ## 引言
 
 在日常的Java开发中，方法参数验证是一个常见且重要的需求。传统的参数验证通常需要在每个方法中编写大量的if-else判断代码，不仅冗余繁琐，还容易遗漏。Basic-Check-Java正是为了解决这一痛点而诞生的轻量级参数验证框架。

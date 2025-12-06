@@ -6,8 +6,6 @@ categories = ["Java"]
 tags = ["Java", "Unit Test"]
 +++
 
-# [Java] 2. Unit Test 基本用法
-
 ## Mocikto基本用法
 
 在单元测试里,很多测试(除Util类)都需要mock掉一些服务来保证只测试当前想测的内容.

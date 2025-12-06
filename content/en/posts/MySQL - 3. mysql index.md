@@ -6,8 +6,6 @@ categories = ["MySQL"]
 tags = ["MySQL", "Index"]
 +++
 
-# [MySQL] 3. MySQL Index
-
 ## What is an Index?
 
 - Index is a data structure that improves the speed of data retrieval operations on a database table at the cost of additional writes and storage space to maintain the index data structure.

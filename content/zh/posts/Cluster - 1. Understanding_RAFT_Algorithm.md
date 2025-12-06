@@ -6,8 +6,6 @@ categories = ["Cluster", "Algorithm"]
 tags = ["Cluster", "RAFT", "Distributed", "Algorithm"]
 +++
 
-# [Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进
-
 ## 引言
 
 - RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。

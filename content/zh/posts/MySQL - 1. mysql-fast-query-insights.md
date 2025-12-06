@@ -6,8 +6,6 @@ categories = ["MySQL"]
 tags = ["MySQL", "index", "database", "optimization"]
 +++
 
-# [MySQL] 1. 浅谈 MySQL 快速查询
-
 ## 讲在开头
 
 - 在最开始先举几个我们常用的在平时学习、业务上最常见的优化措施

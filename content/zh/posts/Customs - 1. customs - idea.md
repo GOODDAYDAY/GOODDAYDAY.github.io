@@ -6,8 +6,6 @@ categories = ["Customs", "IDE"]
 tags = ["Customs", "idea", "plugins"]
 +++
 
-# [Customs] 1. IntelliJ IDEA 配置与推荐插件
-
 ## 介绍
 
 作为目前最强大的Java IDE之一，IntelliJ IDEA可以通过合理的配置和精心选择的插件得到显著增强。本指南提供了一套精选的必备插件和配置技巧，将彻底改变您的开发体验。

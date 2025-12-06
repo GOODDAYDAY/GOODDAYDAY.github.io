@@ -6,8 +6,6 @@ categories = ["Algorithm"]
 tags = ["Algorithm"]
 +++
 
-# [Algorithm] 1. 动态规划
-
 ## 引言
 
 ### 什么是动态规划？

@@ -6,8 +6,6 @@ categories = ["Java", "Spring"]
 tags = ["Java", "Spring", "web", "Thread", "Efficiency"]
 +++
 
-# [Spring] 2. Analysis of Custom Thread Pools and Thread Reuse in Spring Async Interfaces
-
 ## Preface
 
 When handling high-concurrency scenarios in Spring applications, proper use of asynchronous programming and thread pool management is crucial. This article provides an in-depth analysis of Spring's default thread pool, custom thread pools, and thread reuse mechanisms through practical code examples.

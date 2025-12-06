@@ -6,8 +6,6 @@ categories = ["Algorithm"]
 tags = ["Algorithm"]
 +++
 
-# [Algorithm] 1. Dynamic Programming
-
 ## Introduction
 
 ### What is Dynamic Programming?

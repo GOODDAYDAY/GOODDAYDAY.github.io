@@ -6,8 +6,6 @@ categories = ["Github", "Efficiency"]
 tags = ["Github", "Efficiency"]
 +++
 
-# [Github] 4. Value-Checker-Java: Customizable AOP Validation Framework
-
 ## Introduction
 
 Value-Checker-Java is essentially a **customizable AOP pointcut framework**. It allows developers to insert custom validation logic before method execution, and this validation logic can be arbitrarily complex business rules.

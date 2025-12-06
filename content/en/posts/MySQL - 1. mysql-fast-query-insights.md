@@ -6,8 +6,6 @@ categories = ["MySQL"]
 tags = ["MySQL", "index", "database", "optimization"]
 +++
 
-# [MySQL] 1. MySQL Fast Query Insights
-
 ## Preface
 
 - Let's start with some of the most common optimization measures we use in daily learning and business scenarios

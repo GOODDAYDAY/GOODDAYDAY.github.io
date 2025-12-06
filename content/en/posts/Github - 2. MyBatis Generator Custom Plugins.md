@@ -9,8 +9,6 @@ aliases = [
 ]
 +++
 
-# [Github] 2. MyBatis Generator Custom Plugins
-
 > **🔗 Project Repository**: [mybatis-generator-custome-plugins](https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins)
 
 A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with

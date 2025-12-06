@@ -6,8 +6,6 @@ categories = ["MySQL"]
 tags = ["MySQL", "Lock"]
 +++
 
-# [MySQL] 2. Lock Mechanism Execution Analysis
-
 ## Introduction
 
 In high-concurrency environments, database locking mechanisms are crucial for ensuring data consistency and integrity. MySQL, as a widely-used relational database, provides various lock types and mechanisms to manage concurrent access. However, improper use of locks may lead to performance bottlenecks, deadlocks, and other issues that affect system stability and response time.

@@ -6,8 +6,6 @@ categories = ["Github", "Efficiency"]
 tags = ["Github", "Efficiency"]
 +++
 
-# [Github] 4. Value-Checker-Java：可自定义的AOP验证框架
-
 ## 引言
 
 Value-Checker-Java本质上是一个**可自定义的AOP切入点框架**。它允许开发者在方法执行前插入自定义的验证逻辑，而这些验证逻辑可以是任意复杂的业务规则。

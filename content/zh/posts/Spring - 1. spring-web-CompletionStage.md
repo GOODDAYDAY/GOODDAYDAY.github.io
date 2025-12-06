@@ -6,8 +6,6 @@ categories = ["Java", "Spring"]
 tags = ["Java", "Spring", "web"]
 +++
 
-# [Spring] 1. spring web CompletionStage 浅谈
-
 ## 介绍
 
 - spring-web里对异步的支持做的很好，可以通过异步返回的形式，做许多优化

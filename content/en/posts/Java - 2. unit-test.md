@@ -6,8 +6,6 @@ categories = ["Java"]
 tags = ["Java", "Unit Test"]
 +++
 
-# [Java] 2. Unit Test Basic Usage
-
 ## Mockito Basic Usage
 
 In unit testing, many tests (except Util classes) need to mock some services to ensure only the current logic being tested is actually tested.

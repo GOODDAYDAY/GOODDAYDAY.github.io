@@ -9,8 +9,6 @@ aliases = [
 ]
 +++
 
-# [Github] 2. MyBatis Generator 自定义插件
-
 > **🔗 项目地址**: [mybatis-generator-custome-plugins](https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins)
 
 为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。

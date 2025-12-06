@@ -6,9 +6,6 @@ categories = ["Cluster", "Algorithm"]
 tags = ["Cluster", "RAFT", "Distributed", "Algorithm"]
 +++
 
-# [Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus
-
-
 ## Introduction
 
 - RAFT (Raft Consensus Algorithm) is a distributed consensus algorithm designed to solve the problem of achieving data state agreement among multiple nodes in distributed systems.

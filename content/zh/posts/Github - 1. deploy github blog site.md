@@ -6,8 +6,6 @@ categories = ["github", "deploy"]
 tags = ["github", "deploy", "hugo", "blog", "site"]
 +++
 
-# [Github] 1. 部署 GitHub 博客站点
-
 ## 简介
 
 - GitHub Pages 是一个静态网站托管服务，它直接从 GitHub 仓库中获取 HTML、CSS 和 JavaScript 文件，可选地通过构建过程运行这些文件，然后发布网站。

@@ -6,8 +6,6 @@ categories = ["Java", "Spring"]
 tags = ["Java", "Spring", "web", "Thread", "Efficiency"]
 +++
 
-# [Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析
-
 ## 前言
 
 在Spring应用中处理高并发场景时,合理使用异步编程和线程池管理至关重要。本文将通过实际代码示例,深入分析Spring的默认线程池、自定义线程池以及线程复用的机制。

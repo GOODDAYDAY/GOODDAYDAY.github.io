@@ -6,8 +6,6 @@ categories = ["Java"]
 tags = ["Java", "Lombok"]
 +++
 
-# [Java] 1. Lombok
-
 ## Introduction
 
 * Lombok is a Java library that can automatically generate repetitive code for Java classes, such as getter, setter, equals, and hashCode methods.

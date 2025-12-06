@@ -6,8 +6,6 @@ categories = ["Java"]
 tags = ["Java", "Lombok"]
 +++
 
-# [Java] 1. Lombok
-
 ## 简介
 
 * Lombok是一款Java库，它可以自动为Java类生成一些重复性的代码，如 getter、setter、equals 和 hashCode 等方法。

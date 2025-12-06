@@ -6,8 +6,6 @@ categories = ["Github", "Efficiency"]
 tags = ["Github", "Efficiency"]
 +++
 
-# [Github] 3. Basic-Check: Validation Framework
-
 ## Introduction
 
 Parameter validation is a common and crucial requirement in daily Java development. Traditional parameter validation typically requires writing extensive if-else conditional code in each method, which is not only redundant and tedious but also prone to omissions. Basic-Check-Java was born to solve this pain point as a lightweight parameter validation framework.

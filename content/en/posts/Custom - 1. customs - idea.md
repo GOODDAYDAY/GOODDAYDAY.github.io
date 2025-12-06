@@ -6,8 +6,6 @@ categories = ["Customs", "IDE"]
 tags = ["Customs", "idea", "plugins"]
 +++
 
-# [Customs] 1. IntelliJ IDEA Configuration & Recommended Plugins
-
 ## Introduction
 
 As one of the most powerful Java IDEs available, IntelliJ IDEA can be significantly enhanced through proper configuration and carefully selected plugins. This guide presents a curated collection of essential plugins and configuration skills that will transform your development experience.

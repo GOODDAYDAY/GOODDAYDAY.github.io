@@ -6,8 +6,6 @@ categories = ["Java", "Spring"]
 tags = ["Java", "Spring", "web"]
 +++
 
-# [Spring] 1. Spring Web CompletionStage Overview
-
 ## Introduction
 
 - Spring-web provides excellent support for asynchronous operations, which can be used for many optimizations through asynchronous return forms:
