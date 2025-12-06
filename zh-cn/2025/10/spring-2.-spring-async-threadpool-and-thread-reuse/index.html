@@ -1,0 +1,228 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析 - GoodyHao's Blog</title><meta name=Description content="Elegance Never Fades"><meta property="og:url" content="https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/"><meta property="og:site_name" content="GoodyHao's Blog"><meta property="og:title" content="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析"><meta property="og:description" content="前言 在Spring应用中处理高并发场景时,合理使用异步编程和线程池管理至关重要。本文将通过实际代码示例,深入分析Spring的默认线程池、自定义线程池以及线程复用的机制。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-10-02T10:23:17+08:00"><meta property="article:modified_time" content="2025-12-06T22:29:56+08:00"><meta property="article:tag" content="Java"><meta property="article:tag" content="Spring"><meta property="article:tag" content="Web"><meta property="article:tag" content="Thread"><meta property="article:tag" content="Efficiency"><meta property="og:image" content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:title content="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析"><meta name=twitter:description content="前言 在Spring应用中处理高并发场景时,合理使用异步编程和线程池管理至关重要。本文将通过实际代码示例,深入分析Spring的默认线程池、自定义线程池以及线程复用的机制。"><meta name=application-name content="LoveIt"><meta name=apple-mobile-web-app-title content="LoveIt"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/><link rel=prev href=https://gooddayday.github.io/zh-cn/2025/09/mysql-3.-mysql-index/><link rel=next href=https://gooddayday.github.io/zh-cn/2025/11/algorithm-1.-dynamic-programming/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/10\/spring-2.-spring-async-threadpool-and-thread-reuse\/"},"image":["https:\/\/gooddayday.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Java, Spring, web, Thread, Efficiency","wordcount":3529,"url":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/10\/spring-2.-spring-async-threadpool-and-thread-reuse\/","datePublished":"2025-10-02T10:23:17+08:00","dateModified":"2025-12-06T22:29:56+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"xxxx","logo":"https:\/\/gooddayday.github.io\/images\/logo.jpg"},"author":{"@type":"Person","name":"GoodyHao"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"light"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"light"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/zh-cn/posts/>所有文章 </a><a class=menu-item href=/zh-cn/tags/>标签 </a><a class=menu-item href=/zh-cn/categories/>分类 </a><a class=menu-item href=/zh-cn/categories/documentation/>文档 </a><a class=menu-item href=/zh-cn/about/>关于 </a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ title=English>English</a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/zh-cn/posts/ title>所有文章</a><a class=menu-item href=/zh-cn/tags/ title>标签</a><a class=menu-item href=/zh-cn/categories/ title>分类</a><a class=menu-item href=/zh-cn/categories/documentation/ title>文档</a><a class=menu-item href=/zh-cn/about/ title>关于</a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ title=English>English</a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/zh-cn/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>GoodyHao</a></span>&nbsp;<span class=post-category>收录于 <a href=/zh-cn/categories/java/><i class="far fa-folder fa-fw" aria-hidden=true></i>Java</a>&nbsp;<a href=/zh-cn/categories/spring/><i class="far fa-folder fa-fw" aria-hidden=true></i>Spring</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2025-10-02>2025-10-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 3529 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 8 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#为什么要使用自定义线程池>为什么要使用自定义线程池?</a></li><li><a href=#自定义线程池配置>自定义线程池配置</a><ul><li><a href=#配置解析>配置解析:</a></li></ul></li><li><a href=#异步接口-vs-同步接口对比>异步接口 vs 同步接口对比</a><ul><li><a href=#异步接口实现-asyncquery1>异步接口实现 (asyncQuery1)</a></li><li><a href=#同步接口实现-syncquery1>同步接口实现 (syncQuery1)</a></li></ul></li><li><a href=#线程复用的实战表现>线程复用的实战表现</a><ul><li><a href=#异步接口并发测试>异步接口并发测试</a></li><li><a href=#同步接口串行执行>同步接口串行执行</a></li></ul></li><li><a href=#线程复用的核心机制>线程复用的核心机制</a><ul><li><a href=#生产者-消费者模型>生产者-消费者模型</a></li><li><a href=#与io多路复用的相似之处>与IO多路复用的相似之处</a><ul><li><a href=#相似之处>相似之处</a></li><li><a href=#本质区别>本质区别</a></li><li><a href=#类比理解>类比理解</a></li></ul></li></ul></li><li><a href=#总结>总结</a></li></ul></nav></div></div><div class=content id=content><h2 id=前言>前言</h2><p>在Spring应用中处理高并发场景时,合理使用异步编程和线程池管理至关重要。本文将通过实际代码示例,深入分析Spring的默认线程池、自定义线程池以及线程复用的机制。</p><h2 id=为什么要使用自定义线程池>为什么要使用自定义线程池?</h2><p>Spring Boot应用启动时会自动配置一个全局的任务执行器(TaskExecutor),默认名称为<code>applicationTaskExecutor</code>。然而,在生产环境中<strong>不推荐直接使用Spring的默认线程池</strong>,主要原因如下:</p><ol><li><strong>缺乏隔离性</strong>: 所有异步任务共享同一个线程池,不同业务模块的任务会相互影响</li><li><strong>难以监控</strong>: 无法针对特定业务场景进行细粒度的线程池监控和调优</li><li><strong>配置单一</strong>: 默认配置可能无法满足所有业务场景的性能需求</li></ol><p><strong>最佳实践</strong>: 根据业务场景自定义线程池,实现任务隔离和精细化管理。</p><h2 id=自定义线程池配置>自定义线程池配置</h2><p>以下是一个典型的自定义线程池配置示例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=kd>final</span><span class=w> </span><span class=n>AtomicInteger</span><span class=w> </span><span class=n>COUNT</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>AtomicInteger</span><span class=p>(</span><span class=n>0</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>private</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=kd>final</span><span class=w> </span><span class=n>Executor</span><span class=w> </span><span class=n>EXECUTOR</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ThreadPoolExecutor</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>                              </span><span class=c1>// 核心线程数</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>                              </span><span class=c1>// 最大线程数</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>                              </span><span class=c1>// 空闲线程存活时间</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>TimeUnit</span><span class=p>.</span><span class=na>SECONDS</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>new</span><span class=w> </span><span class=n>ArrayBlockingQueue</span><span class=o>&lt;&gt;</span><span class=p>(</span><span class=n>10</span><span class=p>),</span><span class=w>    </span><span class=c1>// 工作队列容量</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>r</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Thread</span><span class=p>(</span><span class=n>r</span><span class=p>,</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;customer-t-%s&#34;</span><span class=p>,</span><span class=w> </span><span class=n>COUNT</span><span class=p>.</span><span class=na>addAndGet</span><span class=p>(</span><span class=n>1</span><span class=p>)))</span><span class=w>  </span><span class=c1>// 自定义线程命名</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=配置解析>配置解析:</h3><ul><li><strong>核心线程数 = 最大线程数 = 10</strong>: 固定大小线程池,避免频繁创建销毁线程</li><li><strong>队列容量 = 10</strong>: 当10个线程都在工作时,最多再排队10个任务</li><li><strong>自定义线程名</strong>: <code>customer-t-{序号}</code>,便于日志追踪和问题定位</li></ul><h2 id=异步接口-vs-同步接口对比>异步接口 vs 同步接口对比</h2><h3 id=异步接口实现-asyncquery1>异步接口实现 (asyncQuery1)</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@GetMapping</span><span class=p>(</span><span class=s>&#34;async/query1&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=n>CompletionStage</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=nf>asyncQuery1</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query start&#34;</span><span class=p>);</span><span class=w>                    </span><span class=c1>// Tomcat线程执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=k>return</span><span class=w> </span><span class=n>CompletableFuture</span><span class=p>.</span><span class=na>supplyAsync</span><span class=p>(()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query sleep start&#34;</span><span class=p>);</span><span class=w>          </span><span class=c1>// customer-t线程执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>ThreadUtils</span><span class=p>.</span><span class=na>sleep</span><span class=p>(</span><span class=n>10000</span><span class=p>);</span><span class=w>                     </span><span class=c1>// 模拟耗时操作</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query sleep done&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>return</span><span class=w> </span><span class=s>&#34;done&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=p>},</span><span class=w> </span><span class=n>EXECUTOR</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/1.%20async%20display.svg data-srcset="/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/1.%20async%20display.svg, /images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/1.%20async%20display.svg 1.5x, /images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/1.%20async%20display.svg 2x" data-sizes=auto alt=/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/1.%20async%20display.svg title="1. async display.svg"></p><p><strong>特点</strong>:</p><ul><li><strong>非阻塞</strong>: Tomcat线程立即释放,可以处理其他请求</li><li><strong>高吞吐</strong>: 适合I/O密集型任务</li><li><strong>线程切换</strong>: 请求在Tomcat线程和自定义线程池之间切换</li></ul><h3 id=同步接口实现-syncquery1>同步接口实现 (syncQuery1)</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@GetMapping</span><span class=p>(</span><span class=s>&#34;sync/query1&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=nf>syncQuery1</span><span class=p>()</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>InterruptedException</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query start&#34;</span><span class=p>);</span><span class=w>                     </span><span class=c1>// Tomcat线程执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>final</span><span class=w> </span><span class=n>CountDownLatch</span><span class=w> </span><span class=n>latch</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>CountDownLatch</span><span class=p>(</span><span class=n>1</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>EXECUTOR</span><span class=p>.</span><span class=na>execute</span><span class=p>(()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query sleep start&#34;</span><span class=p>);</span><span class=w>           </span><span class=c1>// customer-t线程执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>ThreadUtils</span><span class=p>.</span><span class=na>sleep</span><span class=p>(</span><span class=n>1000</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>latch</span><span class=p>.</span><span class=na>countDown</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>});</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>latch</span><span class=p>.</span><span class=na>await</span><span class=p>();</span><span class=w>                                    </span><span class=c1>// Tomcat线程阻塞等待</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query done&#34;</span><span class=p>);</span><span class=w>                      </span><span class=c1>// Tomcat线程执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=s>&#34;done&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/2.%20sync%20display.svg data-srcset="/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/2.%20sync%20display.svg, /images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/2.%20sync%20display.svg 1.5x, /images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/2.%20sync%20display.svg 2x" data-sizes=auto alt=/images/14.%20Spring%20Async%20ThreadPool%20and%20Thread%20Reuse/2.%20sync%20display.svg title="2. sync display.svg"></p><p><strong>特点</strong>:</p><ul><li><strong>阻塞等待</strong>: Tomcat线程被<code>CountDownLatch</code>阻塞,不能处理其他请求</li><li><strong>资源浪费</strong>: 同时占用Tomcat线程和Worker线程,两个线程干了一个线程的活</li><li><strong>本质是同步</strong>: 虽然用了自定义线程池,但Tomcat线程一直等待,<strong>完全没有发挥异步优势</strong></li><li><strong>适用场景</strong>: 几乎没有!不如直接在Tomcat线程执行,还能省一个Worker线程</li></ul><h2 id=线程复用的实战表现>线程复用的实战表现</h2><p>通过压测工具发送20个并发请求,观察异步和同步接口的线程行为差异。</p><h3 id=异步接口并发测试>异步接口并发测试</h3><p>发送20个并发请求到<code>/goody/async/query1</code>(每个任务耗时10秒):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>// ============ 阶段1: 前10个请求立即被Tomcat线程接收并提交 ============
+</span></span><span class=line><span class=cl>09:53:20.896  INFO [io-50012-exec-1] async query start         ← Tomcat线程快速释放
+</span></span><span class=line><span class=cl>09:53:20.899  INFO [customer-t-1]    async query sleep start   ← Worker线程1开始执行
+</span></span><span class=line><span class=cl>09:53:21.026  INFO [io-50012-exec-1] async query start         ← Tomcat线程又接收新请求
+</span></span><span class=line><span class=cl>09:53:21.026  INFO [customer-t-2]    async query sleep start   ← Worker线程2开始执行
+</span></span><span class=line><span class=cl>09:53:21.186  INFO [io-50012-exec-1] async query start
+</span></span><span class=line><span class=cl>09:53:21.187  INFO [customer-t-3]    async query sleep start
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>09:53:22.261  INFO [io-50012-exec-1] async query start
+</span></span><span class=line><span class=cl>09:53:22.261  INFO [customer-t-10]   async query sleep start   ← 10个线程全部占满
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ============ 阶段2: 第11-20个请求进入队列等待 ============
+</span></span><span class=line><span class=cl>09:53:22.411  INFO [io-50012-exec-1] async query start         ← 第11个请求,进入队列
+</span></span><span class=line><span class=cl>09:53:22.597  INFO [io-50012-exec-1] async query start         ← 第12个请求,进入队列
+</span></span><span class=line><span class=cl>09:53:22.732  INFO [io-50012-exec-1] async query start         ← ...持续到第20个
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>09:53:24.048  INFO [io-50012-exec-1] async query start         ← 第20个请求,队列满
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ============ 阶段3: 第21个请求触发拒绝策略 ============
+</span></span><span class=line><span class=cl>09:53:24.065 ERROR [io-50012-exec-1] RejectedExecutionException:
+</span></span><span class=line><span class=cl>    ThreadPoolExecutor@79a3d00d[Running, pool size = 10, active threads = 10, queued tasks = 10]
+</span></span><span class=line><span class=cl>    ↑ 线程池状态: 10个线程全忙 + 10个任务排队 = 容量已满
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ============ 阶段4: 线程复用开始 - 关键现象! ============
+</span></span><span class=line><span class=cl>09:53:30.313  INFO [customer-t-1]    async query sleep done    ← 线程1完成第1个任务
+</span></span><span class=line><span class=cl>09:53:30.313  INFO [customer-t-1]    async query done
+</span></span><span class=line><span class=cl>09:53:30.314  INFO [customer-t-1]    async query sleep start   ← 线程1立即执行第11个任务(复用!)
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>09:53:31.041  INFO [customer-t-2]    async query sleep done    ← 线程2完成第2个任务
+</span></span><span class=line><span class=cl>09:53:31.041  INFO [customer-t-2]    async query sleep start   ← 线程2立即执行第12个任务(复用!)
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>09:53:31.197  INFO [customer-t-3]    async query sleep done
+</span></span><span class=line><span class=cl>09:53:31.197  INFO [customer-t-3]    async query sleep start   ← 线程3复用
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ... 所有10个线程依次复用,处理队列中的第11-20个任务
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ============ 阶段5: 第二轮任务全部完成 ============
+</span></span><span class=line><span class=cl>09:53:40.320  INFO [customer-t-1]    async query sleep done    ← 线程1完成第11个任务
+</span></span><span class=line><span class=cl>09:53:41.048  INFO [customer-t-2]    async query sleep done    ← 线程2完成第12个任务
+</span></span><span class=line><span class=cl>...
+</span></span></code></pre></td></tr></table></div></div><p><strong>核心观察点</strong>:</p><ol><li><strong>并发能力强</strong>: Tomcat线程(io-50012-exec-1)在2秒内接收了20个请求,平均100ms处理一个</li><li><strong>线程固定</strong>: 始终只有<code>customer-t-1</code>到<code>customer-t-10</code>这10个Worker线程</li><li><strong>线程复用</strong>: <code>customer-t-1</code>在09:53:30完成第1个任务后,立即执行第11个任务(间隔仅1ms)</li><li><strong>拒绝策略</strong>: 超过容量(10线程+10队列)时,第21个请求被拒绝</li></ol><h3 id=同步接口串行执行>同步接口串行执行</h3><p>发送20个并发请求到<code>/goody/sync/query1</code>(每个任务耗时1秒):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>// ============ 串行处理: Tomcat线程被阻塞 ============
+</span></span><span class=line><span class=cl>09:54:02.401  INFO [io-50012-exec-1] sync query start          ← Tomcat线程处理第1个请求
+</span></span><span class=line><span class=cl>09:54:02.401  INFO [customer-t-1]    sync query sleep start    ← Worker线程执行
+</span></span><span class=line><span class=cl>09:54:03.407  INFO [customer-t-1]    sync query sleep done     ← 1秒后完成
+</span></span><span class=line><span class=cl>09:54:03.407  INFO [io-50012-exec-1] sync query done           ← Tomcat线程才返回
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>09:54:03.409  INFO [io-50012-exec-1] sync query start          ← 处理第2个请求
+</span></span><span class=line><span class=cl>09:54:03.409  INFO [customer-t-2]    sync query sleep start
+</span></span><span class=line><span class=cl>09:54:04.416  INFO [customer-t-2]    sync query sleep done
+</span></span><span class=line><span class=cl>09:54:04.416  INFO [io-50012-exec-1] sync query done
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>09:54:04.418  INFO [io-50012-exec-1] sync query start          ← 处理第3个请求
+</span></span><span class=line><span class=cl>09:54:04.418  INFO [customer-t-3]    sync query sleep start
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// ============ 线程复用也存在 ============
+</span></span><span class=line><span class=cl>09:54:12.490  INFO [io-50012-exec-1] sync query start          ← 第11个请求
+</span></span><span class=line><span class=cl>09:54:12.490  INFO [customer-t-1]    sync query sleep start    ← 线程1被复用
+</span></span><span class=line><span class=cl>09:54:13.500  INFO [customer-t-1]    sync query sleep done
+</span></span><span class=line><span class=cl>09:54:13.500  INFO [io-50012-exec-1] sync query done
+</span></span></code></pre></td></tr></table></div></div><p><strong>对比分析</strong>:</p><table><thead><tr><th>维度</th><th>异步接口</th><th>同步接口</th></tr></thead><tbody><tr><td><strong>Tomcat线程</strong></td><td>快速释放,2秒接收20个请求</td><td>被阻塞,20秒才处理完20个请求</td></tr><tr><td><strong>并发能力</strong></td><td>可同时处理20个(10线程+10队列)</td><td>只能串行处理,1个接1个</td></tr><tr><td><strong>Worker线程复用</strong></td><td>✅ 存在(customer-t-1处理第1和第11个任务)</td><td>✅ 存在(customer-t-1处理第1和第11个任务)</td></tr><tr><td><strong>总耗时</strong></td><td>~20秒(10秒×2轮)</td><td>~20秒(1秒×20个)</td></tr><tr><td><strong>线程利用率</strong></td><td>高(Tomcat空闲,Worker忙)</td><td>低(Tomcat+Worker同时占用,干一份活)</td></tr><tr><td><strong>系统吞吐</strong></td><td>高(Tomcat线程可处理其他请求)</td><td>低(Tomcat线程被占用)</td></tr><tr><td><strong>异步本质</strong></td><td>✅ 真正异步,释放主线程</td><td>❌ 假异步,本质是同步等待(两线程干一份活,还更慢)</td></tr></tbody></table><p><strong>关键结论</strong>:</p><p>同步接口虽然也展示了Worker线程复用,但<strong>本质上没有利用异步优势</strong>。它反而带来了额外开销:</p><ul><li>Tomcat线程阻塞 → 无法处理其他请求</li><li>Worker线程执行 → 占用线程池资源</li><li><strong>两个线程配合完成一个任务,不如直接在Tomcat线程执行,还能省掉线程切换开销</strong></li></ul><p>这种写法在生产环境中是<strong>反模式</strong>,仅用于对比演示异步的优势。</p><h2 id=线程复用的核心机制>线程复用的核心机制</h2><h3 id=生产者-消费者模型>生产者-消费者模型</h3><p>Java线程池的线程复用基于<strong>生产者-消费者模型</strong>:</p><ol><li><strong>工作线程循环</strong>: 线程池中的Worker线程不断从<code>BlockingQueue</code>中获取任务</li><li><strong>任务队列</strong>: 新任务提交到队列,空闲线程立即取出执行</li><li><strong>复用优势</strong>: 避免频繁创建销毁线程的开销(上下文切换、内存分配)</li></ol><h3 id=与io多路复用的相似之处>与IO多路复用的相似之处</h3><p><strong>核心</strong>: 异步线程池本质上是<strong>应用层的"多路复用"思想</strong>,虽然实现机制不同,但解决问题的思路与IO多路复用高度相似。</p><h4 id=相似之处>相似之处</h4><ol><li><p><strong>核心思想: 用少量资源处理大量请求</strong></p><ul><li><strong>IO多路复用</strong>: 1个线程通过epoll/select监听N个socket连接</li><li><strong>异步线程池</strong>: 少量Tomcat线程处理N个并发请求(通过快速释放)</li></ul></li><li><p><strong>非阻塞模式</strong></p><ul><li><strong>IO多路复用</strong>: 主线程不阻塞在单个IO操作上,轮询等待多个IO事件就绪</li><li><strong>异步线程池</strong>: Tomcat线程不阻塞在耗时任务上,立即返回处理下个请求</li></ul></li><li><p><strong>事件通知机制</strong></p><ul><li><strong>IO多路复用</strong>: epoll通知哪个socket可读/可写</li><li><strong>异步线程池</strong>: CompletableFuture通知任务完成</li></ul></li></ol><h4 id=本质区别>本质区别</h4><table><thead><tr><th>维度</th><th>IO多路复用</th><th>异步线程池</th></tr></thead><tbody><tr><td><strong>复用对象</strong></td><td>复用线程(单线程处理多IO)</td><td>复用Tomcat线程(快速释放)</td></tr><tr><td><strong>适用场景</strong></td><td>网络IO密集型</td><td>CPU/IO混合型</td></tr><tr><td><strong>实现层次</strong></td><td>操作系统层(epoll/select)</td><td>应用层(线程池调度)</td></tr><tr><td><strong>典型应用</strong></td><td>Netty, Redis, Nginx</td><td>Spring WebFlux, 传统Web</td></tr><tr><td><strong>设计模式</strong></td><td>Reactor模式</td><td>生产者-消费者模式</td></tr></tbody></table><h4 id=类比理解>类比理解</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>IO多路复用:
+</span></span><span class=line><span class=cl>┌─────────────┐
+</span></span><span class=line><span class=cl>│ Event Loop  │ ──监听──&gt; [Socket1, Socket2, ..., SocketN]
+</span></span><span class=line><span class=cl>│  (1 thread) │           哪个就绪处理哪个
+</span></span><span class=line><span class=cl>└─────────────┘
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>异步线程池:
+</span></span><span class=line><span class=cl>┌─────────────┐
+</span></span><span class=line><span class=cl>│ Tomcat线程池│ ──快速释放──&gt; [Request1, Request2, ..., RequestN]
+</span></span><span class=line><span class=cl>│  (200线程)  │               交给Worker池异步处理
+</span></span><span class=line><span class=cl>└─────────────┘
+</span></span></code></pre></td></tr></table></div></div><p><strong>结论</strong>: 虽然底层机制不同,但都在解决"如何用有限资源应对高并发"的核心问题。异步线程池可以理解为**应用层实现的多路复用思想
+**。</p><h2 id=总结>总结</h2><p>本文通过对比异步和同步两种接口实现,揭示了自定义线程池的重要性和线程复用的机制。关键要点:</p><ul><li>✅ 自定义线程池实现业务隔离和精细化管理</li><li>✅ 异步接口提升系统吞吐量,释放Tomcat线程</li><li>✅ 线程复用避免频繁创建销毁线程的开销</li><li>✅ 合理配置线程池参数,避免资源浪费或任务拒绝</li><li>✅ 通过日志中的线程名可以清晰观察到线程复用过程</li></ul><p>在实际生产环境中,还需要结合监控指标(线程池活跃度、队列长度、拒绝次数等)持续优化线程池配置。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2025-12-06&nbsp;<a class=git-hash href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io/commit/af3d5c9bd409e602f90f3dec7c5441cd7924d96f target=_blank title="commit by haotian(865700600@qq.com) af3d5c9bd409e602f90f3dec7c5441cd7924d96f: Refactor Redis Cluster documentation for clarity and consistency">
+<i class="fas fa-hashtag fa-fw" aria-hidden=true></i>af3d5c9</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/index.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ data-title="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析" data-hashtags=Java,Spring,web,Thread,Efficiency><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ data-hashtag=Java><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Linkedin" data-sharer=linkedin data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/><i class="fab fa-linkedin fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ data-title="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ data-title="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/ data-title="[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/zh-cn/tags/java/>Java</a>,&nbsp;<a href=/zh-cn/tags/spring/>Spring</a>,&nbsp;<a href=/zh-cn/tags/web/>Web</a>,&nbsp;<a href=/zh-cn/tags/thread/>Thread</a>,&nbsp;<a href=/zh-cn/tags/efficiency/>Efficiency</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/zh-cn/>主页</a></span></section></div><div class=post-nav><a href=/zh-cn/2025/09/mysql-3.-mysql-index/ class=prev rel=prev title="[MySQL] 3. MySQL 索引"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>[MySQL] 3. MySQL 索引</a>
+<a href=/zh-cn/2025/11/algorithm-1.-dynamic-programming/ class=next rel=next title="[Algorithm] 1. 动态规划">[Algorithm] 1. 动态规划<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><span class=author itemprop=copyrightHolder>&nbsp;<a href=/zh-cn/ target=_blank>GoodyHao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><link rel=stylesheet href=/css/auto-numbering.css><link rel=stylesheet href=/css/svg-fullwidth.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOPtWtCc4CvteQ",darkTheme:"dark",emitMetadata:"0",inputPosition:"bottom",lang:"zh-CN",lazyLoading:!1,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"GOODDAYDAY/GOODDAYDAY.github.io",repoId:"R_kgDOPtWtCQ"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{algoliaAppID:"PASDMWALPK",algoliaIndex:"index.zh-cn",algoliaSearchKey:"b42948e51daaa93df92381c8e2ac0f93",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

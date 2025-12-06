@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Algorithm on GoodyHao's Blog</title><link>https://gooddayday.github.io/zh-cn/tags/algorithm/</link><description>Recent content in Algorithm on GoodyHao's Blog</description><generator>Hugo</generator><language>zh-CN</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/zh-cn/tags/algorithm/index.xml" rel="self" type="application/rss+xml"/><item><title>[Algorithm] 1. 动态规划</title><link>https://gooddayday.github.io/zh-cn/2025/11/algorithm-1.-dynamic-programming/</link><pubDate>Thu, 27 Nov 2025 11:49:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/11/algorithm-1.-dynamic-programming/</guid><description>&lt;h2 id="引言"&gt;引言&lt;/h2&gt;
+&lt;h3 id="什么是动态规划"&gt;什么是动态规划？&lt;/h3&gt;
+&lt;p&gt;动态规划（DP）通常被认为是计算机科学算法中最具挑战性的主题之一。然而，从本质上讲，它只是&lt;strong&gt;一种优化技术&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;动态规划的基本思想是**&amp;ldquo;不要重复自己&amp;rdquo;**。&lt;/p&gt;</description></item><item><title>[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进</title><link>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</guid><description>&lt;h2 id="引言"&gt;引言&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。&lt;/li&gt;
+&lt;li&gt;相比于著名的Paxos算法，RAFT的设计理念是&amp;quot;可理解性&amp;quot;（understandability），通过清晰的角色划分和简洁的状态转换，让开发者更容易理解和实现。&lt;/li&gt;
+&lt;li&gt;本文将通过11个详细的图例，展示RAFT算法从单节点到多节点集群的完整演进过程，包括正常运行、故障处理、网络分区和冲突解决等关键场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="raft核心概念"&gt;RAFT核心概念&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;在深入分析之前，让我们先了解RAFT的几个核心概念：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;节点状态(Node States)&lt;/strong&gt;：&lt;/p&gt;</description></item></channel></rss>

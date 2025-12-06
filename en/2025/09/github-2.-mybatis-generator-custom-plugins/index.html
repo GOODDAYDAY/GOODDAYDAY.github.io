@@ -1,0 +1,833 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>[Github] 2. MyBatis Generator Custom Plugins - GoodyHao's Blog</title><meta name=Description content="Elegance Never Fades"><meta property="og:url" content="https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/"><meta property="og:site_name" content="GoodyHao's Blog"><meta property="og:title" content="[Github] 2. MyBatis Generator Custom Plugins"><meta property="og:description" content="🔗 Project Repository: mybatis-generator-custome-plugins
+A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with MySQL-specific features, DTO layer generation, and automatic Service layer generation.
+🚀 Features Overview This plugin collection includes 6 custom plugins:
+Plugin Name Description Key Features InsertIgnoreIntoPlugin MySQL INSERT IGNORE statement support Batch insert ignoring duplicate records InsertOnDuplicateKeyPlugin MySQL ON DUPLICATE KEY UPDATE support Auto update on insert conflicts ReplaceIntoPlugin MySQL REPLACE INTO statement support Replace insert operations DtoGeneratorPlugin DTO layer code generation Lombok annotations, Entity conversion methods ServiceGeneratorPlugin Service layer code generation Interface + Implementation, Complete CRUD operations CustomerMapperPlugin Custom Mapper generation Extended native Mapper functionality 📦 Dependency Analysis Core Dependencies 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 <!-- MyBatis Generator Core Dependency --> <dependency> <groupId>org.mybatis.generator</groupId> <artifactId>mybatis-generator-core</artifactId> <version>1.4.2</version> </dependency> <!-- MyBatis Dynamic SQL Support --> <dependency> <groupId>org.mybatis.dynamic-sql</groupId> <artifactId>mybatis-dynamic-sql</artifactId> <version>1.5.2</version> </dependency> <!-- MyBatis Spring Boot Integration --> <dependency> <groupId>org.mybatis.spring.boot</groupId> <artifactId>mybatis-spring-boot-starter</artifactId> <version>3.0.5</version> </dependency> Maven Plugin Configuration 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 <plugin> <groupId>org.mybatis.generator</groupId> <artifactId>mybatis-generator-maven-plugin</artifactId> <version>1.4.2</version> <configuration> <verbose>true</verbose> <overwrite>true</overwrite> </configuration> <dependencies> <dependency> <groupId>com.goody.utils</groupId> <artifactId>mybatis-generator-custome-plugins</artifactId> <version>1.0.0</version> </dependency> </dependencies> </plugin> 🔧 Plugin Details MySQL Extension Plugins InsertIgnoreIntoPlugin Function: Adds INSERT IGNORE statement support to Mapper Generated Methods: insertIgnoreCustom(), insertIgnoreBatchCustom() Use Cases: Ignore primary key conflicts during batch inserts InsertOnDuplicateKeyPlugin Function: Adds ON DUPLICATE KEY UPDATE statement support to Mapper Generated Methods: insertOnDuplicateKeyCustom(), insertOnDuplicateKeyBatchCustom() Use Cases: Auto update records on duplicate key conflicts during insert ReplaceIntoPlugin Function: Adds REPLACE INTO statement support to Mapper Generated Methods: replaceIntoCustom(), replaceIntoBatchCustom() Use Cases: Replace existing records or insert new ones DTO Layer Generation Plugin DtoGeneratorPlugin Function: Automatically generates DTO classes Features: Lombok annotation support (@Data, @Builder, @AllArgsConstructor, @NoArgsConstructor) Auto-generated fromEntity() and toEntity() conversion methods Package structure: *.model.dto Service Layer Generation Plugin ServiceGeneratorPlugin Function: Automatically generates Service interfaces and implementation classes Features: Complete CRUD operation methods Support for single and composite primary keys Spring annotation support (@Service, @Autowired) Package structure: *.service.interfaces and *.service.impl Custom Mapper Plugin CustomerMapperPlugin Function: Generates extended Mapper interfaces Package structure: *.dao.customer 💻 Usage Guide Step 1: Add Dependencies Add the plugin to your project:"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-09-24T23:46:17+08:00"><meta property="article:modified_time" content="2025-12-06T22:29:56+08:00"><meta property="article:tag" content="Github"><meta property="article:tag" content="MyBatis"><meta property="article:tag" content="Plugins"><meta property="og:image" content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:title content="[Github] 2. MyBatis Generator Custom Plugins"><meta name=twitter:description content="🔗 Project Repository: mybatis-generator-custome-plugins
+A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with MySQL-specific features, DTO layer generation, and automatic Service layer generation.
+🚀 Features Overview This plugin collection includes 6 custom plugins:
+Plugin Name Description Key Features InsertIgnoreIntoPlugin MySQL INSERT IGNORE statement support Batch insert ignoring duplicate records InsertOnDuplicateKeyPlugin MySQL ON DUPLICATE KEY UPDATE support Auto update on insert conflicts ReplaceIntoPlugin MySQL REPLACE INTO statement support Replace insert operations DtoGeneratorPlugin DTO layer code generation Lombok annotations, Entity conversion methods ServiceGeneratorPlugin Service layer code generation Interface + Implementation, Complete CRUD operations CustomerMapperPlugin Custom Mapper generation Extended native Mapper functionality 📦 Dependency Analysis Core Dependencies 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 <!-- MyBatis Generator Core Dependency --> <dependency> <groupId>org.mybatis.generator</groupId> <artifactId>mybatis-generator-core</artifactId> <version>1.4.2</version> </dependency> <!-- MyBatis Dynamic SQL Support --> <dependency> <groupId>org.mybatis.dynamic-sql</groupId> <artifactId>mybatis-dynamic-sql</artifactId> <version>1.5.2</version> </dependency> <!-- MyBatis Spring Boot Integration --> <dependency> <groupId>org.mybatis.spring.boot</groupId> <artifactId>mybatis-spring-boot-starter</artifactId> <version>3.0.5</version> </dependency> Maven Plugin Configuration 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 <plugin> <groupId>org.mybatis.generator</groupId> <artifactId>mybatis-generator-maven-plugin</artifactId> <version>1.4.2</version> <configuration> <verbose>true</verbose> <overwrite>true</overwrite> </configuration> <dependencies> <dependency> <groupId>com.goody.utils</groupId> <artifactId>mybatis-generator-custome-plugins</artifactId> <version>1.0.0</version> </dependency> </dependencies> </plugin> 🔧 Plugin Details MySQL Extension Plugins InsertIgnoreIntoPlugin Function: Adds INSERT IGNORE statement support to Mapper Generated Methods: insertIgnoreCustom(), insertIgnoreBatchCustom() Use Cases: Ignore primary key conflicts during batch inserts InsertOnDuplicateKeyPlugin Function: Adds ON DUPLICATE KEY UPDATE statement support to Mapper Generated Methods: insertOnDuplicateKeyCustom(), insertOnDuplicateKeyBatchCustom() Use Cases: Auto update records on duplicate key conflicts during insert ReplaceIntoPlugin Function: Adds REPLACE INTO statement support to Mapper Generated Methods: replaceIntoCustom(), replaceIntoBatchCustom() Use Cases: Replace existing records or insert new ones DTO Layer Generation Plugin DtoGeneratorPlugin Function: Automatically generates DTO classes Features: Lombok annotation support (@Data, @Builder, @AllArgsConstructor, @NoArgsConstructor) Auto-generated fromEntity() and toEntity() conversion methods Package structure: *.model.dto Service Layer Generation Plugin ServiceGeneratorPlugin Function: Automatically generates Service interfaces and implementation classes Features: Complete CRUD operation methods Support for single and composite primary keys Spring annotation support (@Service, @Autowired) Package structure: *.service.interfaces and *.service.impl Custom Mapper Plugin CustomerMapperPlugin Function: Generates extended Mapper interfaces Package structure: *.dao.customer 💻 Usage Guide Step 1: Add Dependencies Add the plugin to your project:"><meta name=application-name content="LoveIt"><meta name=apple-mobile-web-app-title content="LoveIt"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/><link rel=prev href=https://gooddayday.github.io/en/2025/09/custom-1.-customs-idea/><link rel=next href=https://gooddayday.github.io/en/2025/09/cluster-1.-understanding_raft_algorithm/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"[Github] 2. MyBatis Generator Custom Plugins","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/gooddayday.github.io\/en\/2025\/09\/github-2.-mybatis-generator-custom-plugins\/"},"image":["https:\/\/gooddayday.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Github, MyBatis, plugins","wordcount":2216,"url":"https:\/\/gooddayday.github.io\/en\/2025\/09\/github-2.-mybatis-generator-custom-plugins\/","datePublished":"2025-09-24T23:46:17+08:00","dateModified":"2025-12-06T22:29:56+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"xxxx","logo":"https:\/\/gooddayday.github.io\/images\/logo.jpg"},"author":{"@type":"Person","name":"GoodyHao"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"light"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"light"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/en/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/en/posts/>Posts </a><a class=menu-item href=/en/tags/>Tags </a><a class=menu-item href=/en/categories/>Categories </a><a class=menu-item href=/en/categories/documentation/>Docs </a><a class=menu-item href=/en/about/>About </a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="Search titles or contents..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ title=简体中文>中文</a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/en/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="Search titles or contents..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=Search><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=Clear><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>Cancel</a></div><a class=menu-item href=/en/posts/ title>Posts</a><a class=menu-item href=/en/tags/ title>Tags</a><a class=menu-item href=/en/categories/ title>Categories</a><a class=menu-item href=/en/categories/documentation/ title>Docs</a><a class=menu-item href=/en/about/ title>About</a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title="Switch Theme">
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ title=简体中文>中文</a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>Contents</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">[Github] 2. MyBatis Generator Custom Plugins</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/en/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>GoodyHao</a></span>&nbsp;<span class=post-category>included in <a href=/en/categories/github/><i class="far fa-folder fa-fw" aria-hidden=true></i>Github</a>&nbsp;<a href=/en/categories/mybatis/><i class="far fa-folder fa-fw" aria-hidden=true></i>MyBatis</a>&nbsp;<a href=/en/categories/plugins/><i class="far fa-folder fa-fw" aria-hidden=true></i>Plugins</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2025-09-24>2025-09-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;2216 words&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;11 minutes&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>Contents</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#-features-overview>🚀 Features Overview</a></li><li><a href=#-dependency-analysis>📦 Dependency Analysis</a><ul><li><a href=#core-dependencies>Core Dependencies</a></li><li><a href=#maven-plugin-configuration>Maven Plugin Configuration</a></li></ul></li><li><a href=#-plugin-details>🔧 Plugin Details</a><ul><li><a href=#mysql-extension-plugins>MySQL Extension Plugins</a><ul><li><a href=#insertignoreintoplugin>InsertIgnoreIntoPlugin</a></li><li><a href=#insertonduplicatekeyplugin>InsertOnDuplicateKeyPlugin</a></li><li><a href=#replaceintoplugin>ReplaceIntoPlugin</a></li></ul></li><li><a href=#dto-layer-generation-plugin>DTO Layer Generation Plugin</a><ul><li><a href=#dtogeneratorplugin>DtoGeneratorPlugin</a></li></ul></li><li><a href=#service-layer-generation-plugin>Service Layer Generation Plugin</a><ul><li><a href=#servicegeneratorplugin>ServiceGeneratorPlugin</a></li></ul></li><li><a href=#custom-mapper-plugin>Custom Mapper Plugin</a><ul><li><a href=#customermapperplugin>CustomerMapperPlugin</a></li></ul></li></ul></li><li><a href=#-usage-guide>💻 Usage Guide</a><ul><li><a href=#step-1-add-dependencies>Step 1: Add Dependencies</a></li><li><a href=#step-2-configure-generatorconfigxml>Step 2: Configure generatorConfig.xml</a></li><li><a href=#step-3-execute-code-generation>Step 3: Execute Code Generation</a></li></ul></li><li><a href=#-configuration-examples>📝 Configuration Examples</a><ul><li><a href=#single-primary-key-table-configuration>Single Primary Key Table Configuration</a></li><li><a href=#composite-primary-key-table-configuration>Composite Primary Key Table Configuration</a></li></ul></li><li><a href=#-generated-code-analysis>🏗️ Generated Code Analysis</a><ul><li><a href=#file-structure>File Structure</a></li><li><a href=#core-code-snippet-analysis>Core Code Snippet Analysis</a><ul><li><a href=#mysql-extension-methods-mapper-layer>MySQL Extension Methods (Mapper Layer)</a></li><li><a href=#dto-classes-data-transfer-layer>DTO Classes (Data Transfer Layer)</a></li><li><a href=#service-interfaces-service-layer-interface>Service Interfaces (Service Layer Interface)</a></li><li><a href=#service-implementation-service-layer-implementation>Service Implementation (Service Layer Implementation)</a></li></ul></li><li><a href=#key-feature-analysis>Key Feature Analysis</a><ul><li><a href=#composite-primary-key-support>Composite Primary Key Support</a></li><li><a href=#mysql-specific-features>MySQL-Specific Features</a></li><li><a href=#automation-level>Automation Level</a></li></ul></li></ul></li><li><a href=#-project-structure>🏗️ Project Structure</a></li><li><a href=#-usage-recommendations>🎯 Usage Recommendations</a></li><li><a href=#-source-code-analysis>🔍 Source Code Analysis</a><ul><li><a href=#plugin-architecture-overview>Plugin Architecture Overview</a></li><li><a href=#insertignoreintoplugin-implementation-analysis>InsertIgnoreIntoPlugin Implementation Analysis</a><ul><li><a href=#core-method-generation-strategy>Core Method Generation Strategy</a></li><li><a href=#key-technical-innovations>Key Technical Innovations</a></li></ul></li><li><a href=#dtogeneratorplugin-implementation-analysis>DtoGeneratorPlugin Implementation Analysis</a><ul><li><a href=#package-resolution-algorithm>Package Resolution Algorithm</a></li><li><a href=#field-generation-with-metadata-preservation>Field Generation with Metadata Preservation</a></li></ul></li><li><a href=#servicegeneratorplugin-implementation-analysis>ServiceGeneratorPlugin Implementation Analysis</a><ul><li><a href=#composite-primary-key-resolution>Composite Primary Key Resolution</a></li><li><a href=#service-implementation-pattern>Service Implementation Pattern</a></li></ul></li><li><a href=#advanced-patterns-and-techniques>Advanced Patterns and Techniques</a><ul><li><a href=#type-safety-enforcement>Type Safety Enforcement</a></li><li><a href=#sql-injection-prevention>SQL Injection Prevention</a></li><li><a href=#memory-efficient-generation>Memory-Efficient Generation</a></li></ul></li><li><a href=#extension-points-for-custom-development>Extension Points for Custom Development</a><ul><li><a href=#custom-plugin-template>Custom Plugin Template</a></li><li><a href=#configuration-driven-behavior>Configuration-Driven Behavior</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><blockquote><p><strong>🔗 Project Repository</strong>: <a href=https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins target=_blank rel="noopener noreffer">mybatis-generator-custome-plugins</a></p></blockquote><p>A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with
+MySQL-specific features, DTO layer generation, and automatic Service layer generation.</p><h2 id=-features-overview>🚀 Features Overview</h2><p>This plugin collection includes 6 custom plugins:</p><table><thead><tr><th>Plugin Name</th><th>Description</th><th>Key Features</th></tr></thead><tbody><tr><td><code>InsertIgnoreIntoPlugin</code></td><td>MySQL INSERT IGNORE statement support</td><td>Batch insert ignoring duplicate records</td></tr><tr><td><code>InsertOnDuplicateKeyPlugin</code></td><td>MySQL ON DUPLICATE KEY UPDATE support</td><td>Auto update on insert conflicts</td></tr><tr><td><code>ReplaceIntoPlugin</code></td><td>MySQL REPLACE INTO statement support</td><td>Replace insert operations</td></tr><tr><td><code>DtoGeneratorPlugin</code></td><td>DTO layer code generation</td><td>Lombok annotations, Entity conversion methods</td></tr><tr><td><code>ServiceGeneratorPlugin</code></td><td>Service layer code generation</td><td>Interface + Implementation, Complete CRUD operations</td></tr><tr><td><code>CustomerMapperPlugin</code></td><td>Custom Mapper generation</td><td>Extended native Mapper functionality</td></tr></tbody></table><h2 id=-dependency-analysis>📦 Dependency Analysis</h2><h3 id=core-dependencies>Core Dependencies</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=c>&lt;!-- MyBatis Generator Core Dependency --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;groupId&gt;</span>org.mybatis.generator<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-core<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;version&gt;</span>1.4.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c>&lt;!-- MyBatis Dynamic SQL Support --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;groupId&gt;</span>org.mybatis.dynamic-sql<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;artifactId&gt;</span>mybatis-dynamic-sql<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;version&gt;</span>1.5.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c>&lt;!-- MyBatis Spring Boot Integration --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;groupId&gt;</span>org.mybatis.spring.boot<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;artifactId&gt;</span>mybatis-spring-boot-starter<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;version&gt;</span>3.0.5<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=maven-plugin-configuration>Maven Plugin Configuration</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;plugin&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;groupId&gt;</span>org.mybatis.generator<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-maven-plugin<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;version&gt;</span>1.4.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;configuration&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;verbose&gt;</span>true<span class=nt>&lt;/verbose&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;overwrite&gt;</span>true<span class=nt>&lt;/overwrite&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;/configuration&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;dependencies&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;groupId&gt;</span>com.goody.utils<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-custome-plugins<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;version&gt;</span>1.0.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;/dependencies&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/plugin&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=-plugin-details>🔧 Plugin Details</h2><h3 id=mysql-extension-plugins>MySQL Extension Plugins</h3><h4 id=insertignoreintoplugin>InsertIgnoreIntoPlugin</h4><ul><li><strong>Function</strong>: Adds <code>INSERT IGNORE</code> statement support to Mapper</li><li><strong>Generated Methods</strong>: <code>insertIgnoreCustom()</code>, <code>insertIgnoreBatchCustom()</code></li><li><strong>Use Cases</strong>: Ignore primary key conflicts during batch inserts</li></ul><h4 id=insertonduplicatekeyplugin>InsertOnDuplicateKeyPlugin</h4><ul><li><strong>Function</strong>: Adds <code>ON DUPLICATE KEY UPDATE</code> statement support to Mapper</li><li><strong>Generated Methods</strong>: <code>insertOnDuplicateKeyCustom()</code>, <code>insertOnDuplicateKeyBatchCustom()</code></li><li><strong>Use Cases</strong>: Auto update records on duplicate key conflicts during insert</li></ul><h4 id=replaceintoplugin>ReplaceIntoPlugin</h4><ul><li><strong>Function</strong>: Adds <code>REPLACE INTO</code> statement support to Mapper</li><li><strong>Generated Methods</strong>: <code>replaceIntoCustom()</code>, <code>replaceIntoBatchCustom()</code></li><li><strong>Use Cases</strong>: Replace existing records or insert new ones</li></ul><h3 id=dto-layer-generation-plugin>DTO Layer Generation Plugin</h3><h4 id=dtogeneratorplugin>DtoGeneratorPlugin</h4><ul><li><strong>Function</strong>: Automatically generates DTO classes</li><li><strong>Features</strong>:<ul><li>Lombok annotation support (<code>@Data</code>, <code>@Builder</code>, <code>@AllArgsConstructor</code>, <code>@NoArgsConstructor</code>)</li><li>Auto-generated <code>fromEntity()</code> and <code>toEntity()</code> conversion methods</li><li>Package structure: <code>*.model.dto</code></li></ul></li></ul><h3 id=service-layer-generation-plugin>Service Layer Generation Plugin</h3><h4 id=servicegeneratorplugin>ServiceGeneratorPlugin</h4><ul><li><strong>Function</strong>: Automatically generates Service interfaces and implementation classes</li><li><strong>Features</strong>:<ul><li>Complete CRUD operation methods</li><li>Support for single and composite primary keys</li><li>Spring annotation support (<code>@Service</code>, <code>@Autowired</code>)</li><li>Package structure: <code>*.service.interfaces</code> and <code>*.service.impl</code></li></ul></li></ul><h3 id=custom-mapper-plugin>Custom Mapper Plugin</h3><h4 id=customermapperplugin>CustomerMapperPlugin</h4><ul><li><strong>Function</strong>: Generates extended Mapper interfaces</li><li><strong>Package structure</strong>: <code>*.dao.customer</code></li></ul><h2 id=-usage-guide>💻 Usage Guide</h2><h3 id=step-1-add-dependencies>Step 1: Add Dependencies</h3><p>Add the plugin to your project:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;groupId&gt;</span>com.goody.utils<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-custome-plugins<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;version&gt;</span>1.0.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=step-2-configure-generatorconfigxml>Step 2: Configure generatorConfig.xml</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=cp>&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class=line><span class=cl><span class=cp>&lt;!DOCTYPE generatorConfiguration
+</span></span></span><span class=line><span class=cl><span class=cp>        PUBLIC &#34;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&#34;
+</span></span></span><span class=line><span class=cl><span class=cp>        &#34;https://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&#34;&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;generatorConfiguration&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;classPathEntry</span>
+</span></span><span class=line><span class=cl>          <span class=na>location=</span><span class=s>&#34;${user.home}/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;context</span> <span class=na>id=</span><span class=s>&#34;dao&#34;</span> <span class=na>targetRuntime=</span><span class=s>&#34;MyBatis3DynamicSql&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;autoDelimitKeywords&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;beginningDelimiter&#34;</span> <span class=na>value=</span><span class=s>&#34;`&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;endingDelimiter&#34;</span> <span class=na>value=</span><span class=s>&#34;`&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c>&lt;!-- Standard Plugins --&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.SerializablePlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.EqualsHashCodePlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.ToStringPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.FluentBuilderMethodsPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c>&lt;!-- Custom Plugins --&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.InsertIgnoreIntoPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.InsertOnDuplicateKeyPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.ReplaceIntoPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.DtoGeneratorPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.ServiceGeneratorPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.CustomerMapperPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;commentGenerator&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;addRemarkComments&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;suppressDate&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/commentGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;jdbcConnection</span> <span class=na>driverClass=</span><span class=s>&#34;com.mysql.cj.jdbc.Driver&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=na>connectionURL=</span><span class=s>&#34;jdbc:mysql://127.0.0.1:3306/your_database&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=na>userId=</span><span class=s>&#34;your_username&#34;</span>
+</span></span><span class=line><span class=cl>                    <span class=na>password=</span><span class=s>&#34;your_password&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useSSL&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;serverTimezone&#34;</span> <span class=na>value=</span><span class=s>&#34;Asia/Shanghai&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;nullCatalogMeansCurrent&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/jdbcConnection&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;javaTypeResolver&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;forceBigDecimals&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useJSR310Types&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/javaTypeResolver&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;javaModelGenerator</span> <span class=na>targetPackage=</span><span class=s>&#34;com.yourpackage.model.entity&#34;</span>
+</span></span><span class=line><span class=cl>                        <span class=na>targetProject=</span><span class=s>&#34;src/main/java&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;enableSubPackages&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;trimStrings&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/javaModelGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;javaClientGenerator</span> <span class=na>type=</span><span class=s>&#34;ANNOTATEDMAPPER&#34;</span>
+</span></span><span class=line><span class=cl>                         <span class=na>targetPackage=</span><span class=s>&#34;com.yourpackage.model.dao&#34;</span>
+</span></span><span class=line><span class=cl>                         <span class=na>targetProject=</span><span class=s>&#34;src/main/java&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;enableSubPackages&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/javaClientGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c>&lt;!-- Configure Tables to Generate --&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;your_schema&#34;</span> <span class=na>tableName=</span><span class=s>&#34;your_table&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/table&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;/context&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/generatorConfiguration&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=step-3-execute-code-generation>Step 3: Execute Code Generation</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mvn mybatis-generator:generate
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif data-srcset="/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif, /images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif 1.5x, /images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif 2x" data-sizes=auto alt=/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif title=presentation.gif></p><h2 id=-configuration-examples>📝 Configuration Examples</h2><h3 id=single-primary-key-table-configuration>Single Primary Key Table Configuration</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;toy&#34;</span> <span class=na>tableName=</span><span class=s>&#34;example_single_pk&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/table&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=composite-primary-key-table-configuration>Composite Primary Key Table Configuration</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;toy&#34;</span> <span class=na>tableName=</span><span class=s>&#34;example_double_pk&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/table&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=-generated-code-analysis>🏗️ Generated Code Analysis</h2><p>The plugins generate a complete code structure for each table:</p><h3 id=file-structure>File Structure</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>src/main/java/
+</span></span><span class=line><span class=cl>├── com/yourpackage/model/
+</span></span><span class=line><span class=cl>│   ├── entity/              # Entity Classes
+</span></span><span class=line><span class=cl>│   │   ├── Example.java
+</span></span><span class=line><span class=cl>│   │   └── ExampleDoublePk.java
+</span></span><span class=line><span class=cl>│   ├── dao/                 # Standard Mapper Interfaces
+</span></span><span class=line><span class=cl>│   │   ├── ExampleMapper.java
+</span></span><span class=line><span class=cl>│   │   ├── ExampleDynamicSqlSupport.java
+</span></span><span class=line><span class=cl>│   │   └── customer/        # Custom Mapper Interfaces
+</span></span><span class=line><span class=cl>│   │       └── CustomerExampleMapper.java
+</span></span><span class=line><span class=cl>│   └── dto/                 # DTO Classes
+</span></span><span class=line><span class=cl>│       ├── ExampleDTO.java
+</span></span><span class=line><span class=cl>│       └── ExampleDoublePkDTO.java
+</span></span><span class=line><span class=cl>├── service/
+</span></span><span class=line><span class=cl>│   ├── interfaces/          # Service Interfaces
+</span></span><span class=line><span class=cl>│   │   ├── IExampleService.java
+</span></span><span class=line><span class=cl>│   │   └── IExampleDoublePkService.java
+</span></span><span class=line><span class=cl>│   └── impl/               # Service Implementations
+</span></span><span class=line><span class=cl>│       ├── ExampleServiceImpl.java
+</span></span><span class=line><span class=cl>│       └── ExampleDoublePkServiceImpl.java
+</span></span></code></pre></td></tr></table></div></div><h3 id=core-code-snippet-analysis>Core Code Snippet Analysis</h3><h4 id=mysql-extension-methods-mapper-layer>MySQL Extension Methods (Mapper Layer)</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Mapper</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>ExampleMapper</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// Standard generated methods...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// INSERT IGNORE Support</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; INSERT IGNORE INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>void</span><span class=w> </span><span class=nf>insertIgnoreCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;item&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=n>record</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// Batch INSERT IGNORE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; INSERT IGNORE INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; &lt;foreach collection=&#39;items&#39; item=&#39;item&#39; separator=&#39;,&#39;&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34;   (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; &lt;/foreach&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>void</span><span class=w> </span><span class=nf>insertIgnoreBatchCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;items&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Collection</span><span class=o>&lt;</span><span class=n>Example</span><span class=o>&gt;</span><span class=w> </span><span class=n>records</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// ON DUPLICATE KEY UPDATE Support</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; INSERT INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; AS r&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34; ON DUPLICATE KEY UPDATE&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34;   name = r.name, updated = r.updated&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>void</span><span class=w> </span><span class=nf>insertOnDuplicateKeyCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;item&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=n>record</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=dto-classes-data-transfer-layer>DTO Classes (Data Transfer Layer)</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@AllArgsConstructor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@NoArgsConstructor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Builder</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>ExampleDTO</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>private</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>name</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>private</span><span class=w> </span><span class=n>LocalDateTime</span><span class=w> </span><span class=n>created</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>private</span><span class=w> </span><span class=n>LocalDateTime</span><span class=w> </span><span class=n>updated</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// Entity to DTO conversion</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>public</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=n>ExampleDTO</span><span class=w> </span><span class=nf>fromEntity</span><span class=p>(</span><span class=n>Example</span><span class=w> </span><span class=n>entity</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>entity</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=k>return</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>ExampleDTO</span><span class=p>.</span><span class=na>builder</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>id</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getId</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>name</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getName</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>created</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getCreated</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>updated</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getUpdated</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>build</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=c1>// DTO to Entity conversion</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>public</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=nf>toEntity</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Example</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withId</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withName</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>name</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withCreated</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>created</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withUpdated</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>updated</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service-interfaces-service-layer-interface>Service Interfaces (Service Layer Interface)</h4><p><strong>Single Primary Key Service Interface</strong>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>IExampleService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>save</span><span class=p>(</span><span class=n>ExampleDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>saveBatch</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDTO</span><span class=o>&gt;</span><span class=w> </span><span class=n>dtoList</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>update</span><span class=p>(</span><span class=n>ExampleDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>);</span><span class=w>                    </span><span class=c1>// Single parameter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>ExampleDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>);</span><span class=w>               </span><span class=c1>// Single parameter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDTO</span><span class=o>&gt;</span><span class=w> </span><span class=nf>findAll</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><strong>Composite Primary Key Service Interface</strong> (Plugin Fixed):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>IExampleDoublePkService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>save</span><span class=p>(</span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>saveBatch</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDoublePkDTO</span><span class=o>&gt;</span><span class=w> </span><span class=n>dtoList</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>update</span><span class=p>(</span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>          </span><span class=c1>// Multi-parameter support</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>  </span><span class=c1>// Multi-parameter support</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDoublePkDTO</span><span class=o>&gt;</span><span class=w> </span><span class=nf>findAll</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service-implementation-service-layer-implementation>Service Implementation (Service Layer Implementation)</h4><p><strong>Core Improvement for Composite Primary Key Handling</strong>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>ExampleDoublePkServiceImpl</span><span class=w> </span><span class=kd>implements</span><span class=w> </span><span class=n>IExampleDoublePkService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Autowired</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>private</span><span class=w> </span><span class=n>ExampleDoublePkMapper</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>public</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=n>id2</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>return</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Correctly calls composite primary key method</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=p>.</span><span class=na>deleteByPrimaryKey</span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>public</span><span class=w> </span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=n>id2</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>return</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Correctly calls composite primary key method</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>ExampleDoublePk</span><span class=w> </span><span class=n>entity</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>selectByPrimaryKey</span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>id2</span><span class=p>).</span><span class=na>orElse</span><span class=p>(</span><span class=kc>null</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>entity</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>ExampleDoublePkDTO</span><span class=p>.</span><span class=na>fromEntity</span><span class=p>(</span><span class=n>entity</span><span class=p>)</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=key-feature-analysis>Key Feature Analysis</h3><h4 id=composite-primary-key-support>Composite Primary Key Support</h4><ul><li><strong>Issue</strong>: Previous version incorrectly attempted to use single primary key type</li><li><strong>Solution</strong>: Auto-detects primary key column count, generates multi-parameter methods for composite keys</li><li><strong>Implementation</strong>: <code>List&lt;IntrospectedColumn> primaryKeyColumns</code></li></ul><h4 id=mysql-specific-features>MySQL-Specific Features</h4><ul><li><strong>INSERT IGNORE</strong>: Ignores duplicate key errors, continues inserting other records</li><li><strong>ON DUPLICATE KEY UPDATE</strong>: Auto updates specified fields on insert conflicts</li><li><strong>REPLACE INTO</strong>: MySQL&rsquo;s replace insert operation</li></ul><h4 id=automation-level>Automation Level</h4><ul><li><strong>Dependency Injection</strong>: Auto-generates Spring <code>@Autowired</code> annotations</li><li><strong>Null Checks</strong>: Auto-generates parameter null validation</li><li><strong>Conversion Methods</strong>: Automatic conversion between DTO and Entity</li></ul><h2 id=-project-structure>🏗️ Project Structure</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mybatis-generator-custome-plugins/
+</span></span><span class=line><span class=cl>├── src/main/java/com/goody/utils/mybatis/plugin/
+</span></span><span class=line><span class=cl>│   ├── CustomerMapperPlugin.java
+</span></span><span class=line><span class=cl>│   ├── DtoGeneratorPlugin.java
+</span></span><span class=line><span class=cl>│   ├── InsertIgnoreIntoPlugin.java
+</span></span><span class=line><span class=cl>│   ├── InsertOnDuplicateKeyPlugin.java
+</span></span><span class=line><span class=cl>│   ├── ReplaceIntoPlugin.java
+</span></span><span class=line><span class=cl>│   └── ServiceGeneratorPlugin.java
+</span></span><span class=line><span class=cl>├── src/main/resources/
+</span></span><span class=line><span class=cl>│   └── generatorConfig.xml
+</span></span><span class=line><span class=cl>├── src/test/                        # Generated code examples
+</span></span><span class=line><span class=cl>└── pom.xml
+</span></span></code></pre></td></tr></table></div></div><h2 id=-usage-recommendations>🎯 Usage Recommendations</h2><ol><li><strong>Development Workflow</strong>: Design database table structure first, then use plugins to generate complete layered code</li><li><strong>Composite Primary Keys</strong>: Plugin perfectly supports composite primary keys, no manual modification of generated
+code needed</li><li><strong>Extensibility</strong>: Can inherit generated Service interfaces to add complex business logic</li><li><strong>MySQL Optimization</strong>: Properly use INSERT IGNORE and ON DUPLICATE KEY features to improve performance</li></ol><h2 id=-source-code-analysis>🔍 Source Code Analysis</h2><p><em>This section provides deep insights into the implementation details of each plugin for developers interested in understanding or extending the functionality.</em></p><h3 id=plugin-architecture-overview>Plugin Architecture Overview</h3><p>All plugins extend <code>PluginAdapter</code> and follow MyBatis Generator&rsquo;s plugin lifecycle:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>abstract</span><span class=w> </span><span class=kd>class</span> <span class=nc>PluginAdapter</span><span class=w> </span><span class=kd>implements</span><span class=w> </span><span class=n>Plugin</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Validation phase</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Code generation hooks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>clientGenerated</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=nf>contextGenerateAdditionalJavaFiles</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=insertignoreintoplugin-implementation-analysis>InsertIgnoreIntoPlugin Implementation Analysis</h3><h4 id=core-method-generation-strategy>Core Method Generation Strategy</h4><p>The plugin uses a sophisticated approach to generate SQL templates dynamically:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>Method</span><span class=w> </span><span class=nf>insertIgnoreIntoOne</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Dynamic column mapping using Stream API</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>final</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>columnNames</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getAllColumns</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>stream</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>map</span><span class=p>(</span><span class=n>column</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;`%s`&#34;</span><span class=p>,</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getActualColumnName</span><span class=p>()))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>collect</span><span class=p>(</span><span class=n>Collectors</span><span class=p>.</span><span class=na>joining</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Parameter binding with MyBatis syntax</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>final</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>columnValueNames</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getAllColumns</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>stream</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>map</span><span class=p>(</span><span class=n>column</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;#{item.%s}&#34;</span><span class=p>,</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>()))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>collect</span><span class=p>(</span><span class=n>Collectors</span><span class=p>.</span><span class=na>joining</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Template-based annotation generation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>insertIgnore</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;@Insert({&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;\&#34;&lt;script&gt;\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;            \&#34; INSERT IGNORE INTO %s\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;              \&#34; (%s)\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;            \&#34; VALUES\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;              \&#34;(%s)\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;        \&#34;&lt;/script&gt;\&#34;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;})&#34;</span><span class=p>,</span><span class=w> </span><span class=n>tableName</span><span class=p>,</span><span class=w> </span><span class=n>columnNames</span><span class=p>,</span><span class=w> </span><span class=n>columnValueNames</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=key-technical-innovations>Key Technical Innovations</h4><ol><li><strong>Stream-based Field Transformation</strong>: Efficiently converts database schema to Java method parameters</li><li><strong>Dynamic SQL Template Generation</strong>: Creates parameterized SQL with proper escaping</li><li><strong>Batch Processing Support</strong>: Automatic <code>&lt;foreach></code> loop generation for batch operations</li></ol><h3 id=dtogeneratorplugin-implementation-analysis>DtoGeneratorPlugin Implementation Analysis</h3><h4 id=package-resolution-algorithm>Package Resolution Algorithm</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>TopLevelClass</span><span class=w> </span><span class=nf>generateDtoClass</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Intelligent package transformation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>entityFullType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getBaseRecordType</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>entityPackage</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>entityFullType</span><span class=p>.</span><span class=na>substring</span><span class=p>(</span><span class=n>0</span><span class=p>,</span><span class=w> </span><span class=n>entityFullType</span><span class=p>.</span><span class=na>lastIndexOf</span><span class=p>(</span><span class=sc>&#39;.&#39;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>dtoFullPackage</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>entityPackage</span><span class=p>.</span><span class=na>replace</span><span class=p>(</span><span class=s>&#34;.entity&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;.&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>DTO_PACKAGE</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Type-safe class instantiation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>FullyQualifiedJavaType</span><span class=w> </span><span class=n>dtoType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=n>dtoFullPackage</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;.&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>dtoClassName</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>TopLevelClass</span><span class=w> </span><span class=n>dtoClass</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>TopLevelClass</span><span class=p>(</span><span class=n>dtoType</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=field-generation-with-metadata-preservation>Field Generation with Metadata Preservation</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Column-to-field conversion with comment preservation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>allColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>Field</span><span class=w> </span><span class=n>field</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Field</span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>(),</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getFullyQualifiedJavaType</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>field</span><span class=p>.</span><span class=na>setVisibility</span><span class=p>(</span><span class=n>JavaVisibility</span><span class=p>.</span><span class=na>PRIVATE</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Preserve database column comments</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>()</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=o>!</span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>().</span><span class=na>trim</span><span class=p>().</span><span class=na>isEmpty</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34;/**&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34; * &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34; */&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dtoClass</span><span class=p>.</span><span class=na>addField</span><span class=p>(</span><span class=n>field</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=servicegeneratorplugin-implementation-analysis>ServiceGeneratorPlugin Implementation Analysis</h3><h4 id=composite-primary-key-resolution>Composite Primary Key Resolution</h4><p>The most sophisticated feature is intelligent composite primary key handling:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Dynamic primary key analysis</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>List</span><span class=o>&lt;</span><span class=n>IntrospectedColumn</span><span class=o>&gt;</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getPrimaryKeyColumns</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// Adaptive method signature generation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>paramName</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addParameter</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>Parameter</span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getFullyQualifiedJavaType</span><span class=p>(),</span><span class=w> </span><span class=n>paramName</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// Dynamic method call construction</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>StringBuilder</span><span class=w> </span><span class=n>methodCall</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>StringBuilder</span><span class=p>(</span><span class=s>&#34;return &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>mapperFieldName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;.deleteByPrimaryKey(&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>.</span><span class=na>size</span><span class=p>();</span><span class=w> </span><span class=n>i</span><span class=o>++</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>i</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>0</span><span class=p>)</span><span class=w> </span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=n>primaryKeyColumns</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=n>i</span><span class=p>).</span><span class=na>getJavaProperty</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=s>&#34;);&#34;</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service-implementation-pattern>Service Implementation Pattern</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Null-safe parameter validation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;if (&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; == null) {&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;    return 0;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;}&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=advanced-patterns-and-techniques>Advanced Patterns and Techniques</h3><h4 id=type-safety-enforcement>Type Safety Enforcement</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Generic type preservation</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>FullyQualifiedJavaType</span><span class=w> </span><span class=n>listType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=s>&#34;List&lt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>dtoClassName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;&gt;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>Parameter</span><span class=w> </span><span class=n>batchParameter</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Parameter</span><span class=p>(</span><span class=n>listType</span><span class=p>,</span><span class=w> </span><span class=s>&#34;dtoList&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// Import resolution</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>serviceInterface</span><span class=p>.</span><span class=na>addImportedType</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=s>&#34;java.util.List&#34;</span><span class=p>));</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=sql-injection-prevention>SQL Injection Prevention</h4><p>All generated SQL uses parameterized queries:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Safe: Parameterized query</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=s>&#34;INSERT IGNORE INTO &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>tableName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; VALUES (#{item.id}, #{item.name})&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// Unsafe: String concatenation (never used)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=s>&#34;INSERT IGNORE INTO &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>tableName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; VALUES (&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>item</span><span class=p>.</span><span class=na>getId</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;, &#39;&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>item</span><span class=p>.</span><span class=na>getName</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;&#39;)&#34;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=memory-efficient-generation>Memory-Efficient Generation</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// Lazy evaluation pattern for large codebases</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=nf>contextGenerateAdditionalJavaFiles</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=n>files</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ArrayList</span><span class=o>&lt;&gt;</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Generate only when needed</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>shouldGenerateService</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>files</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>createServiceInterface</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>files</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>createServiceImplementation</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>files</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=extension-points-for-custom-development>Extension Points for Custom Development</h3><h4 id=custom-plugin-template>Custom Plugin Template</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>CustomPlugin</span><span class=w> </span><span class=kd>extends</span><span class=w> </span><span class=n>PluginAdapter</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// Plugin validation logic</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kc>true</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>clientGenerated</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// Add methods to existing Mapper interfaces</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>interfaze</span><span class=p>.</span><span class=na>addMethod</span><span class=p>(</span><span class=n>createCustomMethod</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kd>super</span><span class=p>.</span><span class=na>clientGenerated</span><span class=p>(</span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>Method</span><span class=w> </span><span class=nf>createCustomMethod</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>table</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// Custom method generation logic</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Method</span><span class=w> </span><span class=n>method</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Method</span><span class=p>(</span><span class=s>&#34;customMethod&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>method</span><span class=p>.</span><span class=na>setVisibility</span><span class=p>(</span><span class=n>JavaVisibility</span><span class=p>.</span><span class=na>PUBLIC</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>method</span><span class=p>.</span><span class=na>setAbstract</span><span class=p>(</span><span class=kc>true</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>method</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=configuration-driven-behavior>Configuration-Driven Behavior</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Read plugin properties</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>enableFeature</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getProperties</span><span class=p>().</span><span class=na>getProperty</span><span class=p>(</span><span class=s>&#34;enableCustomFeature&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=s>&#34;false&#34;</span><span class=p>.</span><span class=na>equals</span><span class=p>(</span><span class=n>enableFeature</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// Skip plugin execution</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kc>false</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=kc>true</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>This deep source code analysis reveals the sophisticated engineering behind each plugin, showcasing advanced Java code generation techniques and MyBatis Generator&rsquo;s extensibility framework.</p><hr><p><em>This technical deep dive was created to provide comprehensive insights into the MyBatis Generator Custom Plugins architecture and implementation.</em></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>Updated on 2025-12-06&nbsp;<a class=git-hash href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io/commit/af3d5c9bd409e602f90f3dec7c5441cd7924d96f target=_blank title="commit by haotian(865700600@qq.com) af3d5c9bd409e602f90f3dec7c5441cd7924d96f: Refactor Redis Cluster documentation for clarity and consistency">
+<i class="fas fa-hashtag fa-fw" aria-hidden=true></i>af3d5c9</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/en/2025/09/github-2.-mybatis-generator-custom-plugins/index.md target=_blank>Read Markdown</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="Share on Twitter" data-sharer=twitter data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator Custom Plugins" data-hashtags=Github,MyBatis,plugins><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="Share on Facebook" data-sharer=facebook data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/ data-hashtag=Github><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="Share on Linkedin" data-sharer=linkedin data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/><i class="fab fa-linkedin fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="Share on Hacker News" data-sharer=hackernews data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator Custom Plugins"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="Share on Line" data-sharer=line data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator Custom Plugins"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="Share on 微博" data-sharer=weibo data-url=https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator Custom Plugins"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/en/tags/github/>Github</a>,&nbsp;<a href=/en/tags/mybatis/>MyBatis</a>,&nbsp;<a href=/en/tags/plugins/>Plugins</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>Back</a></span>&nbsp;|&nbsp;<span><a href=/en/>Home</a></span></section></div><div class=post-nav><a href=/en/2025/09/custom-1.-customs-idea/ class=prev rel=prev title="[Customs] 1. IntelliJ IDEA Configuration & Recommended Plugins"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>[Customs] 1. IntelliJ IDEA Configuration & Recommended Plugins</a>
+<a href=/en/2025/09/cluster-1.-understanding_raft_algorithm/ class=next rel=next title="[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus">[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><span class=author itemprop=copyrightHolder>&nbsp;<a href=/en/ target=_blank>GoodyHao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title="Back to Top"><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title="View Comments"><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><link rel=stylesheet href=/css/auto-numbering.css><link rel=stylesheet href=/css/svg-fullwidth.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"Copy to clipboard",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOPtWtCc4CvteQ",darkTheme:"dark",emitMetadata:"0",inputPosition:"bottom",lang:"en",lazyLoading:!1,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"GOODDAYDAY/GOODDAYDAY.github.io",repoId:"R_kgDOPtWtCQ"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{algoliaAppID:"PASDMWALPK",algoliaIndex:"index.en",algoliaSearchKey:"b42948e51daaa93df92381c8e2ac0f93",highlightTag:"em",maxResultLength:10,noResultsFound:"No results found",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

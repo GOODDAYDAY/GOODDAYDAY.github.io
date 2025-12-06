@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title ASK Redirect - During Slot Migration
+
+actor Client as client
+participant "Node A\n(Source, MIGRATING)" as nodeA #FFCDD2
+participant "Node B\n(Target, IMPORTING)" as nodeB #C8E6C9
+
+client -> nodeA : GET user:1001\n(slot 9999 migrating)
+
+note right of nodeA
+  Key already migrated
+  to Node B
+end note
+
+nodeA --> client : <color:orange>ASK 9999 192.168.1.2:6379</color>
+
+note right of client #FFFDE7
+  <b>DO NOT update cache!</b>
+  This is temporary
+end note
+
+client -> nodeB : <color:blue>ASKING</color>
+client -> nodeB : GET user:1001
+nodeB --> client : "John Doe"
+
+note over client, nodeB
+  Next request for slot 9999
+  <b>still tries Node A first</b>
+  (cache unchanged)
+end note
+
+@enduml

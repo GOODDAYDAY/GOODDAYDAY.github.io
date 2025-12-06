@@ -1,0 +1,64 @@
+@startuml 11-hash-slot-Hash Slot
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Hash Slot: CRC16(key) % 16384
+
+' === Fixed 16384 Slots ===
+package "16384 Fixed Slots" as slots #E3F2FD {
+
+    rectangle "Slots 0-5460" as slot1 #C8E6C9
+    rectangle "Slots 5461-10922" as slot2 #FFF3E0
+    rectangle "Slots 10923-16383" as slot3 #FCE4EC
+
+    rectangle "Node A" as nodeA #C8E6C9
+    rectangle "Node B" as nodeB #FFF3E0
+    rectangle "Node C" as nodeC #FCE4EC
+
+    slot1 --> nodeA : owns
+    slot2 --> nodeB : owns
+    slot3 --> nodeC : owns
+
+    card "user:1001\nCRC16 % 16384 = 5474" as key1 #FFF9C4
+    key1 --> slot2 : slot 5474 -> Node B
+}
+
+' === Add Node D ===
+package "Add Node D: Just Move Slots" as addNode #E8F5E9 {
+
+    rectangle "Slots 0-4095" as slot1b #C8E6C9
+    rectangle "Slots 4096-8191" as slot2b #FFF3E0
+    rectangle "Slots 8192-12287" as slot3b #FCE4EC
+    rectangle "Slots 12288-16383" as slot4b #BBDEFB
+
+    rectangle "Node A" as nodeA2 #C8E6C9
+    rectangle "Node B" as nodeB2 #FFF3E0
+    rectangle "Node C" as nodeC2 #FCE4EC
+    rectangle "Node D" as nodeD2 #BBDEFB
+
+    slot1b --> nodeA2
+    slot2b --> nodeB2
+    slot3b --> nodeC2
+    slot4b --> nodeD2
+}
+
+note bottom of addNode #E8F5E9
+  **Explicit Slot Migration**
+
+  Admin decides exactly which slots to move!
+  - Move slots 12288-16383 from C to D
+  - No virtual nodes complexity
+  - Gossip message = 16384 bits = 2KB (fits in cache)
+end note
+
+note right of slots #FFF9C4
+  **Two-Level Mapping**
+  1. Key -> Slot (fixed formula)
+  2. Slot -> Node (configurable)
+
+  Scaling = only change level 2!
+end note
+
+@enduml

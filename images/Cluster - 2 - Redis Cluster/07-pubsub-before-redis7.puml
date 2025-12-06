@@ -1,0 +1,58 @@
+@startuml 07-pubsub-before-redis7-Pub Sub Broadcast Mode
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam actor {
+    BackgroundColor #E3F2FD
+    BorderColor #1976D2
+}
+
+skinparam rectangle {
+    RoundCorner 10
+}
+
+title Before Redis 7.0: Broadcast Mode (Village Loudspeaker)
+
+' === Clients ===
+actor "Publisher Client" as pubClient #FFECB3
+actor "Subscriber Client 1" as subClient1 #C8E6C9
+actor "Subscriber Client 2" as subClient2 #C8E6C9
+
+' === Cluster ===
+package "Redis Cluster" as cluster {
+    rectangle "Node A\nSlots 0-5460" as nodeA #E3F2FD
+    rectangle "Node B\nSlots 5461-10922" as nodeB #FFF3E0
+    rectangle "Node C\nSlots 10923-16383" as nodeC #FCE4EC
+}
+
+' === Client Connections ===
+pubClient --> nodeA : 1. PUBLISH news "hello"
+subClient1 --> nodeB : SUBSCRIBE news
+subClient2 --> nodeC : SUBSCRIBE news
+
+' === Broadcast (the problem!) ===
+nodeA ..> nodeB : 2. Gossip broadcast
+nodeA ..> nodeC : 2. Gossip broadcast
+
+' === Delivery to subscribers ===
+nodeB --> subClient1 : 3. deliver
+nodeC --> subClient2 : 3. deliver
+
+note bottom of cluster #FFEBEE
+  **Problem: O(N) messages**
+  Node A doesn't know who subscribed "news"
+  Must broadcast to ALL nodes!
+
+  100 nodes = 99 Gossip messages per PUBLISH
+end note
+
+note right of subClient1 #FFF9C4
+  Clients can connect
+  to ANY node and
+  subscribe to ANY channel
+  (convenient but costly)
+end note
+
+@enduml

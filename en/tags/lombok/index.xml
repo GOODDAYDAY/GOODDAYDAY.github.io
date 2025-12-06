@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Lombok on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/tags/lombok/</link><description>Recent content in Lombok on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/tags/lombok/index.xml" rel="self" type="application/rss+xml"/><item><title>[Java] 1. Lombok</title><link>https://gooddayday.github.io/en/2025/09/java-1.-lombok/</link><pubDate>Sun, 21 Sep 2025 23:22:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/java-1.-lombok/</guid><description>&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Lombok is a Java library that can automatically generate repetitive code for Java classes, such as getter, setter, equals, and hashCode methods.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="principles"&gt;Principles&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Lombok&amp;rsquo;s working principle is based on Annotation Processors and the Java Compiler API.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;When Lombok is discovered by the compiler, it uses annotation processors to modify Java code. During this process, Lombok checks for specific annotations in classes and generates corresponding code based on these annotations, such as getter and setter methods.&lt;/p&gt;</description></item></channel></rss>

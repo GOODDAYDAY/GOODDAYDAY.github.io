@@ -1,0 +1,245 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>GoodyHao's Blog</title><link>https://gooddayday.github.io/zh-cn/</link><description>Elegance Never Fades</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 01 Dec 2025 17:36:17 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/zh-cn/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] - 2. Redis 集群</title><link>https://gooddayday.github.io/zh-cn/2025/12/cluster-2.-redis-cluster/</link><pubDate>Mon, 01 Dec 2025 17:36:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/12/cluster-2.-redis-cluster/</guid><description><![CDATA[<h2 id="概述">概述</h2>
+<ul>
+<li>常见的三种集群模式为 Redis（分片集群）、MySQL（主从复制）、Kafka（RAFT）。</li>
+<li>本文将介绍 Redis 从单节点到集群模式的演进过程。</li>
+</ul>
+<h2 id="演进历史从单节点到集群">演进历史：从单节点到集群</h2>
+<h3 id="单节点时代">单节点时代</h3>
+<ul>
+<li>这是 Redis 最常见的单体架构。</li>
+</ul>
+<p></p>]]></description></item><item><title>[Algorithm] 1. 动态规划</title><link>https://gooddayday.github.io/zh-cn/2025/11/algorithm-1.-dynamic-programming/</link><pubDate>Thu, 27 Nov 2025 11:49:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/11/algorithm-1.-dynamic-programming/</guid><description><![CDATA[<h2 id="引言">引言</h2>
+<h3 id="什么是动态规划">什么是动态规划？</h3>
+<p>动态规划（DP）通常被认为是计算机科学算法中最具挑战性的主题之一。然而，从本质上讲，它只是<strong>一种优化技术</strong>。</p>
+<p>动态规划的基本思想是**&ldquo;不要重复自己&rdquo;**。</p>]]></description></item><item><title>[Spring] 2. 浅谈Spring异步接口中的自定义线程池与线程复用分析</title><link>https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</link><pubDate>Thu, 02 Oct 2025 10:23:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>在Spring应用中处理高并发场景时,合理使用异步编程和线程池管理至关重要。本文将通过实际代码示例,深入分析Spring的默认线程池、自定义线程池以及线程复用的机制。&lt;/p></description></item><item><title>[MySQL] 3. MySQL 索引</title><link>https://gooddayday.github.io/zh-cn/2025/09/mysql-3.-mysql-index/</link><pubDate>Sun, 28 Sep 2025 21:02:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/mysql-3.-mysql-index/</guid><description><![CDATA[<h2 id="什么是索引">什么是索引？</h2>
+<ul>
+<li>索引是一种数据结构，通过额外的写入和存储空间来维护索引数据结构，从而提高数据库表上数据检索操作的速度。</li>
+</ul>
+<h2 id="索引类型">索引类型</h2>
+<h3 id="按数据结构分类">按数据结构分类</h3>
+<h4 id="哈希索引">哈希索引</h4>
+<ul>
+<li>哈希索引基于哈希表数据结构。它使用哈希函数将键映射到哈希表中的特定位置，允许非常快速的数据检索。</li>
+<li>算法复杂度：O(1)</li>
+<li>优点：
+<ul>
+<li>对等值查询（如 <code>=</code>）非常快。</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>不适合范围查询（如 <code>&lt;</code>、<code>&gt;</code>、<code>BETWEEN</code>）。</li>
+<li>可能发生哈希冲突，导致性能下降。</li>
+</ul>
+</li>
+</ul>
+<h5 id="为什么不支持-order-by">为什么不支持 <code>order by</code></h5>
+<ul>
+<li>让我们看看哈希索引的算法</li>
+</ul>
+<p></p>]]></description></item><item><title>[MySQL] 2. 锁机制执行分析</title><link>https://gooddayday.github.io/zh-cn/2025/09/mysql-2.-mysql-lock/</link><pubDate>Sat, 27 Sep 2025 19:02:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/mysql-2.-mysql-lock/</guid><description><![CDATA[<h2 id="引言">引言</h2>
+<ul>
+<li>在高并发环境下，数据库锁机制是确保数据一致性和完整性的关键手段。MySQL作为广泛使用的关系型数据库，提供了多种锁类型和机制来管理并发访问。然而，锁的使用不当可能导致性能瓶颈、死锁等问题，影响系统的稳定性和响应速度。</li>
+</ul>
+<h2 id="锁相关基本概念">锁相关基本概念</h2>
+<ul>
+<li><strong>锁的定义</strong>：锁是一种机制，用于控制对共享资源的访问，防止多个事务同时修改同一数据，确保数据的一致性和完整性。</li>
+<li><strong>锁的类型</strong>：
+<ul>
+<li><strong>表级锁</strong>：锁定整个表。</li>
+<li><strong>共享锁（S锁）</strong>：允许多个事务同时读取数据，但不允许修改。</li>
+<li><strong>排他锁（X锁）</strong>：允许一个事务修改数据，其他事务既不能读取也不能修改。</li>
+<li><strong>意向锁（IS锁和IX锁）</strong>：用于表级别，表示事务打算在行级别上加锁。</li>
+<li><strong>自增锁（AUTO-INC锁）</strong>：用于处理自增列的并发插入，防止冲突。</li>
+<li><strong>间隙锁（Gap Lock）</strong>：锁定索引记录之间的间隙，防止幻读。</li>
+<li><strong>临键锁（Next-Key Lock）</strong>：结合了记录锁和间隙锁，锁定索引记录及其前面的间隙。</li>
+<li><strong>记录锁（Record Lock）</strong>：锁定具体的索引记录。</li>
+<li><strong>行级锁</strong>：锁定具体的行。</li>
+<li><strong>乐观锁</strong>：通过版本号或时间戳实现，适用于读多写少的场景。</li>
+<li><strong>悲观锁</strong>：通过显式加锁实现，适用于写多读少的场景。</li>
+</ul>
+</li>
+<li><strong>死锁</strong>：多个事务互相等待对方释放锁，导致无法继续执行。</li>
+<li><strong>锁的兼容性</strong>：不同类型的锁之间存在兼容性规则，决定了哪些锁可以同时存在。</li>
+<li><strong>锁的粒度</strong>：锁定资源的范围，粒度越细，系统并发性越高，但管理开销也越大。</li>
+</ul>
+<h2 id="mysql锁介绍">MySQL锁介绍</h2>
+<h3 id="基本命令">基本命令</h3>
+<ul>
+<li>创建测试表</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- auto-generated definition
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w">      </span><span class="nb">bigint</span><span class="w">                              </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">created</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;create time&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">updated</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;update time&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;example_single_pk&#39;</span><span class="w"> </span><span class="n">charset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">utf8mb4</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>执行命令</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>结果</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Empty</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">created</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">updated</span><span class="w">             </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">Rows</span><span class="w"> </span><span class="n">matched</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">Changed</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">Warnings</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">created</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">updated</span><span class="w">             </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w">  </span><span class="mi">6</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Empty</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="按粒度分">按粒度分</h3>
+<h4 id="表级锁---read">表级锁 - READ</h4>
+<h5 id="加锁"><strong>加锁</strong></h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">LOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">READ</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p></p>]]></description></item><item><title>[Github] 4. Value-Checker-Java：可自定义的AOP验证框架</title><link>https://gooddayday.github.io/zh-cn/2025/09/github-4.-value-checker/</link><pubDate>Fri, 26 Sep 2025 23:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/github-4.-value-checker/</guid><description><![CDATA[<h2 id="引言">引言</h2>
+<p>Value-Checker-Java本质上是一个<strong>可自定义的AOP切入点框架</strong>。它允许开发者在方法执行前插入自定义的验证逻辑，而这些验证逻辑可以是任意复杂的业务规则。</p>]]></description></item><item><title>[Github] 3. Basic-Check：参数验证框架</title><link>https://gooddayday.github.io/zh-cn/2025/09/github-3.-basic-check/</link><pubDate>Fri, 26 Sep 2025 22:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/github-3.-basic-check/</guid><description>&lt;h2 id="引言">引言&lt;/h2>
+&lt;p>在日常的Java开发中，方法参数验证是一个常见且重要的需求。传统的参数验证通常需要在每个方法中编写大量的if-else判断代码，不仅冗余繁琐，还容易遗漏。Basic-Check-Java正是为了解决这一痛点而诞生的轻量级参数验证框架。&lt;/p></description></item><item><title>[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进</title><link>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</guid><description><![CDATA[<h2 id="引言">引言</h2>
+<ul>
+<li>RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。</li>
+<li>相比于著名的Paxos算法，RAFT的设计理念是&quot;可理解性&quot;（understandability），通过清晰的角色划分和简洁的状态转换，让开发者更容易理解和实现。</li>
+<li>本文将通过11个详细的图例，展示RAFT算法从单节点到多节点集群的完整演进过程，包括正常运行、故障处理、网络分区和冲突解决等关键场景。</li>
+</ul>
+<h2 id="raft核心概念">RAFT核心概念</h2>
+<ul>
+<li>在深入分析之前，让我们先了解RAFT的几个核心概念：</li>
+</ul>
+<p><strong>节点状态(Node States)</strong>：</p>]]></description></item><item><title>[Github] 2. MyBatis Generator 自定义插件</title><link>https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/</link><pubDate>Wed, 24 Sep 2025 23:46:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/</guid><description><![CDATA[<blockquote>
+<p><strong>🔗 项目地址</strong>: <a href="https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins" target="_blank" rel="noopener noreffer ">mybatis-generator-custome-plugins</a></p>
+</blockquote>
+<p>为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。</p>
+<h2 id="-功能概览">🚀 功能概览</h2>
+<p>本插件集合包含以下6个自定义插件：</p>]]></description></item><item><title>[Customs] 1. IntelliJ IDEA 配置与推荐插件</title><link>https://gooddayday.github.io/zh-cn/2025/09/customs-1.-customs-idea/</link><pubDate>Sun, 21 Sep 2025 23:46:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/zh-cn/2025/09/customs-1.-customs-idea/</guid><description>&lt;h2 id="介绍">介绍&lt;/h2>
+&lt;p>作为目前最强大的Java IDE之一，IntelliJ IDEA可以通过合理的配置和精心选择的插件得到显著增强。本指南提供了一套精选的必备插件和配置技巧，将彻底改变您的开发体验。&lt;/p></description></item></channel></rss>

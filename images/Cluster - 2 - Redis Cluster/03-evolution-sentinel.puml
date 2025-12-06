@@ -1,0 +1,35 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Sentinel Mode - High Availability
+
+rectangle "Sentinel Cluster" as sentinel_group #FFF9C4 {
+    rectangle "Sentinel 1" as s1
+    rectangle "Sentinel 2" as s2
+    rectangle "Sentinel 3" as s3
+}
+
+rectangle "Application" as app #E3F2FD
+
+database "Redis Master" as master #FFCDD2
+database "Redis Slave" as slave #C8E6C9
+
+app -down-> master : Read/Write
+master -right-> slave : Replication
+
+s1 -down-> master : Monitor
+s2 -down-> master : Monitor
+s3 -down-> master : Monitor
+
+s1 <-right-> s2 : Coordinate
+s2 <-right-> s3 : Coordinate
+
+note bottom of sentinel_group
+  <b>Solved:</b> Automatic Failover (HA)
+  <b>Gap:</b> Still single master, cannot scale writes
+end note
+
+@enduml

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cluster on GoodyHao's Blog</title><link>https://gooddayday.github.io/zh-cn/tags/cluster/</link><description>Recent content in Cluster on GoodyHao's Blog</description><generator>Hugo</generator><language>zh-CN</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/zh-cn/tags/cluster/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] - 2. Redis 集群</title><link>https://gooddayday.github.io/zh-cn/2025/12/cluster-2.-redis-cluster/</link><pubDate>Mon, 01 Dec 2025 17:36:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/12/cluster-2.-redis-cluster/</guid><description>&lt;h2 id="概述"&gt;概述&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;常见的三种集群模式为 Redis（分片集群）、MySQL（主从复制）、Kafka（RAFT）。&lt;/li&gt;
+&lt;li&gt;本文将介绍 Redis 从单节点到集群模式的演进过程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="演进历史从单节点到集群"&gt;演进历史：从单节点到集群&lt;/h2&gt;
+&lt;h3 id="单节点时代"&gt;单节点时代&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;这是 Redis 最常见的单体架构。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg"
+ data-srcset="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg 1.5x, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg 2x"
+ data-sizes="auto"
+ alt="/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg"
+ title="01-evolution-single-Single Node Era.svg" /&gt;&lt;/p&gt;</description></item><item><title>[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进</title><link>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/</guid><description>&lt;h2 id="引言"&gt;引言&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。&lt;/li&gt;
+&lt;li&gt;相比于著名的Paxos算法，RAFT的设计理念是&amp;quot;可理解性&amp;quot;（understandability），通过清晰的角色划分和简洁的状态转换，让开发者更容易理解和实现。&lt;/li&gt;
+&lt;li&gt;本文将通过11个详细的图例，展示RAFT算法从单节点到多节点集群的完整演进过程，包括正常运行、故障处理、网络分区和冲突解决等关键场景。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="raft核心概念"&gt;RAFT核心概念&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;在深入分析之前，让我们先了解RAFT的几个核心概念：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;节点状态(Node States)&lt;/strong&gt;：&lt;/p&gt;</description></item></channel></rss>

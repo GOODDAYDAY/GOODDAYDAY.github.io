@@ -1,0 +1,62 @@
+@startuml Composite Index B+Tree
+!theme plain
+
+title Composite Index B+Tree (LastName, FirstName)
+
+package "Root Page" {
+  rectangle "Keys: (Johnson,*)\n(Smith,*)\nPointers:\nP1|P2|P3" as root
+}
+
+package "Internal Pages" {
+  rectangle "Keys: (Brown,*)\n(Davis,*)\nPointers:\nP4|P5|P6" as internal1
+  rectangle "Keys: (Johnson,A)\n(Johnson,M)\nPointers:\nP7|P8|P9" as internal2
+  rectangle "Keys: (Smith,B)\n(Wilson,*)\nPointers:\nP10|P11|P12" as internal3
+}
+
+package "Leaf Pages (Data)" {
+  rectangle "(Adams,John)\n(Brown,Alice)\n(Brown,Bob)\n+Row Ptrs" as leaf1
+  rectangle "(Davis,Charlie)\n(Davis,Eve)\n(Garcia,Frank)\n+Row Ptrs" as leaf2
+  rectangle "(Garcia,Grace)\n(Johnson,Alice)\n(Johnson,Bob)\n+Row Ptrs" as leaf3
+  rectangle "(Johnson,Charlie)\n(Johnson,David)\n(Johnson,Mary)\n+Row Ptrs" as leaf4
+  rectangle "(Miller,Alice)\n(Miller,John)\n(Smith,Bob)\n+Row Ptrs" as leaf5
+  rectangle "(Smith,Charlie)\n(Smith,John)\n(Smith,Mary)\n+Row Ptrs" as leaf6
+  rectangle "(Taylor,Alice)\n(Taylor,Bob)\n(Wilson,Charlie)\n+Row Ptrs" as leaf7
+  rectangle "(Wilson,David)\n(Wilson,John)\n(Wilson,Mary)\n+Row Ptrs" as leaf8
+  rectangle "(Young,Alice)\n(Young,Bob)\n(Young,Charlie)\n+Row Ptrs" as leaf9
+}
+
+' Tree structure
+root -down-> internal1
+root -down-> internal2
+root -down-> internal3
+
+internal1 -down-> leaf1
+internal1 -down-> leaf2
+internal1 -down-> leaf3
+
+internal2 -down-> leaf4
+internal2 -down-> leaf5
+internal2 -down-> leaf6
+
+internal3 -down-> leaf7
+internal3 -down-> leaf8
+internal3 -down-> leaf9
+
+' Leaf linked list
+leaf1 -right-> leaf2
+leaf2 -right-> leaf3
+leaf3 -right-> leaf4
+leaf4 -right-> leaf5
+leaf5 -right-> leaf6
+leaf6 -right-> leaf7
+leaf7 -right-> leaf8
+leaf8 -right-> leaf9
+
+note bottom
+  - Composite index on (LastName, FirstName)
+  - Sorted first by LastName, then by FirstName
+  - Efficient for queries on both columns or just LastName
+  - Less efficient for queries on FirstName only
+end note
+
+@enduml

@@ -1,0 +1,41 @@
+
+
+
+
+@startmindmap
+<style>
+mindmapDiagram {
+  node {
+    BorderColor black
+    FontColor white
+  }
+  .red {
+    BackgroundColor red
+  }
+  .black {
+    BackgroundColor black
+  }
+}
+</style>
+
+* 30 <<black>>
+** 20 <<red>>
+*** 10 <<black>>
+**** NIL <<black>>
+**** NIL <<black>>
+*** 25 <<black>>
+**** NIL <<black>>
+**** NIL <<black>>
+** 50 <<red>>
+*** 40 <<black>>
+**** NIL <<black>>
+**** NIL <<black>>
+*** 70 <<black>>
+**** 60 <<red>>
+***** NIL <<black>>
+***** NIL <<black>>
+**** 80 <<red>>
+***** NIL <<black>>
+***** NIL <<black>>
+
+@endmindmap

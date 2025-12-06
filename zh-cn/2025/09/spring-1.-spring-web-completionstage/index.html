@@ -1,0 +1,645 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>[Spring] 1. spring web CompletionStage 浅谈 - GoodyHao's Blog</title><meta name=Description content="Elegance Never Fades"><meta property="og:url" content="https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/"><meta property="og:site_name" content="GoodyHao's Blog"><meta property="og:title" content="[Spring] 1. spring web CompletionStage 浅谈"><meta property="og:description" content='介绍 spring-web里对异步的支持做的很好，可以通过异步返回的形式，做许多优化 提高吞吐量 精细调控各业务执行线程池 样例说明 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 /** * async interface controller * * @author Goody * @version 1.0, 2024/9/19 */ @RestController @RequestMapping("/goody") @RequiredArgsConstructor @Slf4j public class GoodyAsyncController { private static final AtomicInteger COUNT = new AtomicInteger(0); private static final Executor EXECUTOR = new ThreadPoolExecutor( 10, 10, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), r -> new Thread(r, String.format("customer-t-%s", COUNT.addAndGet(1))) ); @GetMapping("async/query1") public CompletionStage<String> asyncQuery1() { log.info("async query start"); return CompletableFuture.supplyAsync(() -> { log.info("async query sleep start"); ThreadUtils.sleep(1000); log.info("async query sleep done"); log.info("async query done"); return "done"; }, EXECUTOR); } @GetMapping("sync/query1") public String syncQuery1() throws InterruptedException { log.info("sync query start"); final CountDownLatch latch = new CountDownLatch(1); EXECUTOR.execute(() -> { log.info("sync query sleep start"); ThreadUtils.sleep(1000); log.info("sync query sleep done"); latch.countDown(); }); latch.await(); log.info("sync query done"); return "done"; } } 定义了一个自定义的线程池，用于异步状态下使用 这里一个同步，一个异步，可以看下具体的请求情况 单次请求 请求异步接口 curl –location ‘127.0.0.1:50012/goody/async/query1’'><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-09-21T23:23:17+08:00"><meta property="article:modified_time" content="2025-12-06T22:29:56+08:00"><meta property="article:tag" content="Java"><meta property="article:tag" content="Spring"><meta property="article:tag" content="Web"><meta property="og:image" content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:title content="[Spring] 1. spring web CompletionStage 浅谈"><meta name=twitter:description content='介绍 spring-web里对异步的支持做的很好，可以通过异步返回的形式，做许多优化 提高吞吐量 精细调控各业务执行线程池 样例说明 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 /** * async interface controller * * @author Goody * @version 1.0, 2024/9/19 */ @RestController @RequestMapping("/goody") @RequiredArgsConstructor @Slf4j public class GoodyAsyncController { private static final AtomicInteger COUNT = new AtomicInteger(0); private static final Executor EXECUTOR = new ThreadPoolExecutor( 10, 10, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10), r -> new Thread(r, String.format("customer-t-%s", COUNT.addAndGet(1))) ); @GetMapping("async/query1") public CompletionStage<String> asyncQuery1() { log.info("async query start"); return CompletableFuture.supplyAsync(() -> { log.info("async query sleep start"); ThreadUtils.sleep(1000); log.info("async query sleep done"); log.info("async query done"); return "done"; }, EXECUTOR); } @GetMapping("sync/query1") public String syncQuery1() throws InterruptedException { log.info("sync query start"); final CountDownLatch latch = new CountDownLatch(1); EXECUTOR.execute(() -> { log.info("sync query sleep start"); ThreadUtils.sleep(1000); log.info("sync query sleep done"); latch.countDown(); }); latch.await(); log.info("sync query done"); return "done"; } } 定义了一个自定义的线程池，用于异步状态下使用 这里一个同步，一个异步，可以看下具体的请求情况 单次请求 请求异步接口 curl –location ‘127.0.0.1:50012/goody/async/query1’'><meta name=application-name content="LoveIt"><meta name=apple-mobile-web-app-title content="LoveIt"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/><link rel=prev href=https://gooddayday.github.io/zh-cn/2025/09/java-1.-lombok/><link rel=next href=https://gooddayday.github.io/zh-cn/2025/09/java-2.-unit-test/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"[Spring] 1. spring web CompletionStage 浅谈","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/09\/spring-1.-spring-web-completionstage\/"},"image":["https:\/\/gooddayday.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Java, Spring, web","wordcount":3147,"url":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/09\/spring-1.-spring-web-completionstage\/","datePublished":"2025-09-21T23:23:17+08:00","dateModified":"2025-12-06T22:29:56+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"xxxx","logo":"https:\/\/gooddayday.github.io\/images\/logo.jpg"},"author":{"@type":"Person","name":"GoodyHao"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"light"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"light"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/zh-cn/posts/>所有文章 </a><a class=menu-item href=/zh-cn/tags/>标签 </a><a class=menu-item href=/zh-cn/categories/>分类 </a><a class=menu-item href=/zh-cn/categories/documentation/>文档 </a><a class=menu-item href=/zh-cn/about/>关于 </a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/09/spring-1.-spring-web-completionstage/ title=English>English</a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/zh-cn/posts/ title>所有文章</a><a class=menu-item href=/zh-cn/tags/ title>标签</a><a class=menu-item href=/zh-cn/categories/ title>分类</a><a class=menu-item href=/zh-cn/categories/documentation/ title>文档</a><a class=menu-item href=/zh-cn/about/ title>关于</a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/09/spring-1.-spring-web-completionstage/ title=English>English</a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">[Spring] 1. spring web CompletionStage 浅谈</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/zh-cn/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>GoodyHao</a></span>&nbsp;<span class=post-category>收录于 <a href=/zh-cn/categories/java/><i class="far fa-folder fa-fw" aria-hidden=true></i>Java</a>&nbsp;<a href=/zh-cn/categories/spring/><i class="far fa-folder fa-fw" aria-hidden=true></i>Spring</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2025-09-21>2025-09-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 3147 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 7 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#介绍>介绍</a></li><li><a href=#样例说明>样例说明</a><ul><li><a href=#单次请求>单次请求</a><ul><li><a href=#请求异步接口>请求异步接口</a></li><li><a href=#请求同步接口>请求同步接口</a></li><li><a href=#分析>分析</a></li></ul></li><li><a href=#10并发请求>10并发请求</a><ul><li><a href=#请求脚本>请求脚本</a></li><li><a href=#请求异步接口-1>请求异步接口</a></li><li><a href=#请求同步接口-1>请求同步接口</a></li><li><a href=#分析-1>分析</a></li></ul></li></ul></li><li><a href=#源码分析>源码分析</a></li></ul></nav></div></div><div class=content id=content><h2 id=介绍>介绍</h2><ul><li>spring-web里对异步的支持做的很好，可以通过异步返回的形式，做许多优化<ul><li>提高吞吐量</li><li>精细调控各业务执行线程池</li></ul></li></ul><h2 id=样例说明>样例说明</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * async interface controller
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * @author Goody
+</span></span></span><span class=line><span class=cl><span class=cm> * @version 1.0, 2024/9/19
+</span></span></span><span class=line><span class=cl><span class=cm> */</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@RestController</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@RequestMapping</span><span class=p>(</span><span class=s>&#34;/goody&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@RequiredArgsConstructor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Slf4j</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>GoodyAsyncController</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=kd>final</span><span class=w> </span><span class=n>AtomicInteger</span><span class=w> </span><span class=n>COUNT</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>AtomicInteger</span><span class=p>(</span><span class=n>0</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=kd>final</span><span class=w> </span><span class=n>Executor</span><span class=w> </span><span class=n>EXECUTOR</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ThreadPoolExecutor</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>10</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>TimeUnit</span><span class=p>.</span><span class=na>SECONDS</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>new</span><span class=w> </span><span class=n>ArrayBlockingQueue</span><span class=o>&lt;&gt;</span><span class=p>(</span><span class=n>10</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>r</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Thread</span><span class=p>(</span><span class=n>r</span><span class=p>,</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;customer-t-%s&#34;</span><span class=p>,</span><span class=w> </span><span class=n>COUNT</span><span class=p>.</span><span class=na>addAndGet</span><span class=p>(</span><span class=n>1</span><span class=p>)))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@GetMapping</span><span class=p>(</span><span class=s>&#34;async/query1&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>CompletionStage</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=nf>asyncQuery1</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query start&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>CompletableFuture</span><span class=p>.</span><span class=na>supplyAsync</span><span class=p>(()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query sleep start&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>ThreadUtils</span><span class=p>.</span><span class=na>sleep</span><span class=p>(</span><span class=n>1000</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query sleep done&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;async query done&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=s>&#34;done&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>},</span><span class=w> </span><span class=n>EXECUTOR</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@GetMapping</span><span class=p>(</span><span class=s>&#34;sync/query1&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=nf>syncQuery1</span><span class=p>()</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>InterruptedException</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query start&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kd>final</span><span class=w> </span><span class=n>CountDownLatch</span><span class=w> </span><span class=n>latch</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>CountDownLatch</span><span class=p>(</span><span class=n>1</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>EXECUTOR</span><span class=p>.</span><span class=na>execute</span><span class=p>(()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query sleep start&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>ThreadUtils</span><span class=p>.</span><span class=na>sleep</span><span class=p>(</span><span class=n>1000</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query sleep done&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>latch</span><span class=p>.</span><span class=na>countDown</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>});</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>latch</span><span class=p>.</span><span class=na>await</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>log</span><span class=p>.</span><span class=na>info</span><span class=p>(</span><span class=s>&#34;sync query done&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=s>&#34;done&#34;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li>定义了一个自定义的线程池，用于异步状态下使用</li><li>这里一个同步，一个异步，可以看下具体的请求情况</li></ul><h3 id=单次请求>单次请求</h3><h4 id=请求异步接口>请求异步接口</h4><blockquote><p>curl &ndash;location &lsquo;127.0.0.1:50012/goody/async/query1&rsquo;</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-09-19 15:56:43.408  INFO 24912 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 15:56:43.411  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 15:56:44.417  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 15:56:44.417  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span></code></pre></td></tr></table></div></div><h4 id=请求同步接口>请求同步接口</h4><blockquote><p>curl &ndash;location &lsquo;127.0.0.1:50012/goody/sync/query1&rsquo;</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-09-19 16:03:00.916  INFO 25780 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:03:00.917  INFO 25780 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:03:01.924  INFO 25780 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:03:01.924  INFO 25780 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span></code></pre></td></tr></table></div></div><h4 id=分析>分析</h4><ul><li>其实从一个单独请求的例子里，看出来的差别不大。不过我们先一步一步分析</li><li>从异步接口里来看，从<code>CompletableFuture</code>接手之后，全部都是<code>自定义线程池</code>处理，全部交给spring-web框架进行拆包的处理</li><li>从同步接口里来看，从<code>CompletableFuture</code>接手之后，spring-web的线程进行了等待，其实可以推理出来此时是同步等待的。</li></ul><h3 id=10并发请求>10并发请求</h3><ul><li>java程序已经设置<code>web线程=1</code>，<code>自定义业务线程=10</code></li></ul><h4 id=请求脚本>请求脚本</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>threading</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>requests</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>datetime</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_current_time</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_time</span> <span class=o>=</span> <span class=n>datetime</span><span class=o>.</span><span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>current_time</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s2>&#34;%Y-%m-</span><span class=si>%d</span><span class=s2> %H:%M:%S&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;http://127.0.0.1:50012/goody/async/query1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>num_threads</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>send_request</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>requests</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>get_current_time</span><span class=p>()</span><span class=si>}</span><span class=s2> Request finished with status code: </span><span class=si>{</span><span class=n>response</span><span class=o>.</span><span class=n>status_code</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>threads</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>num_threads</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>thread</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Thread</span><span class=p>(</span><span class=n>target</span><span class=o>=</span><span class=n>send_request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>threads</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>thread</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>thread</span><span class=o>.</span><span class=n>start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 等待所有线程完成</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>t</span> <span class=ow>in</span> <span class=n>threads</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>t</span><span class=o>.</span><span class=n>join</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=请求异步接口-1>请求异步接口</h4><p><strong>java输出</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-09-19 16:11:19.983  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.986  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.991  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.992  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.992  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.993  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.993  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.994  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.994  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.995  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.995  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.996  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.997  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.997  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.997  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.998  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.998  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.999  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:19.999  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:20.000  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:11:20.989  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:20.989  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.005  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.004  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query done
+</span></span></code></pre></td></tr></table></div></div><p><strong>python脚本输出</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>PS D:\desktop&gt; &amp; C:/Users/86570/AppData/Local/Programs/Python/Python311/python.exe d:/desktop/toy.py
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:11:21 Request finished with status code: 200
+</span></span></code></pre></td></tr></table></div></div><h4 id=请求同步接口-1>请求同步接口</h4><p><strong>java输出</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>2024-09-19 16:16:12.918  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:12.919  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:13.923  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:13.923  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:13.927  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:13.927  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:14.940  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:14.941  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:14.943  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:14.943  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:15.957  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:15.957  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:15.961  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:15.961  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:16.967  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:16.967  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:16.972  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:16.972  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:17.987  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:17.987  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:17.990  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:17.991  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:18.996  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:18.996  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:18.999  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:18.999  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:20.003  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:20.003  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:20.007  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:20.007  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:21.012  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:21.012  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:21.016  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:21.016  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:22.018  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:22.018  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:22.020  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:22.020  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+</span></span><span class=line><span class=cl>2024-09-19 16:16:23.026  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+</span></span><span class=line><span class=cl>2024-09-19 16:16:23.027  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+</span></span></code></pre></td></tr></table></div></div><p><strong>python脚本输出</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>PS D:\desktop&gt; &amp; C:/Users/86570/AppData/Local/Programs/Python/Python311/python.exe d:/desktop/toy.py
+</span></span><span class=line><span class=cl>2024-09-19 16:16:13 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:14 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:15 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:16 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:17 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:18 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:20 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:21 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:22 Request finished with status code: 200
+</span></span><span class=line><span class=cl>2024-09-19 16:16:23 Request finished with status code: 200
+</span></span></code></pre></td></tr></table></div></div><h4 id=分析-1>分析</h4><ul><li>此时可以明显看出区别，当web线程作为瓶颈的时候，<code>return CompletionStage</code>
+体，会在spring级别有相关优化。将业务放置在业务线程池之后，spring-web线程就会释放用于自身web相关业务处理</li><li>所以在异步时，会直接被web线程下发10个任务</li><li>所以在同步时，web线程必须等待每个任务完成后才会继续执行下一个请求数据</li><li>如果了解过<code>netty网络模型</code>就会发现这就是一个经典的<code>Event Loop</code> + <code>Channel</code> + <code>Selector</code>的模式。<ul><li>也就是spring-web线程作为业务分发者执行<code>分发</code>和<code>回复</code>，自定义业务线程池作为业务执行者<code>执行业务</code>
+。通过这种形式，可以极大提高IO吞吐，并把执行业务的能力更好地把握在自己手中</li></ul></li></ul><h2 id=源码分析>源码分析</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span><span class=lnt>97
+</span><span class=lnt>98
+</span><span class=lnt>99
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>    </span><span class=kd>protected</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>doDispatch</span><span class=p>(</span><span class=n>HttpServletRequest</span><span class=w> </span><span class=n>request</span><span class=p>,</span><span class=w> </span><span class=n>HttpServletResponse</span><span class=w> </span><span class=n>response</span><span class=p>)</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>Exception</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>HttpServletRequest</span><span class=w> </span><span class=n>processedRequest</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>request</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>HandlerExecutionChain</span><span class=w> </span><span class=n>mappedHandler</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>boolean</span><span class=w> </span><span class=n>multipartRequestParsed</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>false</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>WebAsyncManager</span><span class=w> </span><span class=n>asyncManager</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>WebAsyncUtils</span><span class=p>.</span><span class=na>getAsyncManager</span><span class=p>(</span><span class=n>request</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>try</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>ModelAndView</span><span class=w> </span><span class=n>mv</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Exception</span><span class=w> </span><span class=n>dispatchException</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>try</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>processedRequest</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>checkMultipart</span><span class=p>(</span><span class=n>request</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>multipartRequestParsed</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=n>processedRequest</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=n>request</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Determine handler for the current request.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>mappedHandler</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getHandler</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>mappedHandler</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>noHandlerFound</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Determine handler adapter for the current request.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>HandlerAdapter</span><span class=w> </span><span class=n>ha</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getHandlerAdapter</span><span class=p>(</span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>getHandler</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Process last-modified header, if supported by the handler.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>String</span><span class=w> </span><span class=n>method</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>request</span><span class=p>.</span><span class=na>getMethod</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=kt>boolean</span><span class=w> </span><span class=n>isGet</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;GET&#34;</span><span class=p>.</span><span class=na>equals</span><span class=p>(</span><span class=n>method</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>isGet</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=s>&#34;HEAD&#34;</span><span class=p>.</span><span class=na>equals</span><span class=p>(</span><span class=n>method</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=kt>long</span><span class=w> </span><span class=n>lastModified</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>ha</span><span class=p>.</span><span class=na>getLastModified</span><span class=p>(</span><span class=n>request</span><span class=p>,</span><span class=w> </span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>getHandler</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>ServletWebRequest</span><span class=p>(</span><span class=n>request</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>).</span><span class=na>checkNotModified</span><span class=p>(</span><span class=n>lastModified</span><span class=p>)</span><span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=n>isGet</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// 前置处理</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=o>!</span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>applyPreHandle</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Actually invoke the handler.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// asyncManager.isConcurrentHandlingStarted() = false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#handleInternal</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// org.springframework.web.servlet.mvc.method.annotation.DeferredResultMethodReturnValueHandler</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>mv</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>ha</span><span class=p>.</span><span class=na>handle</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>,</span><span class=w> </span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>getHandler</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// asyncManager.isConcurrentHandlingStarted() = true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// 如果是异步返回，这里就会是true，下文的后置处理不会执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>asyncManager</span><span class=p>.</span><span class=na>isConcurrentHandlingStarted</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>applyDefaultViewName</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>mv</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>applyPostHandle</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>,</span><span class=w> </span><span class=n>mv</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>catch</span><span class=w> </span><span class=p>(</span><span class=n>Exception</span><span class=w> </span><span class=n>ex</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>dispatchException</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>ex</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>catch</span><span class=w> </span><span class=p>(</span><span class=n>Throwable</span><span class=w> </span><span class=n>err</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// As of 4.3, we&#39;re processing Errors thrown from handler methods as well,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// making them available for @ExceptionHandler methods and other scenarios.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>dispatchException</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>NestedServletException</span><span class=p>(</span><span class=s>&#34;Handler dispatch failed&#34;</span><span class=p>,</span><span class=w> </span><span class=n>err</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>processDispatchResult</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>,</span><span class=w> </span><span class=n>mappedHandler</span><span class=p>,</span><span class=w> </span><span class=n>mv</span><span class=p>,</span><span class=w> </span><span class=n>dispatchException</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w> </span><span class=k>catch</span><span class=w> </span><span class=p>(</span><span class=n>Exception</span><span class=w> </span><span class=n>ex</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>triggerAfterCompletion</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>,</span><span class=w> </span><span class=n>mappedHandler</span><span class=p>,</span><span class=w> </span><span class=n>ex</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w> </span><span class=k>catch</span><span class=w> </span><span class=p>(</span><span class=n>Throwable</span><span class=w> </span><span class=n>err</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>triggerAfterCompletion</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>,</span><span class=w> </span><span class=n>mappedHandler</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>new</span><span class=w> </span><span class=n>NestedServletException</span><span class=p>(</span><span class=s>&#34;Handler processing failed&#34;</span><span class=p>,</span><span class=w> </span><span class=n>err</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w> </span><span class=k>finally</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>asyncManager</span><span class=p>.</span><span class=na>isConcurrentHandlingStarted</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Instead of postHandle and afterCompletion</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>mappedHandler</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// 实际增加的就是以下的后置处理，用于唤醒后，把上下文恢复</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// org.springframework.boot.actuate.metrics.web.servlet.LongTaskTimingHandlerInterceptor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>mappedHandler</span><span class=p>.</span><span class=na>applyAfterConcurrentHandlingStarted</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>,</span><span class=w> </span><span class=n>response</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w> </span><span class=k>else</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// Clean up any resources used by a multipart request.</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>multipartRequestParsed</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>cleanupMultipart</span><span class=p>(</span><span class=n>processedRequest</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><ul><li><p>这里是非常spring的写法</p><ol><li>前置装载若干处理器。</li><li>执行前置处理器</li><li>开始执行</li><li>执行后置处理器</li></ol></li><li><p>不过不同的是，里面的一个处理器<code>DeferredResultMethodReturnValueHandler</code>会判断结果是否是异步。当是异步的时候，会直接短路下文后置处理器逻辑。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=kd>public</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>handleReturnValue</span><span class=p>(</span><span class=nd>@Nullable</span><span class=w> </span><span class=n>Object</span><span class=w> </span><span class=n>returnValue</span><span class=p>,</span><span class=w> </span><span class=n>MethodParameter</span><span class=w> </span><span class=n>returnType</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=n>ModelAndViewContainer</span><span class=w> </span><span class=n>mavContainer</span><span class=p>,</span><span class=w> </span><span class=n>NativeWebRequest</span><span class=w> </span><span class=n>webRequest</span><span class=p>)</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>Exception</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>returnValue</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=n>mavContainer</span><span class=p>.</span><span class=na>setRequestHandled</span><span class=p>(</span><span class=kc>true</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>DeferredResult</span><span class=o>&lt;?&gt;</span><span class=w> </span><span class=n>result</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>returnValue</span><span class=w> </span><span class=k>instanceof</span><span class=w> </span><span class=n>DeferredResult</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=n>result</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=n>DeferredResult</span><span class=o>&lt;?&gt;</span><span class=p>)</span><span class=w> </span><span class=n>returnValue</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>else</span><span class=w> </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>returnValue</span><span class=w> </span><span class=k>instanceof</span><span class=w> </span><span class=n>ListenableFuture</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=n>result</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>adaptListenableFuture</span><span class=p>((</span><span class=n>ListenableFuture</span><span class=o>&lt;?&gt;</span><span class=p>)</span><span class=w> </span><span class=n>returnValue</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>else</span><span class=w> </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>returnValue</span><span class=w> </span><span class=k>instanceof</span><span class=w> </span><span class=n>CompletionStage</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=c1>// 此处处理CompletionStage异步相关后续逻辑</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=c1>// ===========================================</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=n>result</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>adaptCompletionStage</span><span class=p>((</span><span class=n>CompletionStage</span><span class=o>&lt;?&gt;</span><span class=p>)</span><span class=w> </span><span class=n>returnValue</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>else</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=c1>// Should not happen...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=k>throw</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>IllegalStateException</span><span class=p>(</span><span class=s>&#34;Unexpected return value type: &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>returnValue</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>WebAsyncUtils</span><span class=p>.</span><span class=na>getAsyncManager</span><span class=p>(</span><span class=n>webRequest</span><span class=p>).</span><span class=na>startDeferredResultProcessing</span><span class=p>(</span><span class=n>result</span><span class=p>,</span><span class=w> </span><span class=n>mavContainer</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></li><li><p>此时等待异步<code>CompletionStage</code></p></li><li><p>值得一提的是spring-web上下文的传递这里非常有意思，传递路径为<code>web-thread</code> -> <code>biz-thread</code> -> <code>web-thread</code></p></li><li><p>睡眠和唤醒具体使用的是<code>java.util.concurrent.locks.LockSupport</code>里的<code>park()</code>和<code>unpark()</code>两个方法</p></li><li><p>画了一个图辅助参考</p><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/5.%20spring-web-CompletionStage/img1.png data-srcset="/images/5.%20spring-web-CompletionStage/img1.png, /images/5.%20spring-web-CompletionStage/img1.png 1.5x, /images/5.%20spring-web-CompletionStage/img1.png 2x" data-sizes=auto alt=/images/5.%20spring-web-CompletionStage/img1.png title=img1.png></p></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2025-12-06&nbsp;<a class=git-hash href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io/commit/af3d5c9bd409e602f90f3dec7c5441cd7924d96f target=_blank title="commit by haotian(865700600@qq.com) af3d5c9bd409e602f90f3dec7c5441cd7924d96f: Refactor Redis Cluster documentation for clarity and consistency">
+<i class="fas fa-hashtag fa-fw" aria-hidden=true></i>af3d5c9</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/zh-cn/2025/09/spring-1.-spring-web-completionstage/index.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/ data-title="[Spring] 1. spring web CompletionStage 浅谈" data-hashtags=Java,Spring,web><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/ data-hashtag=Java><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Linkedin" data-sharer=linkedin data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/><i class="fab fa-linkedin fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/ data-title="[Spring] 1. spring web CompletionStage 浅谈"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/ data-title="[Spring] 1. spring web CompletionStage 浅谈"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://gooddayday.github.io/zh-cn/2025/09/spring-1.-spring-web-completionstage/ data-title="[Spring] 1. spring web CompletionStage 浅谈"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/zh-cn/tags/java/>Java</a>,&nbsp;<a href=/zh-cn/tags/spring/>Spring</a>,&nbsp;<a href=/zh-cn/tags/web/>Web</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/zh-cn/>主页</a></span></section></div><div class=post-nav><a href=/zh-cn/2025/09/java-1.-lombok/ class=prev rel=prev title="[Java] 1. Lombok"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>[Java] 1. Lombok</a>
+<a href=/zh-cn/2025/09/java-2.-unit-test/ class=next rel=next title="[Java] 2. Unit Test 基本用法">[Java] 2. Unit Test 基本用法<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><span class=author itemprop=copyrightHolder>&nbsp;<a href=/zh-cn/ target=_blank>GoodyHao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><link rel=stylesheet href=/css/auto-numbering.css><link rel=stylesheet href=/css/svg-fullwidth.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOPtWtCc4CvteQ",darkTheme:"dark",emitMetadata:"0",inputPosition:"bottom",lang:"zh-CN",lazyLoading:!1,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"GOODDAYDAY/GOODDAYDAY.github.io",repoId:"R_kgDOPtWtCQ"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{algoliaAppID:"PASDMWALPK",algoliaIndex:"index.zh-cn",algoliaSearchKey:"b42948e51daaa93df92381c8e2ac0f93",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

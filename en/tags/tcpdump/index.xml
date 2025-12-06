@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tcpdump on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/tags/tcpdump/</link><description>Recent content in Tcpdump on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/tags/tcpdump/index.xml" rel="self" type="application/rss+xml"/><item><title>[Network] 1. File Transfer Optimization Sharing</title><link>https://gooddayday.github.io/en/2025/09/network-1.-file-transfer-optimization/</link><pubDate>Sun, 21 Sep 2025 16:11:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/network-1.-file-transfer-optimization/</guid><description>&lt;h2 id="background-sensitive-data-masked"&gt;Background (Sensitive Data Masked)&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Due to various requirements, we need to upload data to overseas OSS for storage. So we developed a proxy service to maintain data and perform encryption operations. During this process, we discovered that data upload and download were very slow. After a series of investigations, we finally located the root cause of the problem and provided a solution. We&amp;rsquo;re now sharing the troubleshooting process.&lt;/li&gt;
+&lt;li&gt;Of course, one prerequisite is &lt;code&gt;internal network connectivity through dedicated line network access&lt;/code&gt; to achieve theoretical physical limits. Using complex and lengthy public networks is neither suitable for file security nor for large file long-term transmission.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="service-level-issues"&gt;Service-Level Issues&lt;/h2&gt;
+&lt;img src="https://gooddayday.github.io/images/2.%20%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E4%BC%98%E5%8C%96%E5%88%86%E4%BA%AB/sequence-1-.svg" alt="Description" style="width: 600px; height: auto;" /&gt;
+&lt;ul&gt;
+&lt;li&gt;Initially, we suspected it was due to data writing to disk being too slow. Because uploads must be written to disk to prevent files from being too large. Downloads use direct streaming transmission, which is very reasonable. The only improvement would be to perform streaming encryption and transmission for uploads, but the current issue is not significant.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="phenomenon"&gt;Phenomenon&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Using our written script to upload 1M of encrypted data took nearly 2 seconds&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/upload/files&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;data&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;upload_data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;file&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;transfer_data&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ python oss.py --file_input&lt;span class="o"&gt;=&lt;/span&gt;./1M.data --region&lt;span class="o"&gt;=&lt;/span&gt;us --model&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt; --range&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;encrypted_upload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload ./1M.data, encrypt cost 4.714599609375, upload cost 1788.95849609375
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload ./1M.data, encrypt cost 10.140625, upload cost 1945.90087890625
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload ./1M.data, encrypt cost 9.924560546875, upload cost 1756.984130859375
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload ./1M.data, encrypt cost 8.694580078125, upload cost 1930.31201171875
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;upload ./1M.data, encrypt cost 8.279296875, upload cost 1739.38623046875
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="packet-capture"&gt;Packet Capture&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;After communicating with operations, they suspected it was a network issue and performed packet capture to investigate.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="packet-capture-demonstration"&gt;Packet Capture Demonstration&lt;/h3&gt;
+&lt;h4 id="ping-packets"&gt;Ping Packets&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo tcpdump -i bond0 &lt;span class="p"&gt;|&lt;/span&gt; grep x.x.x.x1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tcpdump: verbose output suppressed, use -v or -vv &lt;span class="k"&gt;for&lt;/span&gt; full protocol decode
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;listening on bond0, link-type EN10MB &lt;span class="o"&gt;(&lt;/span&gt;Ethernet&lt;span class="o"&gt;)&lt;/span&gt;, capture size &lt;span class="m"&gt;262144&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:19.255718 IP public2.alidns.com.domain &amp;gt; domain1.36590: &lt;span class="m"&gt;43190&lt;/span&gt; 1/0/1 A x.x.x.x1 &lt;span class="o"&gt;(&lt;/span&gt;88&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:19.256404 IP domain1 &amp;gt; x.x.x.x1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; request, id 32590, seq 1, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:19.456754 IP x.x.x.x1 &amp;gt; domain1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; reply, id 32590, seq 1, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:20.257688 IP domain1 &amp;gt; x.x.x.x1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; request, id 32590, seq 2, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:20.458076 IP x.x.x.x1 &amp;gt; domain1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; reply, id 32590, seq 2, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:21.259088 IP domain1 &amp;gt; x.x.x.x1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; request, id 32590, seq 3, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:21.459506 IP x.x.x.x1 &amp;gt; domain1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; reply, id 32590, seq 3, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:22.260538 IP domain1 &amp;gt; x.x.x.x1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; request, id 32590, seq 4, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:21:22.460976 IP x.x.x.x1 &amp;gt; domain1: ICMP &lt;span class="nb"&gt;echo&lt;/span&gt; reply, id 32590, seq 4, length &lt;span class="m"&gt;64&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ ping domain1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PING domain1 &lt;span class="o"&gt;(&lt;/span&gt;x.x.x.x1&lt;span class="o"&gt;)&lt;/span&gt; 56&lt;span class="o"&gt;(&lt;/span&gt;84&lt;span class="o"&gt;)&lt;/span&gt; bytes of data.
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="m"&gt;64&lt;/span&gt; bytes from x.x.x.x1 &lt;span class="o"&gt;(&lt;/span&gt;x.x.x.x1&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="nv"&gt;icmp_seq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nv"&gt;ttl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;58&lt;/span&gt; &lt;span class="nv"&gt;time&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;200&lt;/span&gt; ms
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="m"&gt;64&lt;/span&gt; bytes from x.x.x.x1 &lt;span class="o"&gt;(&lt;/span&gt;x.x.x.x1&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="nv"&gt;icmp_seq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="nv"&gt;ttl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;58&lt;/span&gt; &lt;span class="nv"&gt;time&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;200&lt;/span&gt; ms
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="m"&gt;64&lt;/span&gt; bytes from x.x.x.x1 &lt;span class="o"&gt;(&lt;/span&gt;x.x.x.x1&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="nv"&gt;icmp_seq&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="nv"&gt;ttl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;58&lt;/span&gt; &lt;span class="nv"&gt;time&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;200&lt;/span&gt; ms
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;^C
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;--- domain1 ping statistics ---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="m"&gt;4&lt;/span&gt; packets transmitted, &lt;span class="m"&gt;3&lt;/span&gt; received, 25% packet loss, &lt;span class="nb"&gt;time&lt;/span&gt; 3004ms
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;rtt min/avg/max/mdev &lt;span class="o"&gt;=&lt;/span&gt; 200.395/200.419/200.456/0.517 ms
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="three-way-handshake"&gt;Three-Way Handshake&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.286416 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;S&lt;span class="o"&gt;]&lt;/span&gt;, seq 2682796272, win 64240, options &lt;span class="o"&gt;[&lt;/span&gt;mss 1460,sackOK,TS val &lt;span class="m"&gt;2595135963&lt;/span&gt; ecr 0,nop,wscale 7&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486797 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;S.&lt;span class="o"&gt;]&lt;/span&gt;, seq 2198055866, ack 2682796273, win 62643, options &lt;span class="o"&gt;[&lt;/span&gt;mss 1460,sackOK,TS val &lt;span class="m"&gt;2062390218&lt;/span&gt; ecr 2595135963,nop,wscale 7&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486840 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 1, win 502, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136163&lt;/span&gt; ecr 2062390218&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="four-way-handshake"&gt;Four-Way Handshake&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:28.356723 IP domain1.54028 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;F.&lt;span class="o"&gt;]&lt;/span&gt;, seq 1746, ack 215, win 501, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595158034&lt;/span&gt; ecr 2062412087&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:28.557169 IP x.x.x.x1.http &amp;gt; domain1.54028: Flags &lt;span class="o"&gt;[&lt;/span&gt;F.&lt;span class="o"&gt;]&lt;/span&gt;, seq 215, ack 1747, win 477, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2062412289&lt;/span&gt; ecr 2595158034&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:28.557222 IP domain1.54028 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 216, win 501, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595158234&lt;/span&gt; ecr 2062412289&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="tcpdump-flags"&gt;tcpdump Flags&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Tcpdump flags are flags that indicate TCP connection status or actions. They are usually represented in square brackets in tcpdump output. There are various flags in tcpdump output, and the output may also contain combinations of multiple TCP flags. Some common flags include:
+&lt;ul&gt;
+&lt;li&gt;S (SYN): This flag is used to establish a connection between two hosts. It is set in the first packet of the three-way handshake.&lt;/li&gt;
+&lt;li&gt;. (No flag): This means no flag is set in the packet. It is usually used for data transmission or acknowledgment packets.&lt;/li&gt;
+&lt;li&gt;P (PUSH): This flag is used to indicate that the sender wants to send data as soon as possible without waiting for the buffer to fill.&lt;/li&gt;
+&lt;li&gt;F (FIN): This flag is used to terminate the connection between two hosts. It is set in the last packet of the four-way handshake.&lt;/li&gt;
+&lt;li&gt;R (RST): This flag is used to reset connections that are in an invalid state or encounter errors. It is also used to reject unwanted connection attempts.&lt;/li&gt;
+&lt;li&gt;W (ECN CWR): This flag is used to indicate that the sender has reduced its congestion window size according to the network&amp;rsquo;s Explicit Congestion Notification (ECN).&lt;/li&gt;
+&lt;li&gt;E (ECN-Echo): This flag is used to indicate that the receiver has received a packet with the ECN bit, meaning there is congestion in the network.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;For example, a packet with flags [S.] means it is a SYN packet, the first step in establishing a TCP connection. A packet with flags [P.] means it is a PUSH packet containing data that the sender wants to transmit quickly. A packet with flags [F.] means it is a FIN packet, the last step in closing a TCP connection.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="why-tcpdump-four-way-handshake-only-has-three-packets"&gt;Why tcpdump Four-Way Handshake Only Has Three Packets&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;The reason tcpdump four-way handshake only has three packets may be due to the following:
+&lt;ul&gt;
+&lt;li&gt;One possibility is that the passive closing party (the one receiving FIN) sends its own FIN while replying with ACK, combining the second and third handshakes into one packet, saving one packet. In this case, the passive closing party has no more data to send, so it can directly enter the LAST_ACK state and wait for the final ACK from the active closing party.&lt;/li&gt;
+&lt;li&gt;Another possibility is that the active closing party (the one sending FIN) doesn&amp;rsquo;t reply with ACK promptly after receiving the passive closing party&amp;rsquo;s FIN, but sends ACK after some time with the RST flag set, indicating a forced connection reset. In this case, the active closing party may have encountered an exception or timeout, so it no longer waits for the 2MSL time but directly enters the CLOSE state.&lt;/li&gt;
+&lt;li&gt;Another possibility is that tcpdump didn&amp;rsquo;t capture all packets due to network delay or packet loss, causing certain handshake packets not to be captured. In this case, you can try re-capturing packets or increasing the capture time range to see if you can see the complete four-way handshake process.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="actual-data"&gt;Actual Data&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ python oss.py --file_input&lt;span class="o"&gt;=&lt;/span&gt;./1K.data --file_output&lt;span class="o"&gt;=&lt;/span&gt;./download-1M.data --region&lt;span class="o"&gt;=&lt;/span&gt;us --model&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt; --range&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;encrypted_upload
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;http://domain1 upload ./1K.data, encrypt cost 1.530029296875, upload cost 408.5546875
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$ sudo tcpdump -i bond0 &lt;span class="p"&gt;|&lt;/span&gt; grep x.x.x.x1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tcpdump: verbose output suppressed, use -v or -vv &lt;span class="k"&gt;for&lt;/span&gt; full protocol decode
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;listening on bond0, link-type EN10MB &lt;span class="o"&gt;(&lt;/span&gt;Ethernet&lt;span class="o"&gt;)&lt;/span&gt;, capture size &lt;span class="m"&gt;262144&lt;/span&gt; bytes
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.286416 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;S&lt;span class="o"&gt;]&lt;/span&gt;, seq 2682796272, win 64240, options &lt;span class="o"&gt;[&lt;/span&gt;mss 1460,sackOK,TS val &lt;span class="m"&gt;2595135963&lt;/span&gt; ecr 0,nop,wscale 7&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486797 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;S.&lt;span class="o"&gt;]&lt;/span&gt;, seq 2198055866, ack 2682796273, win 62643, options &lt;span class="o"&gt;[&lt;/span&gt;mss 1460,sackOK,TS val &lt;span class="m"&gt;2062390218&lt;/span&gt; ecr 2595135963,nop,wscale 7&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486840 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 1, win 502, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136163&lt;/span&gt; ecr 2062390218&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486930 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;P.&lt;span class="o"&gt;]&lt;/span&gt;, seq 1:292, ack 1, win 502, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136164&lt;/span&gt; ecr 2062390218&lt;span class="o"&gt;]&lt;/span&gt;, length 291: HTTP: POST /upload/files HTTP/1.1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.486960 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;P.&lt;span class="o"&gt;]&lt;/span&gt;, seq 292:1746, ack 1, win 502, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136164&lt;/span&gt; ecr 2062390218&lt;span class="o"&gt;]&lt;/span&gt;, length 1454: HTTP
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.687234 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 292, win 488, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2062390419&lt;/span&gt; ecr 2595136164&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.687279 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 1746, win 477, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2062390419&lt;/span&gt; ecr 2595136164&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.690277 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;P.&lt;span class="o"&gt;]&lt;/span&gt;, seq 1:215, ack 1746, win 477, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2062390422&lt;/span&gt; ecr 2595136164&lt;span class="o"&gt;]&lt;/span&gt;, length 214: HTTP: HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.690314 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 215, win 501, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136367&lt;/span&gt; ecr 2062390422&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.692023 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;F.&lt;span class="o"&gt;]&lt;/span&gt;, seq 1746, ack 215, win 501, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136369&lt;/span&gt; ecr 2062390422&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.892401 IP x.x.x.x1.http &amp;gt; domain1.33666: Flags &lt;span class="o"&gt;[&lt;/span&gt;F.&lt;span class="o"&gt;]&lt;/span&gt;, seq 215, ack 1747, win 477, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2062390624&lt;/span&gt; ecr 2595136369&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;16:54:06.892448 IP domain1.33666 &amp;gt; x.x.x.x1.http: Flags &lt;span class="o"&gt;[&lt;/span&gt;.&lt;span class="o"&gt;]&lt;/span&gt;, ack 216, win 501, options &lt;span class="o"&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class="m"&gt;2595136569&lt;/span&gt; ecr 2062390624&lt;span class="o"&gt;]&lt;/span&gt;, length &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;Actually uploading 1M of data for analysis, simplified here.&lt;/li&gt;
+&lt;li&gt;Since all time jumps occur in packets returned from the server side, the problem is now very clear. Due to the actual physical distance between Shenzhen and the US East Coast, the 200ms round trip has reached its limit. So it&amp;rsquo;s actually reasonable.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="soul-searching-question"&gt;Soul-Searching Question&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;At this point, a soul-searching question arises: why was it faster when using the public network before?&lt;/li&gt;
+&lt;li&gt;After communicating with colleagues from sister departments and simulating their code, we tested using AWS SDK&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-python" data-lang="python"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;boto3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;boto3.s3.transfer&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TransferConfig&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;download&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;s3_client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;access_key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;access_secret&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1024&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;config&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TransferConfig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;multipart_threshold&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;GB&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;max_concurrency&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;use_threads&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;s3_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;download_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Bucket&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;bucket&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;name-100.jpg&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Filename&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;name-100.jpg&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Config&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;download&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;# ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;download&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Results&lt;/strong&gt;&lt;/p&gt;</description></item></channel></rss>

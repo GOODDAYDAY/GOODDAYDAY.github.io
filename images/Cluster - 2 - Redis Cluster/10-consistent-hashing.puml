@@ -1,0 +1,57 @@
+@startuml 10-consistent-hashing-Consistent Hashing
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Consistent Hashing: Hash Ring (0 ~ 2^32)
+
+' === Hash Ring ===
+package "Hash Ring" as ring #E3F2FD {
+
+    card "Ring: 0 ────────────> 2^32" as ringLabel #BBDEFB
+
+    rectangle "Node A\n(position: 1000)" as nodeA #C8E6C9
+    rectangle "Node B\n(position: 5000)" as nodeB #C8E6C9
+    rectangle "Node C\n(position: 9000)" as nodeC #C8E6C9
+
+    card "Key1\nhash=800" as key1 #FFF9C4
+    card "Key2\nhash=3000" as key2 #FFF9C4
+    card "Key3\nhash=7000" as key3 #FFF9C4
+
+    key1 --> nodeA : clockwise to A
+    key2 --> nodeB : clockwise to B
+    key3 --> nodeC : clockwise to C
+}
+
+' === Add Node D ===
+package "Add Node D (position: 6000)" as addNode #E8F5E9 {
+
+    rectangle "Node A (1000)" as nodeA2 #C8E6C9
+    rectangle "Node B (5000)" as nodeB2 #C8E6C9
+    rectangle "Node D (6000)" as nodeD2 #BBDEFB
+    rectangle "Node C (9000)" as nodeC2 #C8E6C9
+
+    card "Key3\nhash=7000" as key3b #FFECB3
+
+    key3b --> nodeC2 : was C
+    key3b ..> nodeD2 : now D
+}
+
+note bottom of addNode #E8F5E9
+  **Only ~1/N keys affected!**
+
+  Keys between Node B (5000) and Node D (6000)
+  move from C to D
+
+  Other keys stay unchanged!
+  Add 1 node to 4 nodes = only ~25% migration
+end note
+
+note right of ring #FFF9C4
+  **Rule**: Key goes to the
+  first node found when
+  walking **clockwise**
+end note
+
+@enduml

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Index on GoodyHao's Blog</title><link>https://gooddayday.github.io/zh-cn/tags/index/</link><description>Recent content in Index on GoodyHao's Blog</description><generator>Hugo</generator><language>zh-CN</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/zh-cn/tags/index/index.xml" rel="self" type="application/rss+xml"/><item><title>[MySQL] 3. MySQL 索引</title><link>https://gooddayday.github.io/zh-cn/2025/09/mysql-3.-mysql-index/</link><pubDate>Sun, 28 Sep 2025 21:02:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/09/mysql-3.-mysql-index/</guid><description>&lt;h2 id="什么是索引"&gt;什么是索引？&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;索引是一种数据结构，通过额外的写入和存储空间来维护索引数据结构，从而提高数据库表上数据检索操作的速度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="索引类型"&gt;索引类型&lt;/h2&gt;
+&lt;h3 id="按数据结构分类"&gt;按数据结构分类&lt;/h3&gt;
+&lt;h4 id="哈希索引"&gt;哈希索引&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;哈希索引基于哈希表数据结构。它使用哈希函数将键映射到哈希表中的特定位置，允许非常快速的数据检索。&lt;/li&gt;
+&lt;li&gt;算法复杂度：O(1)&lt;/li&gt;
+&lt;li&gt;优点：
+&lt;ul&gt;
+&lt;li&gt;对等值查询（如 &lt;code&gt;=&lt;/code&gt;）非常快。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;缺点：
+&lt;ul&gt;
+&lt;li&gt;不适合范围查询（如 &lt;code&gt;&amp;lt;&lt;/code&gt;、&lt;code&gt;&amp;gt;&lt;/code&gt;、&lt;code&gt;BETWEEN&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;可能发生哈希冲突，导致性能下降。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id="为什么不支持-order-by"&gt;为什么不支持 &lt;code&gt;order by&lt;/code&gt;&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;让我们看看哈希索引的算法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg"
+ data-srcset="https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg, https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg 1.5x, https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg 2x"
+ data-sizes="auto"
+ alt="/images/13.%20mysql%20index/6.%20hash%20function.svg"
+ title="6. hash function.svg" /&gt;&lt;/p&gt;</description></item><item><title>[MySQL] 1. 浅谈 MySQL 快速查询</title><link>https://gooddayday.github.io/zh-cn/2025/09/mysql-1.-mysql-fast-query-insights/</link><pubDate>Sun, 21 Sep 2025 23:11:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/zh-cn/2025/09/mysql-1.-mysql-fast-query-insights/</guid><description>&lt;h2 id="讲在开头"&gt;讲在开头&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在最开始先举几个我们常用的在平时学习、业务上最常见的优化措施&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;单位时间内更多的事情&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;快排使用二分的思想，单次循环内对多个数组进行排序&lt;/p&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg"
+ data-srcset="https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg, https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg 1.5x, https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg 2x"
+ data-sizes="auto"
+ alt="/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg"
+ title="1. 快排.jpg" /&gt;&lt;/p&gt;</description></item></channel></rss>

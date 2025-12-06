@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Customs on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/tags/customs/</link><description>Recent content in Customs on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/tags/customs/index.xml" rel="self" type="application/rss+xml"/><item><title>[Customs] 1. IntelliJ IDEA Configuration &amp; Recommended Plugins</title><link>https://gooddayday.github.io/en/2025/09/custom-1.-customs-idea/</link><pubDate>Sun, 21 Sep 2025 23:46:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/custom-1.-customs-idea/</guid><description>&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;As one of the most powerful Java IDEs available, IntelliJ IDEA can be significantly enhanced through proper configuration and carefully selected plugins. This guide presents a curated collection of essential plugins and configuration skills that will transform your development experience.&lt;/p&gt;
+&lt;p&gt;The goal is to provide ready-to-use configurations and plugins that immediately improve productivity, code quality, and development workflow.&lt;/p&gt;
+&lt;h2 id="essential-plugins"&gt;Essential Plugins&lt;/h2&gt;
+&lt;h3 id="-development-tools"&gt;🔧 Development Tools&lt;/h3&gt;
+&lt;h4 id="camelcase-3012"&gt;CamelCase (3.0.12)&lt;/h4&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/7.%20customs%20-%20idea/plugin/CamelCase%20%283.0.12%29.png"
+ data-srcset="https://gooddayday.github.io/images/7.%20customs%20-%20idea/plugin/CamelCase%20%283.0.12%29.png, https://gooddayday.github.io/images/7.%20customs%20-%20idea/plugin/CamelCase%20%283.0.12%29.png 1.5x, https://gooddayday.github.io/images/7.%20customs%20-%20idea/plugin/CamelCase%20%283.0.12%29.png 2x"
+ data-sizes="auto"
+ alt="/images/7.%20customs%20-%20idea/plugin/CamelCase%20(3.0.12).png"
+ title="CamelCase Plugin" /&gt;&lt;/p&gt;</description></item></channel></rss>

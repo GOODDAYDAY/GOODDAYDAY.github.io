@@ -1,0 +1,465 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>GoodyHao's Blog</title><link>https://gooddayday.github.io/en/</link><description>Elegance Never Fades</description><generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 01 Dec 2025 17:36:17 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] - 2. Redis Cluster</title><link>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</link><pubDate>Mon, 01 Dec 2025 17:36:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</guid><description><![CDATA[<h2 id="overview">Overview</h2>
+<ul>
+<li>The common three cluster modes are Redis(Split Cluster), MySQL(Master-Slave), Kafka(RAFT).</li>
+<li>This blog will introduce from the single node to the cluster mode of Redis.</li>
+</ul>
+<h2 id="evolution-history-from-single-node-to-cluster">Evolution History: From Single Node to Cluster</h2>
+<h3 id="single-node-era">Single Node Era</h3>
+<ul>
+<li>This is the common monolithic architecture of Redis.</li>
+</ul>
+<p></p>
+<table>
+  <thead>
+      <tr>
+          <th>Problems</th>
+          <th style="text-align: center">Single Node</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Single point of failure (SPOF)</td>
+          <td style="text-align: center">T</td>
+      </tr>
+      <tr>
+          <td>Memory limited to single machine</td>
+          <td style="text-align: center">T</td>
+      </tr>
+      <tr>
+          <td>Write throughput bottleneck</td>
+          <td style="text-align: center">T</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="master-slave-replication">Master-Slave Replication</h3>
+<ul>
+<li>As to reliability, it is easy to think adding some nodes as Master-Slave.</li>
+</ul>
+<p></p>]]></description></item><item><title>[Algorithm] 1. Dynamic Programming</title><link>https://gooddayday.github.io/en/2025/11/algorithm-1.-dynamic-programming/</link><pubDate>Thu, 27 Nov 2025 11:49:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/11/algorithm-1.-dynamic-programming/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<h3 id="what-is-dynamic-programming">What is Dynamic Programming?</h3>
+<p>Dynamic Programming (DP) is often considered one of the most challenging topics in computer science algorithms. However, at its core, it is simply <strong>an optimization technique</strong>.</p>
+<p>The fundamental idea of DP is <strong>&ldquo;Don&rsquo;t Repeat Yourself.&rdquo;</strong></p>
+<p>If you have already solved a sub-problem, you should save the result (cache it) so that you never have to calculate it again. By trading a little bit of <strong>space</strong> (to store results) for <strong>time</strong> (to avoid re-calculation), DP can turn an inefficient exponential algorithm ($O(2^n)$) into a highly efficient linear one ($O(n)$).</p>]]></description></item><item><title>[Spring] 2. Analysis of Custom Thread Pools and Thread Reuse in Spring Async Interfaces</title><link>https://gooddayday.github.io/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</link><pubDate>Thu, 02 Oct 2025 10:23:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</guid><description><![CDATA[<h2 id="preface">Preface</h2>
+<p>When handling high-concurrency scenarios in Spring applications, proper use of asynchronous programming and thread pool management is crucial. This article provides an in-depth analysis of Spring&rsquo;s default thread pool, custom thread pools, and thread reuse mechanisms through practical code examples.</p>
+<h2 id="why-use-custom-thread-pools">Why Use Custom Thread Pools?</h2>
+<p>When a Spring Boot application starts, it automatically configures a global task executor (TaskExecutor) with the default name <code>applicationTaskExecutor</code>. However, <strong>using Spring&rsquo;s default thread pool directly in production environments is not recommended</strong> for the following reasons:</p>]]></description></item><item><title>[MySQL] 3. MySQL Index</title><link>https://gooddayday.github.io/en/2025/09/mysql-3.-mysql-index/</link><pubDate>Sun, 28 Sep 2025 21:02:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/mysql-3.-mysql-index/</guid><description><![CDATA[<h2 id="what-is-an-index">What is an Index?</h2>
+<ul>
+<li>Index is a data structure that improves the speed of data retrieval operations on a database table at the cost of additional writes and storage space to maintain the index data structure.</li>
+</ul>
+<h2 id="index-types">Index Types</h2>
+<h3 id="by-data-structure">By Data Structure</h3>
+<h4 id="hash-index">Hash Index</h4>
+<ul>
+<li>Hash Index is based on a hash table data structure. It uses a hash function to map keys to specific locations in the hash table, allowing for very fast data retrieval.</li>
+<li>Algorithm Complexity: O(1)</li>
+<li>Advantages:
+<ul>
+<li>Very fast for equality searches (e.g., <code>=</code>).</li>
+</ul>
+</li>
+<li>Disadvantages:
+<ul>
+<li>Not suitable for range queries (e.g., <code>&lt;</code>, <code>&gt;</code>, <code>BETWEEN</code>).</li>
+<li>Hash collisions can occur, leading to performance degradation.</li>
+</ul>
+</li>
+</ul>
+<h5 id="why-not-support-order-by">why not support <code>order by</code></h5>
+<ul>
+<li>let us see the algorithm of hash index</li>
+</ul>
+<p></p>]]></description></item><item><title>[MySQL] 2. Lock Mechanism Execution Analysis</title><link>https://gooddayday.github.io/en/2025/09/mysql-2.-mysql-lock/</link><pubDate>Sat, 27 Sep 2025 19:02:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/mysql-2.-mysql-lock/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>In high-concurrency environments, database locking mechanisms are crucial for ensuring data consistency and integrity. MySQL, as a widely-used relational database, provides various lock types and mechanisms to manage concurrent access. However, improper use of locks may lead to performance bottlenecks, deadlocks, and other issues that affect system stability and response time.</p>
+<h2 id="basic-lock-related-concepts">Basic Lock-Related Concepts</h2>
+<ul>
+<li><strong>Lock Definition</strong>: A lock is a mechanism used to control access to shared resources, preventing multiple transactions from modifying the same data simultaneously, thereby ensuring data consistency and integrity.</li>
+<li><strong>Lock Types</strong>:
+<ul>
+<li><strong>Table-level Lock</strong>: Locks the entire table.</li>
+<li><strong>Shared Lock (S Lock)</strong>: Allows multiple transactions to read data simultaneously but prevents modification.</li>
+<li><strong>Exclusive Lock (X Lock)</strong>: Allows one transaction to modify data while preventing other transactions from reading or modifying.</li>
+<li><strong>Intention Locks (IS and IX Locks)</strong>: Used at the table level to indicate that a transaction intends to acquire locks at the row level.</li>
+<li><strong>Auto-increment Lock (AUTO-INC Lock)</strong>: Used to handle concurrent inserts on auto-increment columns, preventing conflicts.</li>
+<li><strong>Gap Lock</strong>: Locks the gaps between index records to prevent phantom reads.</li>
+<li><strong>Next-Key Lock</strong>: Combines record locks and gap locks, locking index records and the gaps before them.</li>
+<li><strong>Record Lock</strong>: Locks specific index records.</li>
+<li><strong>Row-level Lock</strong>: Locks specific rows.</li>
+<li><strong>Optimistic Lock</strong>: Implemented through version numbers or timestamps, suitable for read-heavy scenarios.</li>
+<li><strong>Pessimistic Lock</strong>: Implemented through explicit locking, suitable for write-heavy scenarios.</li>
+</ul>
+</li>
+<li><strong>Deadlock</strong>: Multiple transactions wait for each other to release locks, resulting in inability to continue execution.</li>
+<li><strong>Lock Compatibility</strong>: Compatibility rules exist between different types of locks, determining which locks can coexist.</li>
+<li><strong>Lock Granularity</strong>: The scope of locked resources; finer granularity provides higher system concurrency but increases management overhead.</li>
+</ul>
+<h2 id="mysql-lock-introduction">MySQL Lock Introduction</h2>
+<h3 id="basic-commands">Basic Commands</h3>
+<ul>
+<li>Create test table</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- auto-generated definition
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w">      </span><span class="nb">bigint</span><span class="w">                              </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">created</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;create time&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">updated</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;update time&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">comment</span><span class="w"> </span><span class="s1">&#39;example_single_pk&#39;</span><span class="w"> </span><span class="n">charset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">utf8mb4</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Execute commands</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Results</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Empty</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">created</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">updated</span><span class="w">             </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w">  </span><span class="mi">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">UPDATE</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">Rows</span><span class="w"> </span><span class="n">matched</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">Changed</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="n">Warnings</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">created</span><span class="w">             </span><span class="o">|</span><span class="w"> </span><span class="n">updated</span><span class="w">             </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">|</span><span class="w">  </span><span class="mi">6</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mi">2025</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">27</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">40</span><span class="w"> </span><span class="o">|</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">+</span><span class="c1">----+---------------------+---------------------+
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">created</span><span class="p">,</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">example_single_pk</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Empty</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="classification-by-granularity">Classification by Granularity</h3>
+<h4 id="table-level-lock---read">Table-level Lock - READ</h4>
+<h5 id="locking"><strong>Locking</strong></h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">LOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="n">example_single_pk</span><span class="w"> </span><span class="k">READ</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">00</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p></p>]]></description></item><item><title>[Github] 4. Value-Checker-Java: Customizable AOP Validation Framework</title><link>https://gooddayday.github.io/en/2025/09/github-4.-value-checker/</link><pubDate>Fri, 26 Sep 2025 23:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/github-4.-value-checker/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Value-Checker-Java is essentially a <strong>customizable AOP pointcut framework</strong>. It allows developers to insert custom validation logic before method execution, and this validation logic can be arbitrarily complex business rules.</p>
+<p>However, if it merely provides an AOP pointcut, that wouldn&rsquo;t be very meaningful. <strong>The core value of Value-Checker-Java lies in its thread-safe context management mechanism</strong>. Without this context management, data queried in the first validator cannot be used in subsequent validators, forcing each validator to re-query data, which defeats the purpose of validation chains.</p>]]></description></item><item><title>[Github] 3. Basic-Check: Validation Framework</title><link>https://gooddayday.github.io/en/2025/09/github-3.-basic-check/</link><pubDate>Fri, 26 Sep 2025 22:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/github-3.-basic-check/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Parameter validation is a common and crucial requirement in daily Java development. Traditional parameter validation typically requires writing extensive if-else conditional code in each method, which is not only redundant and tedious but also prone to omissions. Basic-Check-Java was born to solve this pain point as a lightweight parameter validation framework.</p>
+<p>This article will provide an in-depth introduction to Basic-Check-Java&rsquo;s design philosophy, core features, and practical applications, helping developers quickly master this practical tool.</p>]]></description></item><item><title>[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus</title><link>https://gooddayday.github.io/en/2025/09/cluster-1.-understanding_raft_algorithm/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/cluster-1.-understanding_raft_algorithm/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<ul>
+<li>RAFT (Raft Consensus Algorithm) is a distributed consensus algorithm designed to solve the problem of achieving data state agreement among multiple nodes in distributed systems.</li>
+<li>Compared to the renowned Paxos algorithm, RAFT&rsquo;s design philosophy emphasizes &ldquo;understandability&rdquo; through clear role separation and straightforward state transitions, making it easier for developers to comprehend and implement.</li>
+<li>This article demonstrates the complete evolution of the RAFT algorithm from single-node to multi-node clusters through 11 detailed diagrams, covering key scenarios including normal operation, failure handling, network partitions, and conflict resolution.</li>
+</ul>
+<h2 id="core-raft-concepts">Core RAFT Concepts</h2>
+<ul>
+<li>Before diving into the analysis, let&rsquo;s familiarize ourselves with several core concepts of RAFT:</li>
+</ul>
+<p><strong>Node States</strong>:</p>]]></description></item><item><title>[Github] 2. MyBatis Generator Custom Plugins</title><link>https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/</link><pubDate>Wed, 24 Sep 2025 23:46:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/github-2.-mybatis-generator-custom-plugins/</guid><description><![CDATA[<blockquote>
+<p><strong>🔗 Project Repository</strong>: <a href="https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins" target="_blank" rel="noopener noreffer ">mybatis-generator-custome-plugins</a></p>
+</blockquote>
+<p>A powerful collection of MyBatis Generator custom plugins designed to enhance code generation capabilities with
+MySQL-specific features, DTO layer generation, and automatic Service layer generation.</p>
+<h2 id="-features-overview">🚀 Features Overview</h2>
+<p>This plugin collection includes 6 custom plugins:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Plugin Name</th>
+          <th>Description</th>
+          <th>Key Features</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>InsertIgnoreIntoPlugin</code></td>
+          <td>MySQL INSERT IGNORE statement support</td>
+          <td>Batch insert ignoring duplicate records</td>
+      </tr>
+      <tr>
+          <td><code>InsertOnDuplicateKeyPlugin</code></td>
+          <td>MySQL ON DUPLICATE KEY UPDATE support</td>
+          <td>Auto update on insert conflicts</td>
+      </tr>
+      <tr>
+          <td><code>ReplaceIntoPlugin</code></td>
+          <td>MySQL REPLACE INTO statement support</td>
+          <td>Replace insert operations</td>
+      </tr>
+      <tr>
+          <td><code>DtoGeneratorPlugin</code></td>
+          <td>DTO layer code generation</td>
+          <td>Lombok annotations, Entity conversion methods</td>
+      </tr>
+      <tr>
+          <td><code>ServiceGeneratorPlugin</code></td>
+          <td>Service layer code generation</td>
+          <td>Interface + Implementation, Complete CRUD operations</td>
+      </tr>
+      <tr>
+          <td><code>CustomerMapperPlugin</code></td>
+          <td>Custom Mapper generation</td>
+          <td>Extended native Mapper functionality</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="-dependency-analysis">📦 Dependency Analysis</h2>
+<h3 id="core-dependencies">Core Dependencies</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!-- MyBatis Generator Core Dependency --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;groupId&gt;</span>org.mybatis.generator<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;artifactId&gt;</span>mybatis-generator-core<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;version&gt;</span>1.4.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!-- MyBatis Dynamic SQL Support --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;groupId&gt;</span>org.mybatis.dynamic-sql<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;artifactId&gt;</span>mybatis-dynamic-sql<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!-- MyBatis Spring Boot Integration --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;groupId&gt;</span>org.mybatis.spring.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;artifactId&gt;</span>mybatis-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;version&gt;</span>3.0.5<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="maven-plugin-configuration">Maven Plugin Configuration</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;groupId&gt;</span>org.mybatis.generator<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;artifactId&gt;</span>mybatis-generator-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;version&gt;</span>1.4.2<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;verbose&gt;</span>true<span class="nt">&lt;/verbose&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;overwrite&gt;</span>true<span class="nt">&lt;/overwrite&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;dependencies&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;groupId&gt;</span>com.goody.utils<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;artifactId&gt;</span>mybatis-generator-custome-plugins<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;version&gt;</span>1.0.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/dependencies&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/plugin&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="-plugin-details">🔧 Plugin Details</h2>
+<h3 id="mysql-extension-plugins">MySQL Extension Plugins</h3>
+<h4 id="insertignoreintoplugin">InsertIgnoreIntoPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Adds <code>INSERT IGNORE</code> statement support to Mapper</li>
+<li><strong>Generated Methods</strong>: <code>insertIgnoreCustom()</code>, <code>insertIgnoreBatchCustom()</code></li>
+<li><strong>Use Cases</strong>: Ignore primary key conflicts during batch inserts</li>
+</ul>
+<h4 id="insertonduplicatekeyplugin">InsertOnDuplicateKeyPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Adds <code>ON DUPLICATE KEY UPDATE</code> statement support to Mapper</li>
+<li><strong>Generated Methods</strong>: <code>insertOnDuplicateKeyCustom()</code>, <code>insertOnDuplicateKeyBatchCustom()</code></li>
+<li><strong>Use Cases</strong>: Auto update records on duplicate key conflicts during insert</li>
+</ul>
+<h4 id="replaceintoplugin">ReplaceIntoPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Adds <code>REPLACE INTO</code> statement support to Mapper</li>
+<li><strong>Generated Methods</strong>: <code>replaceIntoCustom()</code>, <code>replaceIntoBatchCustom()</code></li>
+<li><strong>Use Cases</strong>: Replace existing records or insert new ones</li>
+</ul>
+<h3 id="dto-layer-generation-plugin">DTO Layer Generation Plugin</h3>
+<h4 id="dtogeneratorplugin">DtoGeneratorPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Automatically generates DTO classes</li>
+<li><strong>Features</strong>:
+<ul>
+<li>Lombok annotation support (<code>@Data</code>, <code>@Builder</code>, <code>@AllArgsConstructor</code>, <code>@NoArgsConstructor</code>)</li>
+<li>Auto-generated <code>fromEntity()</code> and <code>toEntity()</code> conversion methods</li>
+<li>Package structure: <code>*.model.dto</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="service-layer-generation-plugin">Service Layer Generation Plugin</h3>
+<h4 id="servicegeneratorplugin">ServiceGeneratorPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Automatically generates Service interfaces and implementation classes</li>
+<li><strong>Features</strong>:
+<ul>
+<li>Complete CRUD operation methods</li>
+<li>Support for single and composite primary keys</li>
+<li>Spring annotation support (<code>@Service</code>, <code>@Autowired</code>)</li>
+<li>Package structure: <code>*.service.interfaces</code> and <code>*.service.impl</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="custom-mapper-plugin">Custom Mapper Plugin</h3>
+<h4 id="customermapperplugin">CustomerMapperPlugin</h4>
+<ul>
+<li><strong>Function</strong>: Generates extended Mapper interfaces</li>
+<li><strong>Package structure</strong>: <code>*.dao.customer</code></li>
+</ul>
+<h2 id="-usage-guide">💻 Usage Guide</h2>
+<h3 id="step-1-add-dependencies">Step 1: Add Dependencies</h3>
+<p>Add the plugin to your project:</p>]]></description></item><item><title>[Customs] 1. IntelliJ IDEA Configuration &amp; Recommended Plugins</title><link>https://gooddayday.github.io/en/2025/09/custom-1.-customs-idea/</link><pubDate>Sun, 21 Sep 2025 23:46:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/09/custom-1.-customs-idea/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>As one of the most powerful Java IDEs available, IntelliJ IDEA can be significantly enhanced through proper configuration and carefully selected plugins. This guide presents a curated collection of essential plugins and configuration skills that will transform your development experience.</p>
+<p>The goal is to provide ready-to-use configurations and plugins that immediately improve productivity, code quality, and development workflow.</p>
+<h2 id="essential-plugins">Essential Plugins</h2>
+<h3 id="-development-tools">🔧 Development Tools</h3>
+<h4 id="camelcase-3012">CamelCase (3.0.12)</h4>
+<p></p>]]></description></item></channel></rss>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Index on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/tags/index/</link><description>Recent content in Index on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/tags/index/index.xml" rel="self" type="application/rss+xml"/><item><title>[MySQL] 3. MySQL Index</title><link>https://gooddayday.github.io/en/2025/09/mysql-3.-mysql-index/</link><pubDate>Sun, 28 Sep 2025 21:02:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/mysql-3.-mysql-index/</guid><description>&lt;h2 id="what-is-an-index"&gt;What is an Index?&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Index is a data structure that improves the speed of data retrieval operations on a database table at the cost of additional writes and storage space to maintain the index data structure.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="index-types"&gt;Index Types&lt;/h2&gt;
+&lt;h3 id="by-data-structure"&gt;By Data Structure&lt;/h3&gt;
+&lt;h4 id="hash-index"&gt;Hash Index&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Hash Index is based on a hash table data structure. It uses a hash function to map keys to specific locations in the hash table, allowing for very fast data retrieval.&lt;/li&gt;
+&lt;li&gt;Algorithm Complexity: O(1)&lt;/li&gt;
+&lt;li&gt;Advantages:
+&lt;ul&gt;
+&lt;li&gt;Very fast for equality searches (e.g., &lt;code&gt;=&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Disadvantages:
+&lt;ul&gt;
+&lt;li&gt;Not suitable for range queries (e.g., &lt;code&gt;&amp;lt;&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, &lt;code&gt;BETWEEN&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Hash collisions can occur, leading to performance degradation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id="why-not-support-order-by"&gt;why not support &lt;code&gt;order by&lt;/code&gt;&lt;/h5&gt;
+&lt;ul&gt;
+&lt;li&gt;let us see the algorithm of hash index&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg"
+ data-srcset="https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg, https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg 1.5x, https://gooddayday.github.io/images/13.%20mysql%20index/6.%20hash%20function.svg 2x"
+ data-sizes="auto"
+ alt="/images/13.%20mysql%20index/6.%20hash%20function.svg"
+ title="6. hash function.svg" /&gt;&lt;/p&gt;</description></item><item><title>[MySQL] 1. MySQL Fast Query Insights</title><link>https://gooddayday.github.io/en/2025/09/mysql-1.-mysql-fast-query-insights/</link><pubDate>Sun, 21 Sep 2025 23:11:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/mysql-1.-mysql-fast-query-insights/</guid><description>&lt;h2 id="preface"&gt;Preface&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Let&amp;rsquo;s start with some of the most common optimization measures we use in daily learning and business scenarios&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Do more things in the same unit of time&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;QuickSort uses the binary search idea to sort multiple arrays within a single loop&lt;/p&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg"
+ data-srcset="https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg, https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg 1.5x, https://gooddayday.github.io/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg 2x"
+ data-sizes="auto"
+ alt="/images/3.%20%E6%B5%85%E8%B0%88MySQL%E5%BF%AB%E9%80%9F%E6%9F%A5%E8%AF%A2/1.%20%E5%BF%AB%E6%8E%92.jpg"
+ title="1. QuickSort.jpg" /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Query less information in total&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;KMP algorithm preprocesses the main string to reduce the number of matches. This is the power of logic&lt;/p&gt;</description></item></channel></rss>

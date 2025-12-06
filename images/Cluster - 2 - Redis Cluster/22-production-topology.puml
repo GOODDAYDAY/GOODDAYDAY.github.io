@@ -1,0 +1,36 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Production Topology - 6 Node Minimum
+
+rectangle "Availability Zone 1" as az1 #FFCDD2 {
+    database "Master A" as masterA
+    database "Slave C1" as slaveC
+}
+
+rectangle "Availability Zone 2" as az2 #C8E6C9 {
+    database "Master B" as masterB
+    database "Slave A1" as slaveA
+}
+
+rectangle "Availability Zone 3" as az3 #BBDEFB {
+    database "Master C" as masterC
+    database "Slave B1" as slaveB
+}
+
+masterA -down-> slaveA : Replicate\n(cross-AZ)
+masterB -down-> slaveB : Replicate\n(cross-AZ)
+masterC -down-> slaveC : Replicate\n(cross-AZ)
+
+masterA <-right-> masterB : Gossip
+masterB <-right-> masterC : Gossip
+
+note bottom of az1
+  Each master's slave is in a <b>DIFFERENT AZ</b>
+  Single AZ failure = cluster survives
+end note
+
+@enduml

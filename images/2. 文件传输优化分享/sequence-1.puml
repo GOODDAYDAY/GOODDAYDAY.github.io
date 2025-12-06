@@ -1,0 +1,30 @@
+@startuml
+title: 代理服务交互
+
+participant MODEL as M
+participant GFW as G
+participant ProxyServer as OP
+participant ProxyServerNode as ON
+participant Provider as P
+
+note over M: 中国大陆
+note over OP, P: 海外
+note over M, P: 数据上传
+
+M -> M: 生成数据
+M -> OP: 加密数据内网传输
+OP -> OP: 数据解密
+OP -> ON: 明文数据落盘
+ON -> OP: 数据读盘
+OP -> P: `内网or外网`传输
+P --> OP: 传输成功返回
+OP --> M: 传输成功返回
+
+note over M, P: 数据下载
+
+M -> OP: 下载请求
+OP -> P: 下载请求
+P --> OP: 明文数据流`内网or外网`传输
+OP -> OP: 数据流加密
+OP --> M: 加密数据流内网传输
+@enduml

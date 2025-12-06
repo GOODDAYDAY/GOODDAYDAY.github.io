@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Redis on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/categories/redis/</link><description>Recent content in Redis on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/categories/redis/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] - 2. Redis Cluster</title><link>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</link><pubDate>Mon, 01 Dec 2025 17:36:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</guid><description>&lt;h2 id="overview"&gt;Overview&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The common three cluster modes are Redis(Split Cluster), MySQL(Master-Slave), Kafka(RAFT).&lt;/li&gt;
+&lt;li&gt;This blog will introduce from the single node to the cluster mode of Redis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="evolution-history-from-single-node-to-cluster"&gt;Evolution History: From Single Node to Cluster&lt;/h2&gt;
+&lt;h3 id="single-node-era"&gt;Single Node Era&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;This is the common monolithic architecture of Redis.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg"
+ data-srcset="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg 1.5x, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg 2x"
+ data-sizes="auto"
+ alt="/images/Cluster%20-%202%20-%20Redis%20Cluster/01-evolution-single-Single%20Node%20Era.svg"
+ title="01-evolution-single-Single Node Era.svg" /&gt;&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Problems&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;Single Node&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Single point of failure (SPOF)&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;T&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Memory limited to single machine&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;T&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Write throughput bottleneck&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;T&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="master-slave-replication"&gt;Master-Slave Replication&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;As to reliability, it is easy to think adding some nodes as Master-Slave.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img
+ class="lazyload"
+ src="https://gooddayday.github.io/svg/loading.min.svg"
+ data-src="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/02-evolution-replication-Master-Slave%20Replication.svg"
+ data-srcset="https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/02-evolution-replication-Master-Slave%20Replication.svg, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/02-evolution-replication-Master-Slave%20Replication.svg 1.5x, https://gooddayday.github.io/images/Cluster%20-%202%20-%20Redis%20Cluster/02-evolution-replication-Master-Slave%20Replication.svg 2x"
+ data-sizes="auto"
+ alt="/images/Cluster%20-%202%20-%20Redis%20Cluster/02-evolution-replication-Master-Slave%20Replication.svg"
+ title="02-evolution-replication-Master-Slave Replication.svg" /&gt;&lt;/p&gt;</description></item></channel></rss>

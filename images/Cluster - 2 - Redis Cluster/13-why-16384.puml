@@ -1,0 +1,40 @@
+@startuml 13-why-16384-Why 16384 Slots
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+
+title Why 16384 Slots? The Trade-off Game
+
+' === Comparison ===
+package "Option A: 65536 slots (CRC16 full range)" as optionA #FFEBEE {
+    card "Bitmap Size\n65536 / 8 = **8 KB**" as sizeA #FFCDD2
+    card "TCP Packets\n8KB / 1.5KB MTU = **6-7 packets**" as tcpA #FFCDD2
+    card "Per-node memory (1000 nodes)\n1000 x 8KB = **8 MB**" as memA #FFCDD2
+    card "Slots per node (1000 nodes)\n65536 / 1000 = **65 slots**" as slotsA #C8E6C9
+}
+
+package "Option B: 16384 slots (Redis choice)" as optionB #E8F5E9 {
+    card "Bitmap Size\n16384 / 8 = **2 KB**" as sizeB #C8E6C9
+    card "TCP Packets\n2KB / 1.5KB MTU = **2 packets**" as tcpB #C8E6C9
+    card "Per-node memory (1000 nodes)\n1000 x 2KB = **2 MB**" as memB #C8E6C9
+    card "Slots per node (1000 nodes)\n16384 / 1000 = **16 slots**" as slotsB #C8E6C9
+}
+
+note bottom of optionA #FFEBEE
+  **Why NOT 65536?**
+  - 4x bandwidth cost for heartbeats
+  - More TCP fragmentation = more retransmits
+  - 65 slots vs 16 slots per node = negligible benefit
+  - **Over-engineering!**
+end note
+
+note bottom of optionB #E8F5E9
+  **Why 16384?**
+  - 2KB fits nicely in network packets
+  - 16 slots/node is enough for rebalancing
+  - Memory efficient for cluster metadata
+  - **Just right!**
+end note
+
+@enduml

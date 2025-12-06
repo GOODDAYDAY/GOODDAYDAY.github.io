@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>RAFT on GoodyHao's Blog</title><link>https://gooddayday.github.io/en/tags/raft/</link><description>Recent content in RAFT on GoodyHao's Blog</description><generator>Hugo</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 06 Dec 2025 22:29:56 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/tags/raft/index.xml" rel="self" type="application/rss+xml"/><item><title>[Cluster] 1. RAFT Algorithm: A Complete Evolution from Single Node to Distributed Consensus</title><link>https://gooddayday.github.io/en/2025/09/cluster-1.-understanding_raft_algorithm/</link><pubDate>Fri, 26 Sep 2025 21:27:17 +0800</pubDate><author>865700600@qq.com (GoodyHao)</author><guid>https://gooddayday.github.io/en/2025/09/cluster-1.-understanding_raft_algorithm/</guid><description>&lt;h2 id="introduction"&gt;Introduction&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RAFT (Raft Consensus Algorithm) is a distributed consensus algorithm designed to solve the problem of achieving data state agreement among multiple nodes in distributed systems.&lt;/li&gt;
+&lt;li&gt;Compared to the renowned Paxos algorithm, RAFT&amp;rsquo;s design philosophy emphasizes &amp;ldquo;understandability&amp;rdquo; through clear role separation and straightforward state transitions, making it easier for developers to comprehend and implement.&lt;/li&gt;
+&lt;li&gt;This article demonstrates the complete evolution of the RAFT algorithm from single-node to multi-node clusters through 11 detailed diagrams, covering key scenarios including normal operation, failure handling, network partitions, and conflict resolution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="core-raft-concepts"&gt;Core RAFT Concepts&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Before diving into the analysis, let&amp;rsquo;s familiarize ourselves with several core concepts of RAFT:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Node States&lt;/strong&gt;:&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,47 @@
+@startuml 09-traditional-hashing-Traditional Hashing
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Traditional Hashing: hash(key) % N
+
+' === Before: 3 Nodes ===
+package "Before: 3 Nodes" as before #E8F5E9 {
+    card "hash(key) % **3**" as hash1 #FFF9C4
+
+    rectangle "Node 0" as n0 #C8E6C9
+    rectangle "Node 1" as n1 #C8E6C9
+    rectangle "Node 2" as n2 #C8E6C9
+
+    hash1 --> n0 : result = 0
+    hash1 --> n1 : result = 1
+    hash1 --> n2 : result = 2
+}
+
+' === After: 4 Nodes ===
+package "After: Add 1 Node (N=4)" as after #FFEBEE {
+    card "hash(key) % **4**" as hash2 #FFF9C4
+
+    rectangle "Node 0" as n0b #FFCDD2
+    rectangle "Node 1" as n1b #FFCDD2
+    rectangle "Node 2" as n2b #FFCDD2
+    rectangle "Node 3" as n3b #BBDEFB
+
+    hash2 --> n0b : result = 0
+    hash2 --> n1b : result = 1
+    hash2 --> n2b : result = 2
+    hash2 --> n3b : result = 3
+}
+
+note bottom of after #FFEBEE
+  **Disaster: Almost ALL keys remapped!**
+
+  Example: hash("user:1001") = 1000
+  Before: 1000 % 3 = **1** -> Node 1
+  After:  1000 % 4 = **0** -> Node 0  (MOVED!)
+
+  ~75% of keys need migration when N: 3->4
+end note
+
+@enduml

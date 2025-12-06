@@ -1,0 +1,793 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>[Github] 2. MyBatis Generator 自定义插件 - GoodyHao's Blog</title><meta name=Description content="Elegance Never Fades"><meta property="og:url" content="https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/"><meta property="og:site_name" content="GoodyHao's Blog"><meta property="og:title" content="[Github] 2. MyBatis Generator 自定义插件"><meta property="og:description" content="🔗 项目地址: mybatis-generator-custome-plugins
+为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。
+🚀 功能概览 本插件集合包含以下6个自定义插件："><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-09-24T23:46:17+08:00"><meta property="article:modified_time" content="2025-12-06T22:29:56+08:00"><meta property="article:tag" content="Github"><meta property="article:tag" content="MyBatis"><meta property="article:tag" content="Plugins"><meta property="og:image" content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://gooddayday.github.io/logo.jpg"><meta name=twitter:title content="[Github] 2. MyBatis Generator 自定义插件"><meta name=twitter:description content="🔗 项目地址: mybatis-generator-custome-plugins
+为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。
+🚀 功能概览 本插件集合包含以下6个自定义插件："><meta name=application-name content="LoveIt"><meta name=apple-mobile-web-app-title content="LoveIt"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/><link rel=prev href=https://gooddayday.github.io/zh-cn/2025/09/customs-1.-customs-idea/><link rel=next href=https://gooddayday.github.io/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"[Github] 2. MyBatis Generator 自定义插件","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/09\/github-2.-mybatis-generator-custom-plugins\/"},"image":["https:\/\/gooddayday.github.io\/images\/Apple-Devices-Preview.png"],"genre":"posts","keywords":"Github, MyBatis, plugins","wordcount":3421,"url":"https:\/\/gooddayday.github.io\/zh-cn\/2025\/09\/github-2.-mybatis-generator-custom-plugins\/","datePublished":"2025-09-24T23:46:17+08:00","dateModified":"2025-12-06T22:29:56+08:00","license":"This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher":{"@type":"Organization","name":"xxxx","logo":"https:\/\/gooddayday.github.io\/images\/logo.jpg"},"author":{"@type":"Person","name":"GoodyHao"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"light"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"light"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/zh-cn/posts/>所有文章 </a><a class=menu-item href=/zh-cn/tags/>标签 </a><a class=menu-item href=/zh-cn/categories/>分类 </a><a class=menu-item href=/zh-cn/categories/documentation/>文档 </a><a class=menu-item href=/zh-cn/about/>关于 </a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i> </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/09/github-2.-mybatis-generator-custom-plugins/ title=English>English</a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/zh-cn/ title="GoodyHao's Blog"><span class=header-title-pre><i class='far fa-kiss-wink-heart fa-fw' aria-hidden=true></i></span>Elegance Never Fades</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/zh-cn/posts/ title>所有文章</a><a class=menu-item href=/zh-cn/tags/ title>标签</a><a class=menu-item href=/zh-cn/categories/ title>分类</a><a class=menu-item href=/zh-cn/categories/documentation/ title>文档</a><a class=menu-item href=/zh-cn/about/ title>关于</a><a class=menu-item href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io title=GitHub rel="noopener noreffer" target=_blank><i class='fab fa-github fa-fw' aria-hidden=true></i></a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i>
+</a><a class=menu-item href=/en/2025/09/github-2.-mybatis-generator-custom-plugins/ title=English>English</a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">[Github] 2. MyBatis Generator 自定义插件</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/zh-cn/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>GoodyHao</a></span>&nbsp;<span class=post-category>收录于 <a href=/zh-cn/categories/github/><i class="far fa-folder fa-fw" aria-hidden=true></i>Github</a>&nbsp;<a href=/zh-cn/categories/mybatis/><i class="far fa-folder fa-fw" aria-hidden=true></i>MyBatis</a>&nbsp;<a href=/zh-cn/categories/plugins/><i class="far fa-folder fa-fw" aria-hidden=true></i>Plugins</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2025-09-24>2025-09-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 3421 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 7 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#-功能概览>🚀 功能概览</a></li><li><a href=#-依赖分析>📦 依赖分析</a><ul><li><a href=#核心依赖>核心依赖</a></li><li><a href=#maven插件配置>Maven插件配置</a></li></ul></li><li><a href=#-插件详述>🔧 插件详述</a><ul><li><a href=#mysql扩展插件>MySQL扩展插件</a><ul><li><a href=#insertignoreintoplugin>InsertIgnoreIntoPlugin</a></li><li><a href=#insertonduplicatekeyplugin>InsertOnDuplicateKeyPlugin</a></li><li><a href=#replaceintoplugin>ReplaceIntoPlugin</a></li></ul></li><li><a href=#dto层生成插件>DTO层生成插件</a><ul><li><a href=#dtogeneratorplugin>DtoGeneratorPlugin</a></li></ul></li><li><a href=#service层生成插件>Service层生成插件</a><ul><li><a href=#servicegeneratorplugin>ServiceGeneratorPlugin</a></li></ul></li><li><a href=#自定义mapper插件>自定义Mapper插件</a><ul><li><a href=#customermapperplugin>CustomerMapperPlugin</a></li></ul></li></ul></li><li><a href=#-使用方法>💻 使用方法</a><ul><li><a href=#步骤1-添加依赖>步骤1: 添加依赖</a></li><li><a href=#步骤2-配置generatorconfigxml>步骤2: 配置generatorConfig.xml</a></li><li><a href=#步骤3-执行代码生成>步骤3: 执行代码生成</a></li></ul></li><li><a href=#-配置示例>📝 配置示例</a><ul><li><a href=#单主键表配置>单主键表配置</a></li><li><a href=#联合主键表配置>联合主键表配置</a></li></ul></li><li><a href=#-生成代码分析>🏗️ 生成代码分析</a><ul><li><a href=#文件结构>文件结构</a></li><li><a href=#核心代码片段分析>核心代码片段分析</a><ul><li><a href=#mysql扩展方法-mapper层>MySQL扩展方法 (Mapper层)</a></li><li><a href=#dto类-数据传输层>DTO类 (数据传输层)</a></li><li><a href=#service接口-服务层接口>Service接口 (服务层接口)</a></li><li><a href=#service实现-服务层实现>Service实现 (服务层实现)</a></li></ul></li><li><a href=#关键特性分析>关键特性分析</a><ul><li><a href=#联合主键支持>联合主键支持</a></li><li><a href=#mysql特有功能>MySQL特有功能</a></li><li><a href=#自动化程度>自动化程度</a></li></ul></li></ul></li><li><a href=#-项目结构>🏗️ 项目结构</a></li><li><a href=#-使用建议>🎯 使用建议</a></li><li><a href=#-源码深度分析>🔍 源码深度分析</a><ul><li><a href=#插件架构概览>插件架构概览</a></li><li><a href=#insertignoreintoplugin-实现分析>InsertIgnoreIntoPlugin 实现分析</a><ul><li><a href=#核心方法生成策略>核心方法生成策略</a></li><li><a href=#关键技术创新>关键技术创新</a></li></ul></li><li><a href=#dtogeneratorplugin-实现分析>DtoGeneratorPlugin 实现分析</a><ul><li><a href=#包名解析算法>包名解析算法</a></li><li><a href=#带元数据保留的字段生成>带元数据保留的字段生成</a></li></ul></li><li><a href=#servicegeneratorplugin-实现分析>ServiceGeneratorPlugin 实现分析</a><ul><li><a href=#联合主键解析>联合主键解析</a></li><li><a href=#service实现模式>Service实现模式</a></li></ul></li><li><a href=#高级模式和技术>高级模式和技术</a><ul><li><a href=#类型安全强化>类型安全强化</a></li><li><a href=#sql注入防护>SQL注入防护</a></li><li><a href=#内存高效生成>内存高效生成</a></li></ul></li><li><a href=#自定义开发扩展点>自定义开发扩展点</a><ul><li><a href=#自定义插件模板>自定义插件模板</a></li><li><a href=#配置驱动行为>配置驱动行为</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><blockquote><p><strong>🔗 项目地址</strong>: <a href=https://github.com/GOODDAYDAY/mybatis-generator-custome-plugins target=_blank rel="noopener noreffer">mybatis-generator-custome-plugins</a></p></blockquote><p>为 MyBatis Generator 设计的强大自定义插件集合，专门针对 MySQL 数据库特性，提供 DTO 层生成、Service 层自动生成等功能。</p><h2 id=-功能概览>🚀 功能概览</h2><p>本插件集合包含以下6个自定义插件：</p><table><thead><tr><th>插件名称</th><th>功能描述</th><th>核心特性</th></tr></thead><tbody><tr><td><code>InsertIgnoreIntoPlugin</code></td><td>MySQL INSERT IGNORE语句支持</td><td>批量插入忽略重复记录</td></tr><tr><td><code>InsertOnDuplicateKeyPlugin</code></td><td>MySQL ON DUPLICATE KEY UPDATE支持</td><td>插入冲突时自动更新</td></tr><tr><td><code>ReplaceIntoPlugin</code></td><td>MySQL REPLACE INTO语句支持</td><td>替换插入操作</td></tr><tr><td><code>DtoGeneratorPlugin</code></td><td>DTO层代码生成</td><td>Lombok注解，Entity转换方法</td></tr><tr><td><code>ServiceGeneratorPlugin</code></td><td>Service层代码生成</td><td>接口+实现，完整CRUD操作</td></tr><tr><td><code>CustomerMapperPlugin</code></td><td>自定义Mapper生成</td><td>扩展原生Mapper功能</td></tr></tbody></table><h2 id=-依赖分析>📦 依赖分析</h2><h3 id=核心依赖>核心依赖</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=c>&lt;!-- MyBatis Generator核心依赖 --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.mybatis.generator<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-core<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>1.4.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c>&lt;!-- MyBatis Dynamic SQL支持 --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.mybatis.dynamic-sql<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>mybatis-dynamic-sql<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>1.5.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c>&lt;!-- MyBatis Spring Boot集成 --&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.mybatis.spring.boot<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>mybatis-spring-boot-starter<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>3.0.5<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=maven插件配置>Maven插件配置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;plugin&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.mybatis.generator<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-maven-plugin<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>1.4.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;configuration&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;verbose&gt;</span>true<span class=nt>&lt;/verbose&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;overwrite&gt;</span>true<span class=nt>&lt;/overwrite&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/configuration&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;dependencies&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;groupId&gt;</span>com.goody.utils<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-custome-plugins<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;version&gt;</span>1.0.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/dependencies&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/plugin&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=-插件详述>🔧 插件详述</h2><h3 id=mysql扩展插件>MySQL扩展插件</h3><h4 id=insertignoreintoplugin>InsertIgnoreIntoPlugin</h4><ul><li><strong>功能</strong>: 为Mapper添加<code>INSERT IGNORE</code>语句支持</li><li><strong>生成方法</strong>: <code>insertIgnoreCustom()</code>, <code>insertIgnoreBatchCustom()</code></li><li><strong>应用场景</strong>: 批量插入时忽略主键冲突记录</li></ul><h4 id=insertonduplicatekeyplugin>InsertOnDuplicateKeyPlugin</h4><ul><li><strong>功能</strong>: 为Mapper添加<code>ON DUPLICATE KEY UPDATE</code>语句支持</li><li><strong>生成方法</strong>: <code>insertOnDuplicateKeyCustom()</code>, <code>insertOnDuplicateKeyBatchCustom()</code></li><li><strong>应用场景</strong>: 插入时遇到重复键则更新记录</li></ul><h4 id=replaceintoplugin>ReplaceIntoPlugin</h4><ul><li><strong>功能</strong>: 为Mapper添加<code>REPLACE INTO</code>语句支持</li><li><strong>生成方法</strong>: <code>replaceIntoCustom()</code>, <code>replaceIntoBatchCustom()</code></li><li><strong>应用场景</strong>: 存在则替换，不存在则插入</li></ul><h3 id=dto层生成插件>DTO层生成插件</h3><h4 id=dtogeneratorplugin>DtoGeneratorPlugin</h4><ul><li><strong>功能</strong>: 自动生成DTO类</li><li><strong>特性</strong>:<ul><li>Lombok注解支持(<code>@Data</code>, <code>@Builder</code>, <code>@AllArgsConstructor</code>, <code>@NoArgsConstructor</code>)</li><li>自动生成<code>fromEntity()</code>和<code>toEntity()</code>转换方法</li><li>包结构: <code>*.model.dto</code></li></ul></li></ul><h3 id=service层生成插件>Service层生成插件</h3><h4 id=servicegeneratorplugin>ServiceGeneratorPlugin</h4><ul><li><strong>功能</strong>: 自动生成Service接口和实现类</li><li><strong>特性</strong>:<ul><li>完整CRUD操作方法</li><li>支持单主键和联合主键</li><li>Spring注解支持(<code>@Service</code>, <code>@Autowired</code>)</li><li>包结构: <code>*.service.interfaces</code> 和 <code>*.service.impl</code></li></ul></li></ul><h3 id=自定义mapper插件>自定义Mapper插件</h3><h4 id=customermapperplugin>CustomerMapperPlugin</h4><ul><li><strong>功能</strong>: 生成扩展Mapper接口</li><li><strong>包结构</strong>: <code>*.dao.customer</code></li></ul><h2 id=-使用方法>💻 使用方法</h2><h3 id=步骤1-添加依赖>步骤1: 添加依赖</h3><p>将插件添加到你的项目中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>com.goody.utils<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>mybatis-generator-custome-plugins<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>1.0.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=步骤2-配置generatorconfigxml>步骤2: 配置generatorConfig.xml</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=cp>&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class=line><span class=cl><span class=cp>&lt;!DOCTYPE generatorConfiguration
+</span></span></span><span class=line><span class=cl><span class=cp>    PUBLIC &#34;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&#34;
+</span></span></span><span class=line><span class=cl><span class=cp>    &#34;https://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&#34;&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nt>&lt;generatorConfiguration&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;classPathEntry</span> <span class=na>location=</span><span class=s>&#34;${user.home}/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;context</span> <span class=na>id=</span><span class=s>&#34;dao&#34;</span> <span class=na>targetRuntime=</span><span class=s>&#34;MyBatis3DynamicSql&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;autoDelimitKeywords&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;beginningDelimiter&#34;</span> <span class=na>value=</span><span class=s>&#34;`&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;endingDelimiter&#34;</span> <span class=na>value=</span><span class=s>&#34;`&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c>&lt;!-- 标准插件 --&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.SerializablePlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.EqualsHashCodePlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.ToStringPlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;org.mybatis.generator.plugins.FluentBuilderMethodsPlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c>&lt;!-- 自定义插件 --&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.InsertIgnoreIntoPlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.InsertOnDuplicateKeyPlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.ReplaceIntoPlugin&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.DtoGeneratorPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.ServiceGeneratorPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;plugin</span> <span class=na>type=</span><span class=s>&#34;com.goody.utils.mybatis.plugin.CustomerMapperPlugin&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;commentGenerator&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;addRemarkComments&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;suppressDate&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/commentGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;jdbcConnection</span> <span class=na>driverClass=</span><span class=s>&#34;com.mysql.cj.jdbc.Driver&#34;</span>
+</span></span><span class=line><span class=cl>                        <span class=na>connectionURL=</span><span class=s>&#34;jdbc:mysql://127.0.0.1:3306/your_database&#34;</span>
+</span></span><span class=line><span class=cl>                        <span class=na>userId=</span><span class=s>&#34;your_username&#34;</span>
+</span></span><span class=line><span class=cl>                        <span class=na>password=</span><span class=s>&#34;your_password&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useSSL&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;serverTimezone&#34;</span> <span class=na>value=</span><span class=s>&#34;Asia/Shanghai&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;nullCatalogMeansCurrent&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/jdbcConnection&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;javaTypeResolver</span> <span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;forceBigDecimals&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useJSR310Types&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/javaTypeResolver&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;javaModelGenerator</span> <span class=na>targetPackage=</span><span class=s>&#34;com.yourpackage.model.entity&#34;</span>
+</span></span><span class=line><span class=cl>                           <span class=na>targetProject=</span><span class=s>&#34;src/main/java&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;enableSubPackages&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;trimStrings&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/javaModelGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;javaClientGenerator</span> <span class=na>type=</span><span class=s>&#34;ANNOTATEDMAPPER&#34;</span>
+</span></span><span class=line><span class=cl>                           <span class=na>targetPackage=</span><span class=s>&#34;com.yourpackage.model.dao&#34;</span>
+</span></span><span class=line><span class=cl>                           <span class=na>targetProject=</span><span class=s>&#34;src/main/java&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;enableSubPackages&#34;</span> <span class=na>value=</span><span class=s>&#34;true&#34;</span> <span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/javaClientGenerator&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c>&lt;!-- 配置要生成的表 --&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;your_schema&#34;</span> <span class=na>tableName=</span><span class=s>&#34;your_table&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&lt;/table&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;/context&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/generatorConfiguration&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=步骤3-执行代码生成>步骤3: 执行代码生成</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mvn mybatis-generator:generate
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif data-srcset="/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif, /images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif 1.5x, /images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif 2x" data-sizes=auto alt=/images/8.%20MyBatis%20Generator%20Custom%20Plugins/presentation.gif title=presentation.gif></p><h2 id=-配置示例>📝 配置示例</h2><h3 id=单主键表配置>单主键表配置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;toy&#34;</span> <span class=na>tableName=</span><span class=s>&#34;example_single_pk&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/table&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=联合主键表配置>联合主键表配置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;table</span> <span class=na>schema=</span><span class=s>&#34;toy&#34;</span> <span class=na>tableName=</span><span class=s>&#34;example_double_pk&#34;</span><span class=nt>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;property</span> <span class=na>name=</span><span class=s>&#34;useActualColumnNames&#34;</span> <span class=na>value=</span><span class=s>&#34;false&#34;</span><span class=nt>/&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/table&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=-生成代码分析>🏗️ 生成代码分析</h2><p>插件会为每个表生成完整的代码结构：</p><h3 id=文件结构>文件结构</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>src/main/java/
+</span></span><span class=line><span class=cl>├── com/yourpackage/model/
+</span></span><span class=line><span class=cl>│   ├── entity/              # Entity实体类
+</span></span><span class=line><span class=cl>│   │   ├── Example.java
+</span></span><span class=line><span class=cl>│   │   └── ExampleDoublePk.java
+</span></span><span class=line><span class=cl>│   ├── dao/                 # 标准Mapper接口
+</span></span><span class=line><span class=cl>│   │   ├── ExampleMapper.java
+</span></span><span class=line><span class=cl>│   │   ├── ExampleDynamicSqlSupport.java
+</span></span><span class=line><span class=cl>│   │   └── customer/        # 自定义Mapper接口
+</span></span><span class=line><span class=cl>│   │       └── CustomerExampleMapper.java
+</span></span><span class=line><span class=cl>│   └── dto/                 # DTO类
+</span></span><span class=line><span class=cl>│       ├── ExampleDTO.java
+</span></span><span class=line><span class=cl>│       └── ExampleDoublePkDTO.java
+</span></span><span class=line><span class=cl>├── service/
+</span></span><span class=line><span class=cl>│   ├── interfaces/          # Service接口
+</span></span><span class=line><span class=cl>│   │   ├── IExampleService.java
+</span></span><span class=line><span class=cl>│   │   └── IExampleDoublePkService.java
+</span></span><span class=line><span class=cl>│   └── impl/               # Service实现
+</span></span><span class=line><span class=cl>│       ├── ExampleServiceImpl.java
+</span></span><span class=line><span class=cl>│       └── ExampleDoublePkServiceImpl.java
+</span></span></code></pre></td></tr></table></div></div><h3 id=核心代码片段分析>核心代码片段分析</h3><h4 id=mysql扩展方法-mapper层>MySQL扩展方法 (Mapper层)</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Mapper</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>ExampleMapper</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 标准生成的方法...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// INSERT IGNORE支持</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; INSERT IGNORE INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>insertIgnoreCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;item&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=n>record</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 批量INSERT IGNORE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; INSERT IGNORE INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; &lt;foreach collection=&#39;items&#39; item=&#39;item&#39; separator=&#39;,&#39;&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;   (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; &lt;/foreach&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>insertIgnoreBatchCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;items&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Collection</span><span class=o>&lt;</span><span class=n>Example</span><span class=o>&gt;</span><span class=w> </span><span class=n>records</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// ON DUPLICATE KEY UPDATE支持</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Insert</span><span class=p>({</span><span class=s>&#34;&lt;script&gt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; INSERT INTO example&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; (`id`, `name`, `created`, `updated`)&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; VALUES&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; (#{item.id}, #{item.name}, #{item.created}, #{item.updated})&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; AS r&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34; ON DUPLICATE KEY UPDATE&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;   name = r.name, updated = r.updated&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=s>&#34;&lt;/script&gt;&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>insertOnDuplicateKeyCustom</span><span class=p>(</span><span class=nd>@Param</span><span class=p>(</span><span class=s>&#34;item&#34;</span><span class=p>)</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=n>record</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=dto类-数据传输层>DTO类 (数据传输层)</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@AllArgsConstructor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@NoArgsConstructor</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nd>@Builder</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>ExampleDTO</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>name</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>LocalDateTime</span><span class=w> </span><span class=n>created</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>LocalDateTime</span><span class=w> </span><span class=n>updated</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// Entity转DTO</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=n>ExampleDTO</span><span class=w> </span><span class=nf>fromEntity</span><span class=p>(</span><span class=n>Example</span><span class=w> </span><span class=n>entity</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>entity</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=k>return</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>ExampleDTO</span><span class=p>.</span><span class=na>builder</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>id</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getId</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>name</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getName</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>created</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getCreated</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>updated</span><span class=p>(</span><span class=n>entity</span><span class=p>.</span><span class=na>getUpdated</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>build</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// DTO转Entity</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>Example</span><span class=w> </span><span class=nf>toEntity</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Example</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withId</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>id</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withName</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>name</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withCreated</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>created</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>withUpdated</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=na>updated</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service接口-服务层接口>Service接口 (服务层接口)</h4><p><strong>单主键Service接口</strong>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>IExampleService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>save</span><span class=p>(</span><span class=n>ExampleDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>saveBatch</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDTO</span><span class=o>&gt;</span><span class=w> </span><span class=n>dtoList</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>update</span><span class=p>(</span><span class=n>ExampleDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>);</span><span class=w>                    </span><span class=c1>// 单参数</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>ExampleDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>);</span><span class=w>               </span><span class=c1>// 单参数</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDTO</span><span class=o>&gt;</span><span class=w> </span><span class=nf>findAll</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><strong>联合主键Service接口</strong> (插件已修复):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>interface</span> <span class=nc>IExampleDoublePkService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>save</span><span class=p>(</span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>saveBatch</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDoublePkDTO</span><span class=o>&gt;</span><span class=w> </span><span class=n>dtoList</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>update</span><span class=p>(</span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=n>dto</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>          </span><span class=c1>// 多参数支持</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>  </span><span class=c1>// 多参数支持</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>ExampleDoublePkDTO</span><span class=o>&gt;</span><span class=w> </span><span class=nf>findAll</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service实现-服务层实现>Service实现 (服务层实现)</h4><p><strong>联合主键处理的核心改进</strong>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Service</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>ExampleDoublePkServiceImpl</span><span class=w> </span><span class=kd>implements</span><span class=w> </span><span class=n>IExampleDoublePkService</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Autowired</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>ExampleDoublePkMapper</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=nf>deleteById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=n>id2</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 正确调用联合主键方法</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=p>.</span><span class=na>deleteByPrimaryKey</span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>id2</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>ExampleDoublePkDTO</span><span class=w> </span><span class=nf>findById</span><span class=p>(</span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id2</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>id</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=n>id2</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>return</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 正确调用联合主键方法</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>ExampleDoublePk</span><span class=w> </span><span class=n>entity</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>exampleDoublePkMapper</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>selectByPrimaryKey</span><span class=p>(</span><span class=n>id</span><span class=p>,</span><span class=w> </span><span class=n>id2</span><span class=p>).</span><span class=na>orElse</span><span class=p>(</span><span class=kc>null</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>entity</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>ExampleDoublePkDTO</span><span class=p>.</span><span class=na>fromEntity</span><span class=p>(</span><span class=n>entity</span><span class=p>)</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=kc>null</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=关键特性分析>关键特性分析</h3><h4 id=联合主键支持>联合主键支持</h4><ul><li><strong>问题</strong>: 之前版本错误地尝试使用单一主键类型</li><li><strong>解决</strong>: 自动检测主键列数量，为联合主键生成多参数方法</li><li><strong>实现</strong>: <code>List&lt;IntrospectedColumn> primaryKeyColumns</code></li></ul><h4 id=mysql特有功能>MySQL特有功能</h4><ul><li><strong>INSERT IGNORE</strong>: 忽略重复键错误，继续插入其他记录</li><li><strong>ON DUPLICATE KEY UPDATE</strong>: 插入冲突时自动更新指定字段</li><li><strong>REPLACE INTO</strong>: MySQL的替换插入操作</li></ul><h4 id=自动化程度>自动化程度</h4><ul><li><strong>依赖注入</strong>: 自动生成Spring <code>@Autowired</code>注解</li><li><strong>空值检查</strong>: 自动生成参数空值验证</li><li><strong>转换方法</strong>: DTO与Entity之间的自动转换</li></ul><h2 id=-项目结构>🏗️ 项目结构</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>mybatis-generator-custome-plugins/
+</span></span><span class=line><span class=cl>├── src/main/java/com/goody/utils/mybatis/plugin/
+</span></span><span class=line><span class=cl>│   ├── CustomerMapperPlugin.java
+</span></span><span class=line><span class=cl>│   ├── DtoGeneratorPlugin.java
+</span></span><span class=line><span class=cl>│   ├── InsertIgnoreIntoPlugin.java
+</span></span><span class=line><span class=cl>│   ├── InsertOnDuplicateKeyPlugin.java
+</span></span><span class=line><span class=cl>│   ├── ReplaceIntoPlugin.java
+</span></span><span class=line><span class=cl>│   └── ServiceGeneratorPlugin.java
+</span></span><span class=line><span class=cl>├── src/main/resources/
+</span></span><span class=line><span class=cl>│   └── generatorConfig.xml
+</span></span><span class=line><span class=cl>├── src/test/                        # 生成代码示例
+</span></span><span class=line><span class=cl>└── pom.xml
+</span></span></code></pre></td></tr></table></div></div><h2 id=-使用建议>🎯 使用建议</h2><ol><li><strong>开发流程</strong>: 先设计数据库表结构，然后使用插件生成完整的分层代码</li><li><strong>联合主键</strong>: 插件已完美支持联合主键，无需手动修改生成代码</li><li><strong>扩展性</strong>: 可以继承生成的Service接口，添加复杂业务逻辑</li><li><strong>MySQL优化</strong>: 合理使用INSERT IGNORE和ON DUPLICATE KEY功能提升性能</li></ol><h2 id=-源码深度分析>🔍 源码深度分析</h2><p><em>此部分为开发者提供插件实现细节的深入洞察，适合希望理解或扩展插件功能的开发者阅读。</em></p><h3 id=插件架构概览>插件架构概览</h3><p>所有插件都继承 <code>PluginAdapter</code> 并遵循MyBatis Generator的插件生命周期：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>abstract</span><span class=w> </span><span class=kd>class</span> <span class=nc>PluginAdapter</span><span class=w> </span><span class=kd>implements</span><span class=w> </span><span class=n>Plugin</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 验证阶段</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 代码生成钩子</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>clientGenerated</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=nf>contextGenerateAdditionalJavaFiles</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=insertignoreintoplugin-实现分析>InsertIgnoreIntoPlugin 实现分析</h3><h4 id=核心方法生成策略>核心方法生成策略</h4><p>插件使用精巧的方法动态生成SQL模板：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>Method</span><span class=w> </span><span class=nf>insertIgnoreIntoOne</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 使用Stream API进行动态列映射</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>final</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>columnNames</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getAllColumns</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>stream</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>map</span><span class=p>(</span><span class=n>column</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;`%s`&#34;</span><span class=p>,</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getActualColumnName</span><span class=p>()))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>collect</span><span class=p>(</span><span class=n>Collectors</span><span class=p>.</span><span class=na>joining</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// MyBatis语法的参数绑定</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>final</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>columnValueNames</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getAllColumns</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>stream</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>map</span><span class=p>(</span><span class=n>column</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;#{item.%s}&#34;</span><span class=p>,</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>()))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>collect</span><span class=p>(</span><span class=n>Collectors</span><span class=p>.</span><span class=na>joining</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 基于模板的注解生成</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>insertIgnore</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>String</span><span class=p>.</span><span class=na>format</span><span class=p>(</span><span class=s>&#34;@Insert({&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;\&#34;&lt;script&gt;\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;            \&#34; INSERT IGNORE INTO %s\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;              \&#34; (%s)\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;            \&#34; VALUES\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;              \&#34;(%s)\&#34; +\n&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;        \&#34;&lt;/script&gt;\&#34;&#34;</span><span class=w> </span><span class=o>+</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=s>&#34;})&#34;</span><span class=p>,</span><span class=w> </span><span class=n>tableName</span><span class=p>,</span><span class=w> </span><span class=n>columnNames</span><span class=p>,</span><span class=w> </span><span class=n>columnValueNames</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=关键技术创新>关键技术创新</h4><ol><li><strong>基于Stream的字段转换</strong>: 高效地将数据库模式转换为Java方法参数</li><li><strong>动态SQL模板生成</strong>: 创建带适当转义的参数化SQL</li><li><strong>批量处理支持</strong>: 为批量操作自动生成 <code>&lt;foreach></code> 循环</li></ol><h3 id=dtogeneratorplugin-实现分析>DtoGeneratorPlugin 实现分析</h3><h4 id=包名解析算法>包名解析算法</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>TopLevelClass</span><span class=w> </span><span class=nf>generateDtoClass</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 智能包名转换</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>entityFullType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getBaseRecordType</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>entityPackage</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>entityFullType</span><span class=p>.</span><span class=na>substring</span><span class=p>(</span><span class=n>0</span><span class=p>,</span><span class=w> </span><span class=n>entityFullType</span><span class=p>.</span><span class=na>lastIndexOf</span><span class=p>(</span><span class=sc>&#39;.&#39;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>dtoFullPackage</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>entityPackage</span><span class=p>.</span><span class=na>replace</span><span class=p>(</span><span class=s>&#34;.entity&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;.&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>DTO_PACKAGE</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 类型安全的类实例化</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>FullyQualifiedJavaType</span><span class=w> </span><span class=n>dtoType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=n>dtoFullPackage</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;.&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>dtoClassName</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>TopLevelClass</span><span class=w> </span><span class=n>dtoClass</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>TopLevelClass</span><span class=p>(</span><span class=n>dtoType</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=带元数据保留的字段生成>带元数据保留的字段生成</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 带注释保留的列到字段转换</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>allColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>Field</span><span class=w> </span><span class=n>field</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Field</span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>(),</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getFullyQualifiedJavaType</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>field</span><span class=p>.</span><span class=na>setVisibility</span><span class=p>(</span><span class=n>JavaVisibility</span><span class=p>.</span><span class=na>PRIVATE</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 保留数据库列注释</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>()</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=o>!</span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>().</span><span class=na>trim</span><span class=p>().</span><span class=na>isEmpty</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34;/**&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34; * &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getRemarks</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>field</span><span class=p>.</span><span class=na>addJavaDocLine</span><span class=p>(</span><span class=s>&#34; */&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>dtoClass</span><span class=p>.</span><span class=na>addField</span><span class=p>(</span><span class=n>field</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=servicegeneratorplugin-实现分析>ServiceGeneratorPlugin 实现分析</h3><h4 id=联合主键解析>联合主键解析</h4><p>最精妙的功能是智能联合主键处理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 动态主键分析</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>List</span><span class=o>&lt;</span><span class=n>IntrospectedColumn</span><span class=o>&gt;</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>.</span><span class=na>getPrimaryKeyColumns</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// 自适应方法签名生成</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>paramName</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addParameter</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>Parameter</span><span class=p>(</span><span class=n>column</span><span class=p>.</span><span class=na>getFullyQualifiedJavaType</span><span class=p>(),</span><span class=w> </span><span class=n>paramName</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// 动态方法调用构建</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>StringBuilder</span><span class=w> </span><span class=n>methodCall</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>StringBuilder</span><span class=p>(</span><span class=s>&#34;return &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>mapperFieldName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;.deleteByPrimaryKey(&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>.</span><span class=na>size</span><span class=p>();</span><span class=w> </span><span class=n>i</span><span class=o>++</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>i</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>0</span><span class=p>)</span><span class=w> </span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=s>&#34;, &#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=n>primaryKeyColumns</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=n>i</span><span class=p>).</span><span class=na>getJavaProperty</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>methodCall</span><span class=p>.</span><span class=na>append</span><span class=p>(</span><span class=s>&#34;);&#34;</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=service实现模式>Service实现模式</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 空值安全的参数验证</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>IntrospectedColumn</span><span class=w> </span><span class=n>column</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>primaryKeyColumns</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;if (&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>column</span><span class=p>.</span><span class=na>getJavaProperty</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; == null) {&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;    return 0;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>method</span><span class=p>.</span><span class=na>addBodyLine</span><span class=p>(</span><span class=s>&#34;}&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=高级模式和技术>高级模式和技术</h3><h4 id=类型安全强化>类型安全强化</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 泛型类型保留</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>FullyQualifiedJavaType</span><span class=w> </span><span class=n>listType</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=s>&#34;List&lt;&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>dtoClassName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;&gt;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>Parameter</span><span class=w> </span><span class=n>batchParameter</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Parameter</span><span class=p>(</span><span class=n>listType</span><span class=p>,</span><span class=w> </span><span class=s>&#34;dtoList&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// 导入解析</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>serviceInterface</span><span class=p>.</span><span class=na>addImportedType</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>FullyQualifiedJavaType</span><span class=p>(</span><span class=s>&#34;java.util.List&#34;</span><span class=p>));</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=sql注入防护>SQL注入防护</h4><p>所有生成的SQL都使用参数化查询：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 安全：参数化查询</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=s>&#34;INSERT IGNORE INTO &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>tableName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; VALUES (#{item.id}, #{item.name})&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>// 不安全：字符串拼接（从不使用）</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=s>&#34;INSERT IGNORE INTO &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>tableName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; VALUES (&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>item</span><span class=p>.</span><span class=na>getId</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;, &#39;&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>item</span><span class=p>.</span><span class=na>getName</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;&#39;)&#34;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=内存高效生成>内存高效生成</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=c1>// 大型代码库的延迟求值模式</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=nf>contextGenerateAdditionalJavaFiles</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>GeneratedJavaFile</span><span class=o>&gt;</span><span class=w> </span><span class=n>files</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ArrayList</span><span class=o>&lt;&gt;</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 仅在需要时生成</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>shouldGenerateService</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>files</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>createServiceInterface</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>files</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>createServiceImplementation</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>files</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=自定义开发扩展点>自定义开发扩展点</h3><h4 id=自定义插件模板>自定义插件模板</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>CustomPlugin</span><span class=w> </span><span class=kd>extends</span><span class=w> </span><span class=n>PluginAdapter</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 插件验证逻辑</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kc>true</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>clientGenerated</span><span class=p>(</span><span class=n>Interface</span><span class=w> </span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 向现有Mapper接口添加方法</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>interfaze</span><span class=p>.</span><span class=na>addMethod</span><span class=p>(</span><span class=n>createCustomMethod</span><span class=p>(</span><span class=n>introspectedTable</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kd>super</span><span class=p>.</span><span class=na>clientGenerated</span><span class=p>(</span><span class=n>interfaze</span><span class=p>,</span><span class=w> </span><span class=n>introspectedTable</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>Method</span><span class=w> </span><span class=nf>createCustomMethod</span><span class=p>(</span><span class=n>IntrospectedTable</span><span class=w> </span><span class=n>table</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 自定义方法生成逻辑</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Method</span><span class=w> </span><span class=n>method</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Method</span><span class=p>(</span><span class=s>&#34;customMethod&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>method</span><span class=p>.</span><span class=na>setVisibility</span><span class=p>(</span><span class=n>JavaVisibility</span><span class=p>.</span><span class=na>PUBLIC</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>method</span><span class=p>.</span><span class=na>setAbstract</span><span class=p>(</span><span class=kc>true</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>method</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=配置驱动行为>配置驱动行为</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=kd>public</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=nf>validate</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>warnings</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 读取插件属性</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>enableFeature</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>getProperties</span><span class=p>().</span><span class=na>getProperty</span><span class=p>(</span><span class=s>&#34;enableCustomFeature&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=s>&#34;false&#34;</span><span class=p>.</span><span class=na>equals</span><span class=p>(</span><span class=n>enableFeature</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 跳过插件执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=kc>false</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=kc>true</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>这种深入的源码分析揭示了每个插件背后的精妙工程，展示了先进的Java代码生成技术和MyBatis Generator的可扩展性框架。</p><hr><p><em>本技术深度解析旨在为MyBatis Generator自定义插件的架构和实现提供全面的洞察。</em></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2025-12-06&nbsp;<a class=git-hash href=https://github.com/GOODDAYDAY/GOODDAYDAY.github.io/commit/af3d5c9bd409e602f90f3dec7c5441cd7924d96f target=_blank title="commit by haotian(865700600@qq.com) af3d5c9bd409e602f90f3dec7c5441cd7924d96f: Refactor Redis Cluster documentation for clarity and consistency">
+<i class="fas fa-hashtag fa-fw" aria-hidden=true></i>af3d5c9</a></span></div></div><div class=post-info-line><div class=post-info-md><span><a class=link-to-markdown href=/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/index.md target=_blank>阅读原始文档</a></span></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator 自定义插件" data-hashtags=Github,MyBatis,plugins><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ data-hashtag=Github><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Linkedin" data-sharer=linkedin data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/><i class="fab fa-linkedin fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator 自定义插件"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator 自定义插件"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://gooddayday.github.io/zh-cn/2025/09/github-2.-mybatis-generator-custom-plugins/ data-title="[Github] 2. MyBatis Generator 自定义插件"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/zh-cn/tags/github/>Github</a>,&nbsp;<a href=/zh-cn/tags/mybatis/>MyBatis</a>,&nbsp;<a href=/zh-cn/tags/plugins/>Plugins</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/zh-cn/>主页</a></span></section></div><div class=post-nav><a href=/zh-cn/2025/09/customs-1.-customs-idea/ class=prev rel=prev title="[Customs] 1. IntelliJ IDEA 配置与推荐插件"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>[Customs] 1. IntelliJ IDEA 配置与推荐插件</a>
+<a href=/zh-cn/2025/09/cluster-1.-understanding_raft_algorithm/ class=next rel=next title="[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进">[Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=giscus class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://giscus.app>Giscus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><span class=author itemprop=copyrightHolder>&nbsp;<a href=/zh-cn/ target=_blank>GoodyHao</a></span>&nbsp;|&nbsp;<span class=license><a rel="license external nofollow noopener noreffer" href=https://creativecommons.org/licenses/by-nc/4.0/ target=_blank>CC BY-NC 4.0</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css><link rel=stylesheet href=/css/auto-numbering.css><link rel=stylesheet href=/css/svg-fullwidth.css><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{giscus:{category:"Announcements",categoryId:"DIC_kwDOPtWtCc4CvteQ",darkTheme:"dark",emitMetadata:"0",inputPosition:"bottom",lang:"zh-CN",lazyLoading:!1,lightTheme:"light",mapping:"pathname",reactionsEnabled:"1",repo:"GOODDAYDAY/GOODDAYDAY.github.io",repoId:"R_kgDOPtWtCQ"}},math:{delimiters:[{display:!0,left:"$$",right:"$$"},{display:!0,left:"\\[",right:"\\]"},{display:!0,left:"\\begin{equation}",right:"\\end{equation}"},{display:!0,left:"\\begin{equation*}",right:"\\end{equation*}"},{display:!0,left:"\\begin{align}",right:"\\end{align}"},{display:!0,left:"\\begin{align*}",right:"\\end{align*}"},{display:!0,left:"\\begin{alignat}",right:"\\end{alignat}"},{display:!0,left:"\\begin{alignat*}",right:"\\end{alignat*}"},{display:!0,left:"\\begin{gather}",right:"\\end{gather}"},{display:!0,left:"\\begin{CD}",right:"\\end{CD}"},{display:!1,left:"$",right:"$"},{display:!1,left:"\\(",right:"\\)"}],strict:!1},search:{algoliaAppID:"PASDMWALPK",algoliaIndex:"index.zh-cn",algoliaSearchKey:"b42948e51daaa93df92381c8e2ac0f93",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
