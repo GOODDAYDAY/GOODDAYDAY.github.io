@@ -424,23 +424,22 @@ With N nodes, full mesh = N × (N-1) connections
 **Redis's Mitigation**:
 
 1. **Smart Node Selection** (not purely random):
-   - Each round, randomly pick ~5 nodes from the cluster
-   - From these 5, choose the one with **oldest PONG time** (least recently contacted)
-   - This ensures no node gets "forgotten" while avoiding full mesh
+    - Each round, randomly pick ~5 nodes from the cluster
+    - From these 5, choose the one with **oldest PONG time** (least recently contacted)
+    - This ensures no node gets "forgotten" while avoiding full mesh
 
 2. **Fallback Mechanism**:
-   - If any node hasn't responded for > `cluster-node-timeout / 2`
-   - Force send a PING immediately, regardless of random selection
-   - Prevents false-positive failure detection
+    - If any node hasn't responded for > `cluster-node-timeout / 2`
+    - Force send a PING immediately, regardless of random selection
+    - Prevents false-positive failure detection
 
 3. **Partial Gossip**:
-   - Each PING only carries info about ~10% of known nodes (not all)
-   - Reduces message size while still propagating state eventually
+    - Each PING only carries info about ~10% of known nodes (not all)
+    - Reduces message size while still propagating state eventually
 
 4. **Scale Limit**:
-   - Recommended max: **~1000 nodes**
-   - Beyond this, Gossip overhead becomes significant
-
+    - Recommended max: **~1000 nodes**
+    - Beyond this, Gossip overhead becomes significant
 
 ### Epoch: The Logical Clock
 
@@ -515,6 +514,46 @@ void migrateCommand(client *c) {
 ### Request Handling During Migration
 
 ![Request Flow During Migration](/images/Cluster%20-%202%20-%20Redis%20Cluster/14-migration-request-flow.svg)
+
+During migration, Slot 100 is in a **transient state** — moving from Node A to Node B but not yet complete.
+
+**Node States**:
+
+| Node     | State       | Responsibility                                      |
+|----------|-------------|-----------------------------------------------------|
+| Node A   | `MIGRATING` | Still owns Slot 100, but data is moving out         |
+| Node B   | `IMPORTING` | Receiving data, but **not officially responsible**  |
+| Client   | -           | Slot Map still points Slot 100 → Node A             |
+
+**Request Flow**:
+
+1. **Client → Node A**: Client sends request based on cached Slot Map
+2. **Node A checks local**:
+    - Key exists → Process and return result
+    - Key missing → Return `-ASK <Node B>` (key already migrated)
+3. **Client → Node B**: Must send `ASKING` command first, then the original command
+4. **Node B checks ASKING flag**:
+    - Flag present → Execute command
+    - Flag absent → Return `-MOVED <Node A>`
+
+**Why Require ASKING?**
+
+The `ASKING` command prevents **routing table corruption**:
+
+- Without `ASKING`: A random client connecting to Node B might incorrectly assume Slot 100 belongs to B
+- Client updates its Slot Map prematurely → All future requests go to B
+- But migration just started → Most keys still on A → **Severe cache misses**
+
+The `ASKING` flag acts as a **one-time authorization token** — only clients explicitly redirected by Node A (via `-ASK`)
+can access the importing slot.
+
+**ASK vs MOVED**:
+
+| Aspect            | MOVED                | ASK                      |
+|-------------------|----------------------|--------------------------|
+| **When**          | Migration completed  | Migration in progress    |
+| **Client action** | Update Slot Map      | Do NOT update Slot Map   |
+| **Semantics**     | Permanent redirect   | Temporary redirect       |
 
 ---
 
