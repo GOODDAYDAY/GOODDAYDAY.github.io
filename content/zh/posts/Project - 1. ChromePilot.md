@@ -1,9 +1,9 @@
 +++
 date = '2026-03-10T22:00:00+08:00'
 draft = false
-title = 'ChromePilot — 用自然语言控制任何网页'
+title = '[Project] 1. ChromePilot — 用自然语言控制任何网页'
 categories = ["Project"]
-tags = ["Chrome 扩展", "LLM", "浏览器自动化", "自然语言处理"]
+tags = ["Chrome Extension", "LLM", "Browser Automation", "Natural Language Processing"]
 +++
 
 <div align="center">

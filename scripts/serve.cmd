@@ -11,4 +11,4 @@ echo Starting Hugo dev server with drafts...
 echo Site will be available at http://localhost:1313
 echo Press Ctrl+C to stop.
 echo.
-hugo server --buildDrafts --disableFastRender
+hugo server --buildDrafts --disableFastRender -D

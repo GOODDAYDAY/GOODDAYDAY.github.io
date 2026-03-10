@@ -1,7 +1,7 @@
 +++
 date = '2026-03-10T22:00:00+08:00'
 draft = false
-title = 'ChromePilot — Control Any Webpage with Natural Language'
+title = '[Project] 1. ChromePilot — Control Any Webpage with Natural Language'
 categories = ["Project"]
 tags = ["Chrome Extension", "LLM", "Browser Automation", "Natural Language Processing"]
 +++
