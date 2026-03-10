@@ -21,15 +21,17 @@ Synapulse (Synapse + Pulse) is a self-hosted personal AI assistant that lives in
 | Feature | Description |
 |---------|-------------|
 | **AI Chat** | @mention the bot in Discord to chat, supports multiple AI providers |
-| **Tool Calling** | Multi-round AI tool-call loop (up to 10 rounds), tools auto-discovered at startup |
+| **Tool Calling** | Multi-round AI tool-call loop (up to 10 rounds), tools auto-discovered at startup, with token compression |
 | **Persistent Memory** | Conversations saved and auto-summarized, cross-session memory |
 | **Task Management** | To-dos with priorities and due dates, AI sees pending tasks proactively |
 | **Memo / Notes** | Save and search personal notes via natural language |
 | **Reminders** | Natural language reminders with recurring schedule support |
 | **Email Monitoring** | Background jobs watch Gmail, Outlook, QQ Mail via IMAP, push summaries to Discord |
-| **MCP Integration** | Connect to 55+ pre-configured MCP servers (GitHub, Notion, filesystem, databases) |
+| **MCP Integration** | Connect to 55+ pre-configured MCP servers (GitHub, Notion, filesystem, databases), on-demand loading to save tokens |
+| **Model Rotation** | Multi-endpoint YAML config with tag-based routing, priority, and automatic rate-limit fallback |
+| **File & Shell** | Read/write local files, execute shell commands with safety blacklist and timeout |
 | **Notification Interaction** | Reply to any bot message and the AI sees the original content as context |
-| **Hot-Reload Config** | Edit job schedules, prompts, MCP servers at runtime without restart |
+| **Hot-Reload Config** | Edit job schedules, prompts, MCP servers, model endpoints at runtime without restart |
 
 ## Architecture
 
@@ -64,10 +66,12 @@ apps/bot/
 ├── tool/                      # Native tools (auto-discovered)
 │   ├── base.py                # BaseTool, OpenAITool, AnthropicTool
 │   ├── brave_search/          # Web search
+│   ├── local_files/           # Read/write local files (sandboxed)
 │   ├── memo/                  # Notes management
 │   ├── task/                  # Todo list
 │   ├── reminder/              # Reminders
-│   ├── shell_exec/            # Shell command execution
+│   ├── weather/               # Weather via OpenWeatherMap
+│   ├── shell_exec/            # Shell commands (with safety blacklist)
 │   └── mcp_server/            # Manage MCP connections via chat
 ├── job/                       # Background jobs (auto-discovered)
 │   ├── cron.py                # CronJob base with hot-reload
@@ -136,6 +140,52 @@ class Tool(OpenAITool, AnthropicTool):
 **Format-agnostic**: each tool has `to_openai()` and `to_anthropic()` methods. Same tool works with both APIs.
 
 **MCP tools**: `MCPManager` spawns MCP servers as subprocesses, discovers tools via MCP protocol, wraps them in `MCPToolWrapper` (duck-typed to match native tool interface). Hot-reload checks config every 30s.
+
+### MCP On-Demand Loading
+
+A key optimization: MCP tools are NOT loaded into the provider's tool list at startup. Instead:
+
+1. At startup, only native tool schemas are sent to the AI (saves tokens)
+2. MCP tool names are listed as hints in the system prompt
+3. When the AI needs an MCP tool, it calls `mcp_server(action="use_tools", tools=[...])` to activate specific tools
+4. Requested schemas are added to the provider's tool list on-demand for the current request only
+
+This avoids sending 100+ MCP tool schemas on every API call, significantly reducing token usage.
+
+### Model Rotation & Fallback
+
+The `EndpointPool` manages multiple AI endpoints defined in `config/models.yaml`:
+
+```yaml
+models:
+  - name: github-gpt4o
+    protocol: openai
+    base_url: https://models.inference.ai.azure.com
+    api_key: ${GITHUB_TOKEN}
+    model: gpt-4o
+    tags: [large, coding]
+    priority: 0
+  - name: ollama-local
+    protocol: openai
+    base_url: http://localhost:11434
+    model: llama3
+    tags: [local]
+    priority: 1
+```
+
+- **Tag-based routing**: request a specific capability (e.g., `large`, `coding`, `local`)
+- **Round-robin rotation** within the same priority level
+- **Rate-limit fallback**: on 429, mark endpoint as cooldown (respects `Retry-After` header), try next
+- **Hot-reload**: config file changes detected every 30s, preserving cooldown state
+
+### Shell Execution Safety
+
+The `shell_exec` tool runs shell commands with multiple safety layers:
+
+- **Dangerous command blacklist**: blocks `rm -rf /`, `mkfs`, `shutdown`, `sudo`, etc.
+- **Configurable timeout**: 1–120 seconds per command
+- **Output truncation**: results capped at 10,000 chars
+- **Sandboxed working directory**: restricted to paths in `LOCAL_FILES_ALLOWED_PATHS`
 
 ## Comparison: OpenClaw vs Nanobot vs Synapulse
 
@@ -219,9 +269,12 @@ The agent loop is the core mechanism that orchestrates LLM calls and tool execut
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `DISCORD_TOKEN` | Yes | Discord bot token |
-| `AI_PROVIDER` | No | `mock` (default), `copilot`, or `ollama` |
+| `AI_PROVIDER` | No | `mock` (default), `copilot`, or `ollama` (fallback if no `models.yaml`) |
 | `AI_MODEL` | No | Model name, e.g. `gpt-4o-mini` |
 | `BRAVE_API_KEY` | For search | Brave Search API key |
+| `OPENWEATHER_API_KEY` | For weather | OpenWeatherMap API key |
+| `GITHUB_PAT` | For MCP GitHub | GitHub Personal Access Token (auto-detects owner identity) |
+| `LOCAL_FILES_ALLOWED_PATHS` | For files/shell | Comma-separated sandboxed paths |
 
 ### Multi-Endpoint Rotation (`config/models.yaml`)
 
