@@ -1,0 +1,61 @@
+@startuml 12-distributed-tx
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Distributed Transaction Options
+
+package "Option 1: XA/2PC" as xa #LightCoral {
+    rectangle "TM" as tm_xa
+    database "DB1" as db1_xa
+    database "DB2" as db2_xa
+
+    tm_xa --> db1_xa : Prepare
+    tm_xa --> db2_xa : Prepare
+
+    note bottom of xa: Strong consistency\nTerrible performance
+}
+
+package "Option 2: TCC" as tcc #LightYellow {
+    rectangle "App" as app_tcc
+    rectangle "Try" as try_tcc
+    rectangle "Confirm" as confirm_tcc
+    rectangle "Cancel" as cancel_tcc
+
+    app_tcc --> try_tcc : Reserve
+    try_tcc --> confirm_tcc : Success
+    try_tcc --> cancel_tcc : Failure
+
+    note bottom of tcc: Better performance\nMassive code complexity
+}
+
+package "Option 3: Saga" as saga #LightGreen {
+    rectangle "T1" as t1
+    rectangle "T2" as t2
+    rectangle "T3" as t3
+    rectangle "C3" as c3
+    rectangle "C2" as c2
+    rectangle "C1" as c1
+
+    t1 --> t2
+    t2 --> t3
+    t3 -[#red]-> c3 : Fail
+    c3 -[#red]-> c2
+    c2 -[#red]-> c1
+
+    note bottom of saga: Chain of local TX\nEventual consistency
+}
+
+package "Option 4: Local Message Table" as lmt #LightBlue {
+    database "DB + Msg" as db_msg
+    queue "MQ" as mq
+    rectangle "Consumer" as consumer
+
+    db_msg --> mq : Background job
+    mq --> consumer : Process
+
+    note bottom of lmt: Best balance\nfor most apps
+}
+
+@enduml

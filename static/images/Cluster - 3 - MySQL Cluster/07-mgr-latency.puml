@@ -1,0 +1,44 @@
+@startuml 07-mgr-latency
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title MGR Write Latency - Paxos Overhead
+
+participant "Client" as client
+participant "Node 1\n(Primary)" as node1
+participant "Node 2" as node2
+participant "Node 3" as node3
+
+client -> node1 : INSERT INTO orders...
+activate node1
+
+node1 -> node1 : Prepare TX
+node1 -> node2 : Broadcast TX
+node1 -> node3 : Broadcast TX
+
+node2 -> node2 : Certify TX
+node2 --> node1 : ACK
+
+node3 -> node3 : Certify TX
+node3 --> node1 : ACK
+
+note over node1
+  **Wait for Majority (2/3)**
+  LAN: +0.5ms ~ +2ms
+  WAN: +100ms ~ +300ms
+end note
+
+node1 -> node1 : COMMIT
+node1 --> client : OK
+deactivate node1
+
+note bottom
+  **The Physics Problem:**
+  Singapore <-> New York: ~200ms RTT
+  Every write waits for consensus
+  TPS drops dramatically over WAN
+end note
+
+@enduml

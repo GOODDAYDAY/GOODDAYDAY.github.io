@@ -1,0 +1,40 @@
+@startuml 04-mha-architecture
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title MHA (Master High Availability) Architecture
+
+rectangle "MHA Manager" as mha #Pink {
+    component "Monitor" as monitor
+    component "Failover\nScript" as failover
+}
+
+cloud "VIP: 10.0.0.100" as vip #LightBlue
+
+database "Master\n10.0.0.1" as master #LightGreen
+database "Slave 1\n10.0.0.2" as slave1 #LightYellow
+database "Slave 2\n10.0.0.3" as slave2 #LightYellow
+
+rectangle "Application" as app
+
+app --> vip : Connect
+vip --> master : Route
+
+monitor ..> master : Heartbeat
+monitor ..> slave1 : Heartbeat
+monitor ..> slave2 : Heartbeat
+
+master --> slave1 : Replication
+master --> slave2 : Replication
+
+note right of mha
+  **Failover Steps:**
+  1. Detect Master failure
+  2. Compare Slave positions
+  3. Promote best Slave
+  4. Move VIP to new Master
+end note
+
+@enduml

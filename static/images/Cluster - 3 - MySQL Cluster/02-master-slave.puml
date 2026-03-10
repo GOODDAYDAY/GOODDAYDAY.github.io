@@ -1,0 +1,42 @@
+@startuml 02-master-slave
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title MySQL Master-Slave Replication
+
+rectangle "Application" as app #LightBlue
+
+package "Master" as master_pkg #LightGreen {
+    database "Master" as master {
+        storage "Binlog" as m_binlog
+    }
+    component "Binlog Dump\nThread" as dump_thread
+}
+
+package "Slave" as slave_pkg #LightYellow {
+    database "Slave" as slave {
+        storage "Relay Log" as relay_log
+    }
+    component "IO Thread" as io_thread
+    component "SQL Thread" as sql_thread
+}
+
+app --> master : Write
+app --> slave : Read
+
+dump_thread --> io_thread : Binlog Events\n(Async)
+io_thread --> relay_log : Write
+relay_log --> sql_thread : Read
+sql_thread --> slave : Replay
+
+note bottom of slave_pkg
+  **Replication Flow:**
+  1. Master writes Binlog
+  2. Dump Thread sends to Slave
+  3. IO Thread writes Relay Log
+  4. SQL Thread replays events
+end note
+
+@enduml

@@ -1,0 +1,54 @@
+@startuml 10-sharding
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Horizontal Sharding Architecture
+
+rectangle "Application" as app #LightBlue
+
+rectangle "Sharding Middleware\n(ShardingSphere / MyCat)" as middleware #Pink {
+    component "Router" as router
+    component "Shard Key:\nuser_id % 4" as shard_key
+}
+
+package "Shard 0" as shard0 #LightGreen {
+    database "Master" as m0
+    database "Slave" as s0
+    note bottom: user_id % 4 = 0
+}
+
+package "Shard 1" as shard1 #LightYellow {
+    database "Master" as m1
+    database "Slave" as s1
+    note bottom: user_id % 4 = 1
+}
+
+package "Shard 2" as shard2 #LightCoral {
+    database "Master" as m2
+    database "Slave" as s2
+    note bottom: user_id % 4 = 2
+}
+
+package "Shard 3" as shard3 #LightBlue {
+    database "Master" as m3
+    database "Slave" as s3
+    note bottom: user_id % 4 = 3
+}
+
+app --> middleware
+middleware --> shard0
+middleware --> shard1
+middleware --> shard2
+middleware --> shard3
+
+note bottom
+  **Pain Points:**
+  - Cross-shard JOIN impossible
+  - Distributed TX slow (XA)
+  - Global unique ID needed
+  - Resharding is nightmare
+end note
+
+@enduml

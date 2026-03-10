@@ -1,0 +1,36 @@
+@startuml 06-mgr-architecture
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title MySQL Group Replication (MGR) Architecture
+
+rectangle "MySQL Router" as router #LightBlue
+
+package "MGR Cluster (Paxos)" as mgr #LightGreen {
+    database "Node 1\n(Primary)" as node1 #Gold
+    database "Node 2\n(Secondary)" as node2 #LightYellow
+    database "Node 3\n(Secondary)" as node3 #LightYellow
+
+    node1 <--> node2 : Paxos\nConsensus
+    node2 <--> node3 : Paxos\nConsensus
+    node1 <--> node3 : Paxos\nConsensus
+}
+
+rectangle "Application" as app
+
+app --> router : Read/Write
+router --> node1 : Write
+router --> node2 : Read
+router --> node3 : Read
+
+note right of mgr
+  **Consensus Protocol:**
+  - Write broadcast to all nodes
+  - Majority must ACK
+  - Conflicting TX auto-rollback
+  - Automatic failover
+end note
+
+@enduml

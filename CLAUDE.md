@@ -120,6 +120,61 @@ tags = ["tag1", "tag2", "tag3"]
   - Chinese: `content/zh/posts/filename.md`
 - **Translations**: When translating content, maintain the same frontmatter structure and file numbering
 
+### Writing Style
+
+- **Concise and technical**: Avoid colloquial expressions and analogies
+- **Use tables**: Prefer tables over long paragraphs for comparisons
+- **Use bullet points**: Break down complex explanations into bullet points
+- **Bold labels on separate lines**: When using bold labels with explanations, put the label on its own line followed by bullet points
+
+**Correct format**:
+```markdown
+**The Problem**:
+- Slave dies or network breaks
+- Master cannot receive ACK
+- Without timeout, Master hangs forever
+```
+
+**Incorrect format**:
+```markdown
+**The Problem**: Slave dies or network breaks. Master cannot receive ACK. Without timeout, Master hangs forever.
+```
+
+- **No analogies**: Do not use analogies or metaphors to explain technical concepts
+- **Numbered lists for sequential steps**: Use numbered lists for processes with clear order
+- **PlantUML for diagrams**: Always use PlantUML for any flow diagrams, sequence diagrams, or architecture diagrams. Never use ASCII art or text-based diagrams in markdown.
+
+**Incorrect** (ASCII diagram in markdown):
+```markdown
+```
+[Slave dies] → Master waits 10s → No ACK → Degrade to Async
+```
+```
+
+**Correct** (PlantUML):
+- Create `.puml` file in `static/images/{post-title}/`
+- Generate SVG using scripts (see below) or: `java -jar plantuml.jar -tsvg filename.puml`
+- Reference in markdown: `![Diagram Name](/images/post-title/filename.svg)`
+
+### PlantUML Generation Scripts
+
+Scripts in `scripts/` folder automatically download PlantUML and generate SVG files from all `.puml` files.
+
+**Usage** (from project root):
+```bash
+# Windows
+scripts\generate-plantuml.cmd
+
+# Mac/Linux
+chmod +x scripts/generate-plantuml.sh
+./scripts/generate-plantuml.sh
+```
+
+**How it works**:
+- Auto-downloads `plantuml.jar` to `static/images/` if not present (git-ignored)
+- Scans all subdirectories in `static/images/` for `.puml` files
+- Converts each `.puml` file to `.svg`
+
 ### Asset Management
 
 - Images stored in `static/images/` directory, organized by post title

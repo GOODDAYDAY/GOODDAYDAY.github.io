@@ -1,0 +1,50 @@
+@startuml 11-double-write
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Online Migration - Double Write Pattern
+
+participant "Application" as app
+participant "Old DB" as old_db
+participant "New DB" as new_db
+participant "Sync Job" as sync
+
+== Phase 1: Enable Double Write ==
+
+app -> old_db : Write
+app -> new_db : Write (same data)
+
+== Phase 2: Backfill Historical ==
+
+sync -> old_db : Read historical
+sync -> new_db : Write historical
+note right: Skip conflicts\n(double-write wins)
+
+== Phase 3: Verify ==
+
+sync -> old_db : Checksum
+sync -> new_db : Checksum
+sync -> sync : Compare
+
+== Phase 4: Switch Reads ==
+
+app -> new_db : Read (10%)
+app -> old_db : Read (90%)
+
+note right: Gradually increase\nnew_db percentage
+
+== Phase 5: Cutover ==
+
+app -> new_db : Write only
+app -[#red]->x old_db : Stop writes
+
+note bottom
+  **Zero Downtime Migration:**
+  - No service interruption
+  - Rollback possible until Phase 5
+  - Data verified before cutover
+end note
+
+@enduml

@@ -1,0 +1,46 @@
+@startuml 13-read-write-split
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Read-Write Splitting - The Stale Read Problem
+
+actor "User" as user
+participant "Proxy\n(ProxySQL)" as proxy
+database "Master" as master
+database "Slave" as slave
+
+== Write Operation ==
+
+user -> proxy : UPDATE profile SET name='Bob'
+proxy -> master : Write
+master --> proxy : OK
+proxy --> user : Success!
+
+== Read Operation (Stale Read) ==
+
+user -> proxy : SELECT * FROM profile
+proxy -> slave : Read (routed to slave)
+
+note over slave #Pink
+  Replication Lag!
+  Slave hasn't received
+  the UPDATE yet
+end note
+
+slave --> proxy : name='Alice' (old data!)
+proxy --> user : Shows old data
+
+note over user #Orange
+  "Where's my update?!"
+end note
+
+note bottom
+  Solutions:
+  1. Force Master read after write
+  2. Track write timestamp, route smart
+  3. Accept staleness for non-critical data
+end note
+
+@enduml

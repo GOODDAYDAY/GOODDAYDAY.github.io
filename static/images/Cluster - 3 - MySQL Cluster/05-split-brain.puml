@@ -1,0 +1,39 @@
+@startuml 05-split-brain
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Split-Brain Disaster Scenario
+
+rectangle "Network Partition" as partition #Pink {
+}
+
+package "Zone A" {
+    database "Old Master\n(Still Running!)" as old_master #Red
+    rectangle "Client A" as client_a #LightBlue
+    client_a --> old_master : Writes
+}
+
+package "Zone B" {
+    database "New Master\n(Promoted by MHA)" as new_master #Orange
+    database "Slave" as slave #LightYellow
+    rectangle "Client B" as client_b #LightBlue
+    rectangle "MHA" as mha #Pink
+
+    client_b --> new_master : Writes
+    new_master --> slave : Replication
+}
+
+old_master <-[#red,dashed]-> new_master : Network\nPartition
+
+note bottom
+  **Disaster:**
+  - MHA thinks Master is dead
+  - Promotes Slave to new Master
+  - Old Master recovers
+  - **Two Masters accepting writes**
+  - **Data divergence!**
+end note
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml 09-read-scaling
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Read Scaling - Adding Slave Nodes
+
+rectangle "Load Balancer\n(ProxySQL)" as lb #LightBlue
+
+database "Master" as master #LightGreen
+database "Slave 1" as slave1 #LightYellow
+database "Slave 2" as slave2 #LightYellow
+database "Slave 3\n(New)" as slave3 #Orange
+
+rectangle "Application" as app
+
+app --> lb : Queries
+lb --> master : Write
+lb --> slave1 : Read
+lb --> slave2 : Read
+lb --> slave3 : Read
+
+master --> slave1 : Replication
+master --> slave2 : Replication
+master --> slave3 : Replication
+
+note right of slave3
+  **Adding Read Capacity:**
+  1. Backup existing Slave
+  2. Restore to new server
+  3. CHANGE MASTER TO
+  4. Add to load balancer
+end note
+
+@enduml

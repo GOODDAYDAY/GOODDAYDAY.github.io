@@ -52,11 +52,13 @@ The obvious solution: add replicas.
 | Data consistency risk          |      \      |      T       |
 
 **Why "Partial" for SPOF?**
+
 - Data is now on multiple machines
 - But if Master dies, **someone must manually promote a Slave**
 - During this window, writes are blocked
 
 **The Lag Problem**:
+
 - Replication is **asynchronous** by default
 - User writes data, then immediately reads
 - Read goes to a Slave that hasn't caught up yet
@@ -94,34 +96,40 @@ MySQL 5.5 introduced **semi-synchronous replication**:
 When Master waits for Slave ACK, what about concurrent transactions?
 
 **Lock Protection**:
+
 - The waiting transaction **holds row locks**
 - Any other transaction attempting to modify the same rows **blocks**
 - Blocked until the first transaction completes (ACK received or timeout)
 
 #### Timeout, Degradation, and Recovery
 
+![Timeout Degradation](/images/Cluster%20-%203%20-%20MySQL%20Cluster/03-timeout-degradation.svg)
+
 **The Problem**:
+
 - Slave dies or network breaks
 - Master cannot receive ACK
 - Without timeout, Master hangs forever
 
 **Timeout Mechanism** (`rpl_semi_sync_master_timeout`, default 10s):
 
-```
-[Slave dies] → Master waits 10s → No ACK → Degrade to Async → Commit locally
-```
+- Master waits for configured timeout
+- No ACK received → Master degrades to Async mode
+- Transaction commits locally, returns success to client
 
 **Async Mode Behavior**:
+
 - Master no longer waits for Slave acknowledgment
 
-| Aspect           | Semi-Sync Mode            | Async Mode (Degraded)      |
-|------------------|---------------------------|----------------------------|
-| Wait for Slave?  | Yes (ACK required)        | No (fire and forget)       |
-| Write Latency    | +1 RTT (network)          | Local disk speed only      |
-| Data Location    | Master + at least 1 Slave | Master only                |
-| If Master Crashes| No data loss (RPO=0)      | **Data loss** (RPO>0)      |
+| Aspect            | Semi-Sync Mode            | Async Mode (Degraded) |
+|-------------------|---------------------------|-----------------------|
+| Wait for Slave?   | Yes (ACK required)        | No (fire and forget)  |
+| Write Latency     | +1 RTT (network)          | Local disk speed only |
+| Data Location     | Master + at least 1 Slave | Master only           |
+| If Master Crashes | No data loss (RPO=0)      | **Data loss** (RPO>0) |
 
 **The Unprotected Period**:
+
 - After degradation, all subsequent transactions (B, C, D...) commit immediately without Slave confirmation
 - Data exists **only on Master**
 - If Master crashes during this period, unsynced data is permanently lost
@@ -138,6 +146,7 @@ When Slave reconnects:
 6. Next new transaction: Master **waits for ACK** again — protection resumes
 
 **Catch-Up Latency**:
+
 - During backlog transfer, new transactions may experience higher latency
 - Network bandwidth is consumed by historical data replication
 
@@ -149,40 +158,37 @@ MySQL 5.5 introduced the **mechanism**, but MySQL 5.7 gave us the **correctness*
 
 **AFTER_COMMIT (MySQL 5.5-5.6 default)** — The Flawed Way:
 
-```
-Binlog → Commit to InnoDB → Wait for ACK → Return to client
-         ↑
-         Problem: Data visible before Slave confirms!
-```
+- Binlog → Commit to InnoDB → Wait for ACK → Return to client
+- Problem: Data visible before Slave confirms
 
-**Crash Scenario Analysis**: Master crashes while waiting for ACK.
+**Crash Scenario Analysis**:
+
+- Master crashes while waiting for ACK
 - Slave: Never received the data
 - Master: Already committed locally — other clients **can see** this data
 - After failover: Data **disappears** from the new Master (Slave)
-- Result: "I saw the data a second ago, now it's gone!" — **Phantom Data**
+- Result: **Phantom Data**
 
 **AFTER_SYNC (MySQL 5.7+ default)** — The Lossless Way:
 
-Controlled by `rpl_semi_sync_master_wait_point = AFTER_SYNC`
+- Controlled by `rpl_semi_sync_master_wait_point = AFTER_SYNC`
+- Binlog → Send to Slave → Wait for ACK → Commit to InnoDB → Return to client
+- Data still invisible until ACK received (not committed)
 
-```
-Binlog → Send to Slave → Wait for ACK → Commit to InnoDB → Return to client
-                         ↑
-                         Data still invisible (not committed)
-```
+**Crash Scenario Analysis**:
 
-**Crash Scenario Analysis**: Master crashes while waiting for ACK.
+- Master crashes while waiting for ACK
 - Slave: Maybe received it, maybe not
 - Master: **Not committed** — other clients cannot see this data
 - After failover: Data missing, but **no one ever saw it**
 - Result: Consistency preserved — **Lossless**
 
-| Feature          | AFTER_COMMIT (5.5)              | AFTER_SYNC (5.7+)              |
-|------------------|--------------------------------|--------------------------------|
-| Commit Timing    | Before waiting for Slave       | After Slave ACK received       |
-| Data Visibility  | Visible during wait            | Invisible until ACK            |
-| Failover Risk    | Phantom data possible          | Lossless — consistent          |
-| Verdict          | "Semi-Safe"                    | "Truly Safe"                   |
+| Feature         | AFTER_COMMIT (5.5)       | AFTER_SYNC (5.7+)        |
+|-----------------|--------------------------|--------------------------|
+| Commit Timing   | Before waiting for Slave | After Slave ACK received |
+| Data Visibility | Visible during wait      | Invisible until ACK      |
+| Failover Risk   | Phantom data possible    | Lossless — consistent    |
+| Verdict         | "Semi-Safe"              | "Truly Safe"             |
 
 ### External HA: MHA and Orchestrator
 
@@ -207,6 +213,7 @@ Since MySQL itself doesn't handle failover, external tools emerged.
 | Data consistency risk          |      \      |      T       |  Better   |    T    |
 
 **Why "Partial" for Auto Failover?**
+
 - MHA provides automatic failover
 - But it relies on external monitoring
 - Network partitions can cause **split-brain** scenarios
@@ -223,6 +230,7 @@ Network partition creates two "Masters":
 - **Two Masters, divergent data, disaster**
 
 **Mitigation**:
+
 - STONITH (Shoot The Other Node In The Head)
 - Before promoting new Master, **physically power off** old Master via IPMI/PDU
 - Dead nodes can't write data
@@ -257,6 +265,7 @@ MySQL 5.7.17 introduced **Group Replication** — built-in clustering based on *
 | Multi-Primary  | Any node      | Auto-detected, loser rolls back | Specific geo-distributed cases |
 
 **Warning**:
+
 - Multi-Primary sounds cool but has pitfalls
 - Auto-increment conflicts (need offset configuration)
 - High conflict rate = poor performance
@@ -277,10 +286,12 @@ Every MGR write requires:
 3. Then commit
 
 **In a LAN (same datacenter)**:
+
 - +0.5ms to +2ms per write
 - Acceptable
 
 **Across regions**:
+
 - Singapore ↔ New York: ~200ms RTT
 - Every write waits 200ms for consensus
 - TPS drops to single digits
@@ -290,9 +301,11 @@ Every MGR write requires:
 ![Multi-Region Architecture](/images/Cluster%20-%203%20-%20MySQL%20Cluster/08-multi-region.svg)
 
 **Don't do this**:
+
 - MGR nodes spread across continents
 
 **Do this instead**:
+
 1. **Same-city multi-AZ**: MGR cluster within one region (AZ latency < 2ms)
 2. **Cross-region async replication**: Separate MGR clusters connected by async replication
 3. **Accept eventual consistency** for cross-region reads
@@ -400,6 +413,7 @@ When data spans multiple databases, ACID breaks down.
 ### The Big Transaction Disaster
 
 **Scenario**:
+
 - Batch job deletes 1 million expired records in single transaction
 
 **What happens**:
@@ -411,20 +425,26 @@ When data spans multiple databases, ACID breaks down.
 5. Cluster becomes read-only or crashes
 
 **Solution**:
+
 - Chunk large operations
 
 ```sql
 -- Bad
-DELETE FROM logs WHERE created_at < '2024-01-01';
+DELETE
+FROM logs
+WHERE created_at < '2024-01-01';
 
 -- Good
-DELETE FROM logs WHERE created_at < '2024-01-01' LIMIT 10000;
+DELETE
+FROM logs
+WHERE created_at < '2024-01-01' LIMIT 10000;
 -- Repeat in loop with sleep between batches
 ```
 
 ### The Failover That Wasn't
 
 **Scenario**:
+
 - MHA triggers failover, but old Master wasn't actually dead
 
 **Timeline**:

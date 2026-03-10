@@ -1,0 +1,53 @@
+@startuml 03-semi-sync-detail
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Semi-Sync: AFTER_COMMIT vs AFTER_SYNC
+
+participant "Client" as client
+participant "Master" as master
+database "InnoDB" as innodb
+participant "Binlog" as binlog
+participant "Slave" as slave
+
+== AFTER_COMMIT (MySQL 5.5-5.6) ==
+
+client -> master : UPDATE user SET name='Bob'
+master -> innodb : Commit
+note right #Pink: Data visible to\nother transactions!
+master -> binlog : Write
+master -> slave : Send binlog
+master -> master : Wait for ACK...
+
+note over master #Orange
+  If Master crashes now:
+  Client saw "Success"
+  But Slave has no data!
+  = Phantom Data
+end note
+
+slave --> master : ACK
+master --> client : Success
+
+== AFTER_SYNC (MySQL 5.7+) ==
+
+client -> master : UPDATE user SET name='Bob'
+master -> binlog : Write
+master -> slave : Send binlog
+master -> master : Wait for ACK...
+
+note right #LightGreen: Data NOT visible yet\n(not committed)
+
+slave --> master : ACK
+master -> innodb : Commit
+note right #LightGreen: Now visible to\nother transactions
+master --> client : Success
+
+note bottom
+  AFTER_SYNC = Safer
+  No phantom data possible
+end note
+
+@enduml
