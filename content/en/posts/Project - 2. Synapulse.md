@@ -16,16 +16,32 @@ Synapulse (Synapse + Pulse) is a self-hosted personal AI assistant that lives in
 
 - GitHub: [GOODDAYDAY/Synapulse](https://github.com/GOODDAYDAY/Synapulse)
 
+## Demo
+
+|                             Weather query                             |                     Web search + recommendation                      |
+|:---------------------------------------------------------------------:|:--------------------------------------------------------------------:|
+| ![Weather](/images/Project%20-%202%20-%20Synapulse/1.%20what%20is%20the%20weather%20today.gif) | ![Keyboard](/images/Project%20-%202%20-%20Synapulse/2.%20recommend%20me%20one%20keyboard.gif) |
+
+|                                Reminder (notify mode)                                 |                           Reminder (prompt mode)                            |
+|:-------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------:|
+| ![Notify](/images/Project%20-%202%20-%20Synapulse/3.%20notify%20me%20drink%20water%20after%201%20minutes..gif) | ![Prompt](/images/Project%20-%202%20-%20Synapulse/4.%20notify%20me%20news%20after%201%20minutes.gif) |
+
+|                                            File creation + send                                             |
+|:-----------------------------------------------------------------------------------------------------------:|
+| ![File](/images/Project%20-%202%20-%20Synapulse/5.%20create%20a%20file%20contains%20news%20about%20irar%20and%20send%20to%20me..gif) |
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
 | **AI Chat** | @mention the bot in Discord to chat, supports multiple AI providers |
 | **Tool Calling** | Multi-round AI tool-call loop (up to 10 rounds), tools auto-discovered at startup, with token compression |
+| **Shell Execution** | AI proactively uses shell commands for system queries, calculations, git operations. Cross-platform: PowerShell on Windows, bash on Linux/macOS |
 | **Persistent Memory** | Conversations saved and auto-summarized, cross-session memory |
 | **Task Management** | To-dos with priorities and due dates, AI sees pending tasks proactively |
 | **Memo / Notes** | Save and search personal notes via natural language |
-| **Reminders** | Natural language reminders with recurring schedule support |
+| **Reminders** | Set reminders with relative time (`+5m`, `+1h`) or absolute time. Two modes: **notify** for passive nudges, **prompt** for scheduled AI actions (e.g. "tell me the weather in 1 hour") |
+| **File Operations** | Read, write, search, and manage local files within allowed paths |
 | **Email Monitoring** | Background jobs watch Gmail, Outlook, QQ Mail via IMAP, push summaries to Discord |
 | **MCP Integration** | Connect to 55+ pre-configured MCP servers (GitHub, Notion, filesystem, databases), on-demand loading to save tokens |
 | **Model Rotation** | Multi-endpoint YAML config with tag-based routing, priority, and automatic rate-limit fallback |
@@ -51,12 +67,14 @@ Synapulse (Synapse + Pulse) is a self-hosted personal AI assistant that lives in
 ```
 apps/bot/
 ├── main.py                    # Entry point
-├── config/                    # Settings, prompts, job config, model config
+├── config/                    # Settings, prompts, logging
 ├── core/
 │   ├── handler.py             # Bootstrap: wire all components via DI
 │   ├── loader.py              # Auto-discover tools and jobs from folders
 │   ├── mention.py             # Tool-call loop, memory load/save, summarization
 │   └── reminder.py            # Background reminder checker
+config/                          # Runtime config (models.yaml, mcp.json, jobs.json)
+output/                          # Runtime output (logs, data)
 ├── provider/
 │   ├── base.py                # OpenAIProvider, AnthropicProvider
 │   ├── endpoint.py            # EndpointPool: rotation, rate-limit fallback

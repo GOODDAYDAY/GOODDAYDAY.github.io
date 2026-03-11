@@ -30,6 +30,8 @@ ChromePilot 是一个 Chrome 扩展，让你用自然语言控制任何网页。
 | **多 LLM 支持** | 支持 OpenAI、Anthropic Claude、GitHub Copilot、Ollama（本地）等 |
 | **调试模式** | 可视化页面上所有被检测到的交互元素及其编号 |
 | **教学模式** | 录制用户操作并保存为示范 |
+| **操作预览与确认** | 执行前以可视化高亮预览计划操作；可输入反馈让 AI 重新分析 |
+| **自动执行模式** | 开启后跳过确认，直接执行操作 |
 
 ## 演示
 
@@ -73,6 +75,18 @@ ChromePilot 导航到 GitHub，找到仓库，点击 Star 按钮。
 
 调试模式展示 ChromePilot 检测到的每个交互元素，每个元素都标有索引编号。你可以直接输入 "click button 54" 与指定元素交互。
 
+### 操作预览与确认 — 执行前审查
+
+> 操作以编号标签高亮显示。确认后执行，或输入反馈让 AI 重新分析。
+
+![操作预览演示](/images/Project%20-%201%20-%20ChromePilot/6.%20show%20batch%20actions%20with%20confirm%20first.gif)
+
+### 自动执行模式 — 跳过确认
+
+> 开启 "Auto-run" 后，操作将直接执行，不再预览。
+
+![自动执行演示](/images/Project%20-%201%20-%20ChromePilot/7.%20show%20the%20auto-run.gif)
+
 ## 架构
 
 ### 技术栈
@@ -97,6 +111,7 @@ src/
 │   ├── content-script.js      # 网页消息处理
 │   ├── dom-extractor.js       # 提取交互元素
 │   ├── action-executor.js     # 模拟 click/type/scroll/read
+│   ├── action-previewer.js    # 预览覆盖层（红色边框 + 步骤标签）
 │   └── action-recorder.js     # 教学模式（录制操作）
 ├── sidepanel/
 │   ├── sidepanel.html         # 聊天界面（Chrome Side Panel API）
@@ -115,8 +130,10 @@ src/
 2. Service Worker 提取当前标签页的交互元素
 3. 元素列表 + 命令发送给配置的 LLM
 4. LLM 返回操作列表（`click`、`type`、`scroll`、`navigate`、`read`）
-5. 按顺序在页面上逐个执行操作
-6. 如果任务未完成（`done: false`），从第 2 步重新开始，使用更新后的 DOM 上下文
+5. 以红色高亮和步骤标签预览操作（除非开启了自动执行模式）
+6. 用户确认执行，或输入反馈让 AI 重新分析
+7. 确认后按顺序在页面上逐个执行操作
+8. 如果任务未完成（`done: false`），从第 2 步重新开始，使用更新后的 DOM 上下文
 
 ### DOM 提取
 
@@ -240,6 +257,7 @@ DOM 提取器按 DOM 顺序收集交互元素，上限为 150 个（`DEFAULT_MAX
 | 设置 | 选项 | 默认值 | 说明 |
 |------|------|--------|------|
 | 当前页跳转 | 开 / 关 | 关 | 导航时在当前标签页打开而非新标签页 |
+| 自动执行 | 开 / 关 | 关 | 跳过操作预览，直接执行 |
 | 最大步数 | 5 / 10 / 20 / 50 / 无限 | 10 | 每条命令最多执行的 LLM 轮次 |
 | 操作间隔 | 0s – 5s | 0.5s | 每个操作之间的等待时间 |
 

@@ -30,6 +30,8 @@ ChromePilot is a Chrome extension that lets you control any webpage using natura
 | **Multi-provider LLM Support** | Works with OpenAI, Anthropic Claude, GitHub Copilot, Ollama (local), or any OpenAI-compatible API |
 | **Debug Overlay** | Visualize all detected interactive elements with index numbers |
 | **Teach Mode** | Record user actions and save as demonstrations |
+| **Action Preview & Confirm** | Review planned actions with visual highlights before execution; provide feedback to re-analyze |
+| **Auto-run Mode** | Toggle to skip confirmation and execute actions immediately |
 
 ## Demo
 
@@ -73,6 +75,18 @@ ChromePilot navigates to GitHub, finds the repository, and clicks the star butto
 
 The debug overlay shows every interactive element ChromePilot detected, each labeled with an index number. You can directly command "click button 54" to interact with a specific element.
 
+### Action Preview & Confirm — Review Before Execution
+
+> Actions are highlighted with numbered labels. Confirm to execute, or type feedback and re-analyze.
+
+![Action preview demo](/images/Project%20-%201%20-%20ChromePilot/6.%20show%20batch%20actions%20with%20confirm%20first.gif)
+
+### Auto-run Mode — Skip Confirmation
+
+> Toggle "Auto-run" to execute actions immediately without preview.
+
+![Auto-run demo](/images/Project%20-%201%20-%20ChromePilot/7.%20show%20the%20auto-run.gif)
+
 ## Architecture
 
 ### Tech Stack
@@ -97,6 +111,7 @@ src/
 │   ├── content-script.js      # Message handler on web pages
 │   ├── dom-extractor.js       # Extracts interactive elements
 │   ├── action-executor.js     # Simulates click/type/scroll/read
+│   ├── action-previewer.js    # Preview overlay (red borders + step labels)
 │   └── action-recorder.js     # Teach mode (recording actions)
 ├── sidepanel/
 │   ├── sidepanel.html         # Chat UI (Chrome Side Panel API)
@@ -115,8 +130,10 @@ The core execution follows a **DOM → LLM → Action** loop:
 2. Service worker extracts interactive elements from the active tab
 3. Elements + command are sent to the configured LLM
 4. LLM returns a list of actions (`click`, `type`, `scroll`, `navigate`, `read`)
-5. Actions are executed sequentially on the page
-6. If the task is not done (`done: false`), repeat from step 2 with updated DOM context
+5. Actions are previewed with red highlights and step labels (unless Auto-run is on)
+6. User confirms or provides feedback to re-analyze
+7. Confirmed actions are executed sequentially on the page
+8. If the task is not done (`done: false`), repeat from step 2 with updated DOM context
 
 ### DOM Extraction
 
@@ -240,6 +257,7 @@ This approach ensures dialog buttons are always visible to the LLM, regardless o
 | Setting | Options | Default | Description |
 |---------|---------|---------|-------------|
 | Same Tab Navigation | On / Off | Off | Navigate in current tab instead of opening new tabs |
+| Auto-run | On / Off | Off | Skip action preview, execute immediately |
 | Max Steps | 5 / 10 / 20 / 50 / Unlimited | 10 | Maximum LLM rounds per command |
 | Action Delay | 0s – 5s | 0.5s | Delay between each action execution |
 
