@@ -4,7 +4,12 @@ draft = false
 title = '[Project] 3. Harness-Everything — AI 自主代码改进 Harness'
 categories = ["Project"]
 tags = ["AI", "LLM", "Self-Improvement", "DeepSeek", "Anthropic", "CI/CD", "Python"]
+featuredImage = "/images/Project%20-%203%20-%20Harness-Everything/cover-1.png"
 +++
+
+<div align="center">
+<img src="/images/Project%20-%203%20-%20Harness-Everything/cover-1.png" alt="cover" style="max-width:100%;border-radius:8px;">
+</div>
 
 ## 全局视图
 

@@ -4,7 +4,12 @@ draft = false
 title = '[Project] 5. My Skills — Enterprise Development Workflows as Executable Claude Code Skills'
 categories = ["Project"]
 tags = ["AI", "Claude Code", "Workflow", "DevOps", "TDD", "Security", "Multi-Agent"]
+featuredImage = "/images/Project%20-%205%20-%20My%20Skills/cover-1.png"
 +++
+
+<div align="center">
+<img src="/images/Project%20-%205%20-%20My%20Skills/cover-1.png" alt="cover" style="max-width:100%;border-radius:8px;">
+</div>
 
 ## One-Line Summary
 

@@ -4,7 +4,12 @@ draft = false
 title = '[Project] 4. 多智能体 AI 投资研究系统 — 16 个 Agent 的牛熊辩论与量化裁判'
 categories = ["Project"]
 tags = ["AI", "LLM", "Multi-Agent", "LangGraph", "DeepSeek", "Investment", "Quant", "Python"]
+featuredImage = "/images/Project%20-%204%20-%20AI%20Investment%20Research/cover-1.png"
 +++
+
+<div align="center">
+<img src="/images/Project%20-%204%20-%20AI%20Investment%20Research/cover-1.png" alt="cover" style="max-width:100%;border-radius:8px;">
+</div>
 
 ## 一句话介绍
 
