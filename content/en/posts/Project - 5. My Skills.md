@@ -7,9 +7,6 @@ tags = ["AI", "Claude Code", "Workflow", "DevOps", "TDD", "Security", "Multi-Age
 featuredImage = "/images/Project%20-%205%20-%20My%20Skills/cover.png"
 +++
 
-<div align="center">
-<img src="/images/Project%20-%205%20-%20My%20Skills/cover.png" alt="cover" style="max-width:100%;max-height:300px;border-radius:8px;object-fit:contain;">
-</div>
 
 ## One-Line Summary
 

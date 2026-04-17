@@ -7,9 +7,6 @@ tags = ["AI", "LLM", "Self-Improvement", "DeepSeek", "Anthropic", "CI/CD", "Pyth
 featuredImage = "/images/Project%20-%203%20-%20Harness-Everything/cover.png"
 +++
 
-<div align="center">
-<img src="/images/Project%20-%203%20-%20Harness-Everything/cover.png" alt="cover" style="max-width:100%;max-height:300px;border-radius:8px;object-fit:contain;">
-</div>
 
 ## 全局视图
 

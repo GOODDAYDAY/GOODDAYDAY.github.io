@@ -7,9 +7,6 @@ tags = ["AI", "LLM", "Multi-Agent", "LangGraph", "DeepSeek", "Investment", "Quan
 featuredImage = "/images/Project%20-%204%20-%20AI%20Investment%20Research/cover.png"
 +++
 
-<div align="center">
-<img src="/images/Project%20-%204%20-%20AI%20Investment%20Research/cover.png" alt="cover" style="max-width:100%;max-height:300px;border-radius:8px;object-fit:contain;">
-</div>
 
 ## One-Line Summary
 
