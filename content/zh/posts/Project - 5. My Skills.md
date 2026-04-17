@@ -1,0 +1,216 @@
++++
+date = '2026-04-17T14:00:00+08:00'
+draft = false
+title = '[Project] 5. My Skills — 将企业级开发流程变成 Claude Code 的可执行技能'
+categories = ["Project"]
+tags = ["AI", "Claude Code", "Workflow", "DevOps", "TDD", "Security", "Multi-Agent"]
++++
+
+## 一句话介绍
+
+一套完整的需求驱动开发工作流框架,把"需求分析 → 技术设计 → 编码 → 安全审计 → 代码清理 → 合规审查 → 验证 → 归档"这 8 个阶段做成了 Claude Code 的可执行技能,支持断点恢复和正式变更管理。
+
+## 为什么需要这个？
+
+用 AI 写代码最大的问题不是"写不出来",而是**写出来的东西没有章法**：
+- 需求没理清就开始写代码
+- 改了一堆但不知道改的对不对
+- 中途打断了又得从头来
+- 安全漏洞没人查
+- 改着改着偏离了原始需求
+
+这个框架把**软件开发最佳实践**变成了可执行的 AI 技能,让 Claude Code 按规范走,而不是随心所欲。
+
+## 8 阶段工作流
+
+{{< mermaid >}}
+graph LR
+    A[需求分析] --> B[技术设计]
+    B --> C[编码实现]
+    C --> D[安全审查]
+    D --> E[代码清理]
+    E --> F[合规审查]
+    F --> G[验证测试]
+    G --> H[归档完成]
+
+    style A fill:#4A90D9,color:white,stroke:none
+    style C fill:#50C878,color:white,stroke:none
+    style D fill:#E74C3C,color:white,stroke:none
+    style G fill:#FF8C42,color:white,stroke:none
+    style H fill:#9B59B6,color:white,stroke:none
+{{< /mermaid >}}
+
+| 阶段 | 技能 | 做什么 |
+|---|---|---|
+| 1. 需求分析 | `/req-analyze` | 把模糊想法拆成正式需求规格 |
+| 2. 技术设计 | `/req-tech` | 架构设计、模块划分、PlantUML 图 |
+| 3. 编码实现 | `/req-code` | TDD + 并行 Agent + 逐模块提交 |
+| 4. 安全审查 | `/req-security` | 6 维度安全扫描 |
+| 5. 代码清理 | `/req-cleanup` | 结构优化,不改行为 |
+| 6. 合规审查 | `/req-review` | 逐条核对需求是否满足 |
+| 7. 验证测试 | `/req-verify` | 构建 + 测试 + E2E |
+| 8. 归档完成 | `/req-done` | 标记完成,生成里程碑摘要 |
+
+一个 `/req` 编排器统一调度,也可以单独运行任意阶段。
+
+## 亮点 1：发散-收敛决策模式
+
+遇到复杂设计决策时,不让一个 Agent 拍板,而是**三个 Agent 并行给出不同方案**:
+
+{{< mermaid >}}
+graph TD
+    NEED[设计决策] --> A[Agent A<br/>MVP 路线<br/>最多5个功能,最快交付]
+    NEED --> B[Agent B<br/>产品思维<br/>完整范围,边界情况]
+    NEED --> C[Agent C<br/>挑战者<br/>找出 A 和 B 的核心矛盾]
+    A --> SYNTH[用户选择 + 综合]
+    B --> SYNTH
+    C --> SYNTH
+    
+    style A fill:#4A90D9,color:white,stroke:none
+    style B fill:#50C878,color:white,stroke:none
+    style C fill:#E74C3C,color:white,stroke:none
+    style SYNTH fill:#9B59B6,color:white,stroke:none
+{{< /mermaid >}}
+
+三种视角：
+- **A (MVP)**：砍到最小可用,快速交付
+- **B (产品思维)**：想清楚长期,覆盖边界
+- **C (挑战者)**：指出 A 和 B 之间的本质冲突
+
+用户看到真实的权衡取舍,而不是一个 Agent 的"我觉得应该这样"。
+
+## 亮点 2：断点恢复
+
+需求开发到一半中断了（关机、切任务、第二天继续）怎么办？
+
+```
+/req REQ-003
+
+系统自动检查:
+  ✅ requirement.md 存在 → 跳过需求分析
+  ✅ technical.md 存在 → 跳过技术设计  
+  ⚠️ src/ 部分文件存在 → 从编码阶段恢复,跳过已完成的模块
+  ❌ 安全审查未做 → 从这里继续
+```
+
+不用从头来,保留已完成的工作。
+
+## 亮点 3：正式变更管理
+
+文档**不能直接改**。改文档需要走正式流程：
+
+```
+/req-amend REQ-003
+
+1. 声明受影响范围: "F-01, F-03"
+2. 系统快照当前版本
+3. 执行修改
+4. 自动 diff 检测越界修改 (mismod detection)
+5. 如果改了 F-02 但没声明 → 告警
+6. Changelog 新增一行 (v2 → v3),旧版本行不变
+```
+
+{{< mermaid >}}
+graph LR
+    DECLARE[声明修改范围<br/>F-01, F-03] --> SNAP[快照当前版本]
+    SNAP --> EDIT[执行修改]
+    EDIT --> DIFF[自动 diff 检测]
+    DIFF -->|范围内| OK[通过]
+    DIFF -->|越界| WARN[告警: 修改了 F-02<br/>但未声明]
+    OK --> LOG[Changelog +1 行]
+    
+    style DECLARE fill:#4A90D9,color:white,stroke:none
+    style WARN fill:#E74C3C,color:white,stroke:none
+    style LOG fill:#50C878,color:white,stroke:none
+{{< /mermaid >}}
+
+这在大多数团队里是不存在的——但如果你做过大型项目的需求变更管理,就知道它有多重要。
+
+## 亮点 4：TDD 内置,不是选配
+
+编码阶段的流程：
+
+```
+1. 从需求的验收标准生成测试用例 (先写测试)
+2. 逐模块实现代码 (让测试通过)
+3. 每个模块完成后单独 commit
+4. 全部通过后进入安全审查
+```
+
+测试不是"写完代码顺便补一下",而是编码的**前置条件**。
+
+## 亮点 5：安全审查是正式阶段
+
+不是代码审查时"顺便看看安全",而是一个**独立的完整阶段**,6 个维度扫描:
+
+| 维度 | 检查内容 |
+|---|---|
+| 注入攻击 | SQL、XSS、命令注入 |
+| 认证授权 | 权限校验、会话管理 |
+| 数据保护 | 敏感数据加密、PII 处理 |
+| 依赖安全 | 已知漏洞、供应链风险 |
+| 配置安全 | 硬编码密钥、调试接口 |
+| 日志审计 | 敏感信息泄露到日志 |
+
+Critical/High 立即修,Medium/Low 展示给用户决定。结果文档化提交。
+
+## 编排架构
+
+{{< mermaid >}}
+graph TD
+    REQ["/req 编排器<br/>路由 + 断点恢复"] --> S1[req-analyze<br/>需求分析]
+    REQ --> S2[req-tech<br/>技术设计]
+    REQ --> S3[req-code<br/>编码实现]
+    REQ --> S4[req-security<br/>安全审查]
+    REQ --> S5[req-cleanup<br/>代码清理]
+    REQ --> S6[req-review<br/>合规审查]
+    REQ --> S7[req-verify<br/>验证测试]
+    REQ --> S8[req-done<br/>归档完成]
+    
+    REQ --> AMEND[req-amend<br/>变更管理]
+    REQ --> ARCHIVE[req-archive<br/>批量归档]
+    REQ --> STATUS[req-status<br/>状态查询]
+    
+    subgraph 共享层
+        SHARED[_shared/]
+        SHARED --> ST[status.md<br/>状态枚举]
+        SHARED --> RC[recovery.md<br/>断点恢复]
+        SHARED --> CL[changelog.md<br/>变更日志格式]
+        SHARED --> DC[diverge-converge.md<br/>发散收敛模式]
+        SHARED --> GC[git-commit.md<br/>提交规范]
+    end
+    
+    style REQ fill:#4A90D9,color:white,stroke:none
+    style AMEND fill:#E74C3C,color:white,stroke:none
+    style SHARED fill:#FFD700,color:black,stroke:none
+{{< /mermaid >}}
+
+**关键设计**：编排器拥有所有路由逻辑,子技能是无状态执行器——读上下文、干活、写结果、返回。这让系统可预测、可审计。
+
+## 项目结构
+
+```
+skills/
+├── _shared/                # 共享标准 (状态机、恢复模式、提交规范)
+├── req/                    # 编排器 — 8 阶段工作流
+├── req-analyze/            # 阶段 1: 需求分析 (发散收敛)
+├── req-tech/               # 阶段 2: 技术设计
+├── req-code/               # 阶段 3: 编码 (TDD + 并行 Agent)
+│   ├── python.md           # Python 编码规范
+│   └── java.md             # Java 编码规范
+├── req-security/           # 阶段 4: 安全审查 (6 维度)
+├── req-cleanup/            # 阶段 5: 代码清理
+├── req-review/             # 阶段 6: 合规审查
+├── req-verify/             # 阶段 7: 构建 + 测试
+├── req-done/               # 阶段 8: 归档
+├── req-amend/              # 正式变更管理
+├── req-archive/            # 批量归档 + 里程碑摘要
+├── task/                   # 轻量流水线 (不需要正式文档)
+├── write-doc/              # 结构化文档编写
+├── create-skill/           # 新技能创建指南
+└── puml2svg/               # PlantUML 转 SVG
+```
+
+## 一段话总结
+
+> 把"需求分析 → 技术设计 → 编码 → 安全 → 清理 → 合规 → 验证 → 归档"做成 Claude Code 的 8 个可执行技能,由一个编排器统一调度。遇到复杂决策用发散-收敛模式(三个 Agent 并行给不同方案),文档修改走正式变更管理(自动检测越界修改),中途打断有断点恢复,测试是编码的前置条件而不是后补。让 AI 写代码时也有章法,而不是随心所欲。
