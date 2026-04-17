@@ -1,5 +1,5 @@
 +++
-date = '2026-04-17T20:00:00+08:00'
+date = '2026-04-17T12:00:00+08:00'
 draft = false
 title = '[Project] 3. Harness-Everything — AI 自主代码改进 Harness'
 categories = ["Project"]

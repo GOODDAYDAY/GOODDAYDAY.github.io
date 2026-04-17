@@ -1,5 +1,5 @@
 +++
-date = '2026-04-17T21:00:00+08:00'
+date = '2026-04-17T13:00:00+08:00'
 draft = false
 title = '[Project] 4. Multi-Agent AI Investment Research — 16 Agents with Bull-vs-Bear Debate'
 categories = ["Project"]

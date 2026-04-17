@@ -1,5 +1,5 @@
 +++
-date = '2026-04-17T21:00:00+08:00'
+date = '2026-04-17T13:00:00+08:00'
 draft = false
 title = '[Project] 4. 多智能体 AI 投资研究系统 — 16 个 Agent 的牛熊辩论与量化裁判'
 categories = ["Project"]
