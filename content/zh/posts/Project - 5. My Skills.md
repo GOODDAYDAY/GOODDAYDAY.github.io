@@ -4,11 +4,11 @@ draft = false
 title = '[Project] 5. My Skills — 将企业级开发流程变成 Claude Code 的可执行技能'
 categories = ["Project"]
 tags = ["AI", "Claude Code", "Workflow", "DevOps", "TDD", "Security", "Multi-Agent"]
-featuredImage = "/images/Project%20-%205%20-%20My%20Skills/cover-1.png"
+featuredImage = "/images/Project%20-%205%20-%20My%20Skills/cover.png"
 +++
 
 <div align="center">
-<img src="/images/Project%20-%205%20-%20My%20Skills/cover-1.png" alt="cover" style="max-width:100%;border-radius:8px;">
+<img src="/images/Project%20-%205%20-%20My%20Skills/cover.png" alt="cover" style="max-width:100%;max-height:300px;border-radius:8px;object-fit:contain;">
 </div>
 
 ## 一句话介绍
