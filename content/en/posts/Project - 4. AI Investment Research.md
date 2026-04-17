@@ -12,49 +12,7 @@ tags = ["AI", "LLM", "Multi-Agent", "LangGraph", "DeepSeek", "Investment", "Quan
 
 ## System Overview
 
-{{< mermaid >}}
-graph TD
-    USER[User Query<br/>natural language] --> ORCH[Orchestrator<br/>intent classification + security]
-    
-    ORCH --> PARALLEL["Parallel Data Collection (6 paths)"]
-    
-    PARALLEL --> MD[Market Data<br/>yfinance]
-    PARALLEL --> MACRO[Macro Environment<br/>CSI 300 / Hang Seng]
-    PARALLEL --> SECTOR[Sector Analysis<br/>industry rankings]
-    PARALLEL --> NEWS[News Collector<br/>multi-source dedup]
-    PARALLEL --> ANN[Announcements<br/>akshare filings]
-    PARALLEL --> SOCIAL[Social Sentiment<br/>Eastmoney forums]
-    
-    MD --> ANALYSIS[Sequential Analysis]
-    MACRO --> ANALYSIS
-    SECTOR --> ANALYSIS
-    NEWS --> ANALYSIS
-    ANN --> ANALYSIS
-    SOCIAL --> ANALYSIS
-    
-    ANALYSIS --> SENT[Sentiment Analysis<br/>LLM per-article scoring]
-    SENT --> FUND[Fundamental Analysis<br/>PEG / DCF valuation]
-    FUND --> MOM[Momentum Analysis<br/>multi-horizon returns]
-    MOM --> QUANT[Quant Signals<br/>pure math, no LLM]
-    QUANT --> GRID[Grid Strategy<br/>fee-aware calculator]
-    
-    QUANT --> DEBATE[Bull vs Bear Debate]
-    GRID --> DEBATE
-    
-    DEBATE --> JUDGE{Debate Judge<br/>quality sufficient?}
-    JUDGE -->|continue| DEBATE
-    JUDGE -->|sufficient| RISK[Risk Assessment]
-    
-    RISK --> ADV[Advisory Agent<br/>synthesis + numeric override]
-    ADV --> FILTER[Output Security Filter<br/>audit trail]
-    FILTER --> RESULT[Buy / Hold / Sell<br/>+ full reasoning chain]
-    
-    style ORCH fill:#4A90D9,color:white,stroke:none
-    style QUANT fill:#50C878,color:white,stroke:none
-    style DEBATE fill:#E74C3C,color:white,stroke:none
-    style JUDGE fill:#FF8C42,color:white,stroke:none
-    style ADV fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-en-1.svg" alt="diagram" style="max-width:100%;">
 
 ## Core Design: Why 16 Agents?
 
@@ -91,27 +49,7 @@ So we split into 16 specialized agents, each doing one thing, **using real data 
 
 Instead of one LLM saying "bullish" or "bearish", **two LLMs argue against each other**:
 
-{{< mermaid >}}
-sequenceDiagram
-    participant Bull as Bull Agent
-    participant Bear as Bear Agent
-    participant Judge as Debate Judge
-
-    Note over Bull,Bear: Round 1: Opening statements
-    Bull->>Judge: 3 bullish arguments + data evidence
-    Bear->>Judge: 3 bearish arguments + data evidence
-    
-    Judge->>Judge: Assess: argument quality sufficient?
-    
-    Note over Bull,Bear: Round 2: Cross-rebuttals
-    Bull->>Judge: Rebut Bear's points + additional evidence
-    Bear->>Judge: Rebut Bull's points + additional evidence
-    
-    Judge->>Judge: Assess: ready for conclusion
-    Judge-->>Bear: Stop debate
-    
-    Note over Judge: Output: Bull strength 65% / Bear strength 35%
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-en-2.svg" alt="diagram" style="max-width:100%;">
 
 **Key constraint**: Both sides must cite real data from the Quant agent (RSI, MACD, valuations) — no abstract arguments allowed. The judge checks argument quality and demands additional rounds if insufficient.
 
@@ -150,18 +88,7 @@ Calculations include **real A-share fees** (stamp tax 0.05% + broker commission 
 
 Every agent's reasoning is captured in `reasoning_chain`. Users see the full decision path:
 
-{{< mermaid >}}
-graph LR
-    R1[Market Data<br/>+12% in 20 days] --> R2[Momentum<br/>broke 60-day MA]
-    R2 --> R3[Quant Signal<br/>composite +45]
-    R3 --> R4[Fundamentals<br/>PEG=0.8 undervalued]
-    R4 --> R5[Bull wins<br/>strength 65%]
-    R5 --> R6[Risk: moderate<br/>4/10]
-    R6 --> R7[Recommendation: Buy<br/>confidence 72%]
-    
-    style R3 fill:#50C878,color:white,stroke:none
-    style R7 fill:#4A90D9,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-en-3.svg" alt="diagram" style="max-width:100%;">
 
 Every number (PEG, DCF, quant score, momentum) is recomputable from raw data — not LLM-generated, but calculated from real market data.
 
@@ -178,19 +105,7 @@ No Bloomberg, Wind, or paid terminals required.
 
 ## Security Architecture
 
-{{< mermaid >}}
-graph LR
-    INPUT[User Input] --> SAN[Input Sanitizer<br/>length cap + injection detection]
-    SAN --> PII[PII Redactor<br/>phone/ID/credit card]
-    PII --> AGENTS[16 Agents process]
-    AGENTS --> OUTF[Output Filter<br/>remove system prompt leaks + suspicious URLs]
-    OUTF --> AUDIT[Audit Log<br/>AuditKind enum]
-    AUDIT --> UI[User Interface]
-    
-    style SAN fill:#E74C3C,color:white,stroke:none
-    style PII fill:#E74C3C,color:white,stroke:none
-    style OUTF fill:#E74C3C,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-en-4.svg" alt="diagram" style="max-width:100%;">
 
 - **Input**: Length limits, control character stripping, prompt injection detection
 - **Output**: PII redaction, system prompt leak filtering, suspicious URL blocking

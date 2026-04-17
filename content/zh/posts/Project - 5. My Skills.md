@@ -23,22 +23,7 @@ tags = ["AI", "Claude Code", "Workflow", "DevOps", "TDD", "Security", "Multi-Age
 
 ## 8 阶段工作流
 
-{{< mermaid >}}
-graph LR
-    A[需求分析] --> B[技术设计]
-    B --> C[编码实现]
-    C --> D[安全审查]
-    D --> E[代码清理]
-    E --> F[合规审查]
-    F --> G[验证测试]
-    G --> H[归档完成]
-
-    style A fill:#4A90D9,color:white,stroke:none
-    style C fill:#50C878,color:white,stroke:none
-    style D fill:#E74C3C,color:white,stroke:none
-    style G fill:#FF8C42,color:white,stroke:none
-    style H fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-zh-1.svg" alt="diagram" style="max-width:100%;">
 
 | 阶段 | 技能 | 做什么 |
 |---|---|---|
@@ -57,20 +42,7 @@ graph LR
 
 遇到复杂设计决策时,不让一个 Agent 拍板,而是**三个 Agent 并行给出不同方案**:
 
-{{< mermaid >}}
-graph TD
-    NEED[设计决策] --> A[Agent A<br/>MVP 路线<br/>最多5个功能,最快交付]
-    NEED --> B[Agent B<br/>产品思维<br/>完整范围,边界情况]
-    NEED --> C[Agent C<br/>挑战者<br/>找出 A 和 B 的核心矛盾]
-    A --> SYNTH[用户选择 + 综合]
-    B --> SYNTH
-    C --> SYNTH
-    
-    style A fill:#4A90D9,color:white,stroke:none
-    style B fill:#50C878,color:white,stroke:none
-    style C fill:#E74C3C,color:white,stroke:none
-    style SYNTH fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-zh-2.svg" alt="diagram" style="max-width:100%;">
 
 三种视角：
 - **A (MVP)**：砍到最小可用,快速交付
@@ -110,19 +82,7 @@ graph TD
 6. Changelog 新增一行 (v2 → v3),旧版本行不变
 ```
 
-{{< mermaid >}}
-graph LR
-    DECLARE[声明修改范围<br/>F-01, F-03] --> SNAP[快照当前版本]
-    SNAP --> EDIT[执行修改]
-    EDIT --> DIFF[自动 diff 检测]
-    DIFF -->|范围内| OK[通过]
-    DIFF -->|越界| WARN[告警: 修改了 F-02<br/>但未声明]
-    OK --> LOG[Changelog +1 行]
-    
-    style DECLARE fill:#4A90D9,color:white,stroke:none
-    style WARN fill:#E74C3C,color:white,stroke:none
-    style LOG fill:#50C878,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-zh-3.svg" alt="diagram" style="max-width:100%;">
 
 这在大多数团队里是不存在的——但如果你做过大型项目的需求变更管理,就知道它有多重要。
 
@@ -156,34 +116,7 @@ Critical/High 立即修,Medium/Low 展示给用户决定。结果文档化提交
 
 ## 编排架构
 
-{{< mermaid >}}
-graph TD
-    REQ["/req 编排器<br/>路由 + 断点恢复"] --> S1[req-analyze<br/>需求分析]
-    REQ --> S2[req-tech<br/>技术设计]
-    REQ --> S3[req-code<br/>编码实现]
-    REQ --> S4[req-security<br/>安全审查]
-    REQ --> S5[req-cleanup<br/>代码清理]
-    REQ --> S6[req-review<br/>合规审查]
-    REQ --> S7[req-verify<br/>验证测试]
-    REQ --> S8[req-done<br/>归档完成]
-    
-    REQ --> AMEND[req-amend<br/>变更管理]
-    REQ --> ARCHIVE[req-archive<br/>批量归档]
-    REQ --> STATUS[req-status<br/>状态查询]
-    
-    subgraph 共享层
-        SHARED[_shared/]
-        SHARED --> ST[status.md<br/>状态枚举]
-        SHARED --> RC[recovery.md<br/>断点恢复]
-        SHARED --> CL[changelog.md<br/>变更日志格式]
-        SHARED --> DC[diverge-converge.md<br/>发散收敛模式]
-        SHARED --> GC[git-commit.md<br/>提交规范]
-    end
-    
-    style REQ fill:#4A90D9,color:white,stroke:none
-    style AMEND fill:#E74C3C,color:white,stroke:none
-    style SHARED fill:#FFD700,color:black,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-zh-4.svg" alt="diagram" style="max-width:100%;">
 
 **关键设计**：编排器拥有所有路由逻辑,子技能是无状态执行器——读上下文、干活、写结果、返回。这让系统可预测、可审计。
 

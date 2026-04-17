@@ -12,49 +12,7 @@ tags = ["AI", "LLM", "Multi-Agent", "LangGraph", "DeepSeek", "Investment", "Quan
 
 ## 系统全景
 
-{{< mermaid >}}
-graph TD
-    USER[用户输入<br/>自然语言查询] --> ORCH[Orchestrator<br/>意图分类 + 安全过滤]
-    
-    ORCH --> PARALLEL["并行数据采集 (6 路)"]
-    
-    PARALLEL --> MD[行情数据<br/>yfinance]
-    PARALLEL --> MACRO[宏观环境<br/>沪深300 / 恒生]
-    PARALLEL --> SECTOR[行业分析<br/>板块排名]
-    PARALLEL --> NEWS[新闻采集<br/>多源去重]
-    PARALLEL --> ANN[公告收集<br/>akshare]
-    PARALLEL --> SOCIAL[社交舆情<br/>东方财富股吧]
-    
-    MD --> ANALYSIS[顺序分析链]
-    MACRO --> ANALYSIS
-    SECTOR --> ANALYSIS
-    NEWS --> ANALYSIS
-    ANN --> ANALYSIS
-    SOCIAL --> ANALYSIS
-    
-    ANALYSIS --> SENT[情感分析<br/>LLM 逐条打分]
-    SENT --> FUND[基本面分析<br/>PEG / DCF 估值]
-    FUND --> MOM[动量分析<br/>多周期收益率]
-    MOM --> QUANT[量化信号<br/>纯数学,无 LLM]
-    QUANT --> GRID[网格策略<br/>费率感知计算]
-    
-    QUANT --> DEBATE[牛熊辩论]
-    GRID --> DEBATE
-    
-    DEBATE --> JUDGE{辩论裁判<br/>质量够了?}
-    JUDGE -->|继续| DEBATE
-    JUDGE -->|足够| RISK[风险评估]
-    
-    RISK --> ADV[投资建议<br/>综合 + 数值纠偏]
-    ADV --> FILTER[输出安全过滤<br/>审计追踪]
-    FILTER --> RESULT[买入 / 持有 / 卖出<br/>+ 完整推理链]
-    
-    style ORCH fill:#4A90D9,color:white,stroke:none
-    style QUANT fill:#50C878,color:white,stroke:none
-    style DEBATE fill:#E74C3C,color:white,stroke:none
-    style JUDGE fill:#FF8C42,color:white,stroke:none
-    style ADV fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-zh-1.svg" alt="diagram" style="max-width:100%;">
 
 ## 核心设计：为什么需要 16 个 Agent？
 
@@ -91,27 +49,7 @@ graph TD
 
 不是让一个 LLM 说"看好"或"看空",而是**让两个 LLM 互相对辩**：
 
-{{< mermaid >}}
-sequenceDiagram
-    participant Bull as 牛方 Agent
-    participant Bear as 熊方 Agent
-    participant Judge as 辩论裁判
-
-    Note over Bull,Bear: 第 1 轮：各自陈述
-    Bull->>Judge: 3 条看好理由 + 数据依据
-    Bear->>Judge: 3 条看空理由 + 数据依据
-    
-    Judge->>Judge: 评估：论证质量够吗？
-    
-    Note over Bull,Bear: 第 2 轮：交叉反驳
-    Bull->>Judge: 反驳熊方论点 + 补充证据
-    Bear->>Judge: 反驳牛方论点 + 补充证据
-    
-    Judge->>Judge: 评估：可以结论了
-    Judge-->>Bear: 停止辩论
-    
-    Note over Judge: 输出：牛方强度 65% / 熊方强度 35%
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-zh-2.svg" alt="diagram" style="max-width:100%;">
 
 **关键约束**：双方必须引用量化 Agent 的真实数据（RSI、MACD、估值等），不能空谈。裁判会检查论据质量,质量不够就要求追加轮次。
 
@@ -150,18 +88,7 @@ if quant_score > 60 and llm_says == "卖出":
 
 每个 Agent 的推理过程都记录在 `reasoning_chain` 中,用户可以看到完整的决策路径：
 
-{{< mermaid >}}
-graph LR
-    R1[行情数据<br/>近20日涨12%] --> R2[动量分析<br/>突破60日均线]
-    R2 --> R3[量化信号<br/>综合分 +45]
-    R3 --> R4[基本面<br/>PEG=0.8 低估]
-    R4 --> R5[牛方胜出<br/>强度 65%]
-    R5 --> R6[风险中等<br/>4/10]
-    R6 --> R7[建议: 买入<br/>信心 72%]
-    
-    style R3 fill:#50C878,color:white,stroke:none
-    style R7 fill:#4A90D9,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-zh-3.svg" alt="diagram" style="max-width:100%;">
 
 所有数字（PEG、DCF、量化分、动量）都是可复算的——不是 LLM 编的,是从真实数据算出来的。
 
@@ -178,19 +105,7 @@ graph LR
 
 ## 安全设计
 
-{{< mermaid >}}
-graph LR
-    INPUT[用户输入] --> SAN[输入消毒<br/>长度限制 + 注入检测]
-    SAN --> PII[PII 脱敏<br/>手机号/身份证/银行卡]
-    PII --> AGENTS[16 个 Agent 处理]
-    AGENTS --> OUTF[输出过滤<br/>删系统提示泄露 + 可疑URL]
-    OUTF --> AUDIT[审计日志<br/>AuditKind 枚举]
-    AUDIT --> UI[用户界面]
-    
-    style SAN fill:#E74C3C,color:white,stroke:none
-    style PII fill:#E74C3C,color:white,stroke:none
-    style OUTF fill:#E74C3C,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/invest-zh-4.svg" alt="diagram" style="max-width:100%;">
 
 - 输入端：长度限制、控制字符清理、Prompt 注入检测
 - 输出端：PII 脱敏、系统提示泄露过滤、可疑 URL 拦截

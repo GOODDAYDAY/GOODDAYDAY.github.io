@@ -8,19 +8,7 @@ tags = ["AI", "LLM", "Self-Improvement", "DeepSeek", "Anthropic", "CI/CD", "Pyth
 
 ## 全局视图
 
-{{< mermaid >}}
-graph TB
-    subgraph 本质
-        A[LLM<br/>大语言模型] -->|输出 tool_use JSON| B[Harness<br/>你的 Python 代码]
-        B -->|执行工具,返回结果| A
-        B -->|read/write/edit| C[项目代码]
-        C -->|注入上下文| A
-    end
-
-    style A fill:#4A90D9,color:white,stroke:none
-    style B fill:#50C878,color:white,stroke:none
-    style C fill:#FF8C42,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-1.svg" alt="diagram" style="max-width:100%;">
 
 > **LLM 是大脑,Harness 是手脚,项目代码是被改的对象。LLM 从来没有直接碰过文件系统——它只说"我想做什么",你的代码去执行。**
 
@@ -45,34 +33,7 @@ while True:
 
 这就能跑。但会遇到一堆问题。**下面每一层都是为了解决上一层的问题**：
 
-{{< mermaid >}}
-graph LR
-    L0["while 循环<br/>能跑但粗糙"] --> P1["代码太多<br/>塞不进上下文"]
-    P1 -->|加工具| L1["Tool Use<br/>按需读写"]
-    L1 --> P2["LLM 会改出 bug"]
-    P2 -->|加检查| L2["语法检查 Hook"]
-    L2 --> P3["不知道改得好不好"]
-    P3 -->|加评估| L3["双重评估器打分"]
-    L3 --> P4["大改容易翻车"]
-    P4 -->|分阶段| L4["Pipeline 多轮迭代"]
-    L4 --> P5["改了代码不生效"]
-    P5 -->|重启| L5["Tag → CI → 重启循环"]
-    L5 --> P6["循环会断"]
-    P6 -->|兜底| L6["心跳 + 回滚 + 强制 tag"]
-
-    style P1 fill:#FF6B6B,color:white,stroke:none
-    style P2 fill:#FF6B6B,color:white,stroke:none
-    style P3 fill:#FF6B6B,color:white,stroke:none
-    style P4 fill:#FF6B6B,color:white,stroke:none
-    style P5 fill:#FF6B6B,color:white,stroke:none
-    style P6 fill:#FF6B6B,color:white,stroke:none
-    style L1 fill:#50C878,color:white,stroke:none
-    style L2 fill:#50C878,color:white,stroke:none
-    style L3 fill:#50C878,color:white,stroke:none
-    style L4 fill:#50C878,color:white,stroke:none
-    style L5 fill:#50C878,color:white,stroke:none
-    style L6 fill:#50C878,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-2.svg" alt="diagram" style="max-width:100%;">
 
 ### 第 1 层：代码太多,上下文放不下
 
@@ -96,30 +57,7 @@ LLM: "我要改这个文件的第 285 行"
 
 这就是 **tool_use 机制** —— LLM 输出一段 JSON 说"我想调什么工具、传什么参数",你的 Python 代码去执行,把结果喂回来。LLM 从来没有直接碰过文件系统。
 
-{{< mermaid >}}
-sequenceDiagram
-    participant LLM as LLM (DeepSeek)
-    participant H as Harness (你的代码)
-    participant FS as 文件系统
-
-    LLM->>H: tool_use: read_file("llm.py")
-    H->>FS: open("llm.py").read()
-    FS-->>H: 文件内容
-    H-->>LLM: 工具结果: "class LLM:..."
-    
-    LLM->>H: tool_use: grep_search("_check_path")
-    H->>FS: grep -r "_check_path"
-    FS-->>H: 搜索结果
-    H-->>LLM: 工具结果: "base.py:285..."
-    
-    LLM->>H: tool_use: edit_file("base.py", ...)
-    H->>FS: 修改文件
-    FS-->>H: OK
-    H-->>LLM: 工具结果: "已修改"
-    
-    LLM-->>H: (无 tool_call) "我改完了"
-    Note over H: 循环结束,返回最终文本
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-3.svg" alt="diagram" style="max-width:100%;">
 
 **核心代码（`harness/core/llm.py` 的 `call_with_tools()`）只有 60 行**：
 
@@ -171,26 +109,7 @@ LLM 改了代码
 合计 12 分。跟其他方案比,选最高分的。
 ```
 
-{{< mermaid >}}
-graph LR
-    subgraph 评估过程
-        CODE[LLM 改了代码] --> B[Basic Evaluator<br/>找缺陷 → 5分]
-        CODE --> D[Diffusion Evaluator<br/>看波及 → 7分]
-        B --> SUM[合计 12 分]
-        D --> SUM
-    end
-    
-    subgraph 选择
-        SUM --> CMP{跟其他方案比}
-        CMP -->|最高分| WIN[采纳]
-        CMP -->|不是最高| LOSE[淘汰]
-    end
-
-    style B fill:#E74C3C,color:white,stroke:none
-    style D fill:#3498DB,color:white,stroke:none
-    style WIN fill:#50C878,color:white,stroke:none
-    style LOSE fill:#95A5A6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-4.svg" alt="diagram" style="max-width:100%;">
 
 这就是 `harness/evaluation/dual_evaluator.py`。本质上是让 LLM 自己评自己,但通过**隔离两个评估视角**来减少自我吹嘘。
 
@@ -214,30 +133,7 @@ Outer Round 2:
 
 每个阶段内部还有**内层轮次**（inner rounds）：生成多个方案,评估器选最好的,然后合成。
 
-{{< mermaid >}}
-graph TD
-    R1[Outer Round 1] --> P1[Phase 1: 分析<br/>debate 只看不改]
-    P1 -->|合成结论| P2[Phase 2: 改进<br/>implement 改文件]
-    P2 -->|commit| P3[Phase 3: 安全<br/>implement 删死代码]
-    P3 -->|commit| P4[Phase 4: 整合<br/>implement 合并工具]
-    P4 -->|commit| P5[Phase 5: 追踪<br/>implement 加指标]
-    P5 --> PUSH1[git push]
-    PUSH1 --> PAT{patience<br/>有进步?}
-    PAT -->|有| R2[Outer Round 2<br/>基于改进后的代码继续]
-    PAT -->|连续5轮没有| STOP[早停退出]
-    R2 --> P1_2[Phase 1...] --> P2_2[Phase 2...] --> R3[...]
-
-    subgraph 每个 Phase 内部
-        I1[Inner Round 1<br/>方案 A] --> EVAL[评估器打分]
-        I2[Inner Round 2<br/>方案 B] --> EVAL
-        EVAL --> SYNTH[合成最佳方案]
-    end
-
-    style R1 fill:#4A90D9,color:white,stroke:none
-    style R2 fill:#4A90D9,color:white,stroke:none
-    style STOP fill:#FF6B6B,color:white,stroke:none
-    style SYNTH fill:#50C878,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-5.svg" alt="diagram" style="max-width:100%;">
 
 这就是 `harness/pipeline/pipeline_loop.py`（外层）和 `harness/pipeline/phase_runner.py`（阶段执行）。
 
@@ -296,24 +192,7 @@ bash("python3 -m py_compile file.py")     → 检查语法
 | `sed` 改错了没法回退 | `edit_file` 精确替换 | **可控**：替换失败会报错,不会静默改坏 |
 | LLM 编造参数 | registry 参数校验 | **容错**：未知参数直接拦截 |
 
-{{< mermaid >}}
-graph TD
-    subgraph "只用 bash（能跑,但危险）"
-        LLM1[LLM] -->|bash cat /etc/passwd| BASH[bash 工具]
-        BASH -->|无限制执行| FS1[文件系统]
-    end
-
-    subgraph "用专用工具（安全,省钱）"
-        LLM2[LLM] -->|read_file /etc/passwd| CHECK[_check_path 检查]
-        CHECK -->|路径越界!| REJECT[❌ 拒绝]
-        LLM2 -->|read_file main.py| CHECK2[_check_path 检查]
-        CHECK2 -->|在 workspace 内| ALLOW[✅ 执行]
-    end
-
-    style REJECT fill:#FF6B6B,color:white,stroke:none
-    style ALLOW fill:#50C878,color:white,stroke:none
-    style BASH fill:#FF8C42,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-6.svg" alt="diagram" style="max-width:100%;">
 
 **工具是给 LLM 戴的安全手套,不是给它的超能力。**
 
@@ -357,24 +236,7 @@ Turn 20: 发送 [上面 + 19 轮]                            ≈ 60K tokens  ←
 一个 20-turn 循环总共: ≈ 0.5M input tokens
 ```
 
-{{< mermaid >}}
-graph LR
-    subgraph 每轮重发全部对话
-        T1["Turn 1<br/>20K tokens<br/>便宜"] --> T5["Turn 5<br/>30K tokens<br/>还行"]
-        T5 --> T10["Turn 10<br/>40K tokens<br/>开始贵"]
-        T10 --> T15["Turn 15<br/>45K tokens<br/>很贵"]
-        T15 --> T20["Turn 20<br/>60K tokens<br/>最贵"]
-    end
-
-    T15 -.- CUT["✂️ 砍到这里<br/>省 40% 成本"]
-
-    style T1 fill:#50C878,color:white,stroke:none
-    style T5 fill:#8BC34A,color:white,stroke:none
-    style T10 fill:#FF8C42,color:white,stroke:none
-    style T15 fill:#FF6B6B,color:white,stroke:none
-    style T20 fill:#D32F2F,color:white,stroke:none
-    style CUT fill:#FFD700,color:black,stroke:#D32F2F,stroke-width:3px
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-7.svg" alt="diagram" style="max-width:100%;">
 
 **后半程每多一轮,花的钱比前半程多得多。** 这就是为什么 `max_tool_turns` 从 30 砍到 20 能省 40% —— 砍掉的是最贵的那几轮。
 
@@ -482,36 +344,7 @@ Round 结束 → 最终 prior_best 传给下一个 Round
 
 ### 架构图
 
-{{< mermaid >}}
-graph TD
-    subgraph 服务器
-        S1[systemd 启动<br/>python main.py] --> S2[跑 10 轮<br/>每轮 commit + push]
-        S2 --> S3[退出<br/>打 tag + push tag]
-    end
-
-    S3 -->|tag 推到 GitHub| CI
-
-    subgraph CI[GitHub Actions]
-        C1[SSH 到服务器] --> C2[git fetch + reset]
-        C2 --> C3[cp 配置模板]
-        C3 --> C4{py_compile<br/>烟测}
-        C4 -->|通过| C5[设 harness-last-good]
-        C4 -->|失败| C6[回滚到<br/>harness-last-good]
-        C5 --> C7{STOP_AFTER_CHUNK<br/>标记存在?}
-        C6 --> C7
-        C7 -->|没有| C8[重启服务]
-        C7 -->|有| C9[不重启<br/>循环暂停]
-    end
-
-    C8 -->|新代码生效| S1
-
-    style S1 fill:#4A90D9,color:white,stroke:none
-    style S3 fill:#FF8C42,color:white,stroke:none
-    style C5 fill:#50C878,color:white,stroke:none
-    style C6 fill:#FF6B6B,color:white,stroke:none
-    style C8 fill:#50C878,color:white,stroke:none
-    style C9 fill:#95A5A6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-8.svg" alt="diagram" style="max-width:100%;">
 
 ### 为什么需要重启
 
@@ -598,40 +431,7 @@ PhaseResult                        # 阶段结果
 
 ## 完整数据流：从 JSON 配置到代码提交
 
-{{< mermaid >}}
-flowchart TD
-    CONFIG["pipeline_server.json<br/>配置文件"] --> PARSE["PipelineConfig.from_dict()<br/>解析配置,过滤注释"]
-    PARSE --> INIT["PipelineLoop.__init__()<br/>创建 LLM / Registry / Artifacts"]
-    INIT --> OUTER["外层循环 (10 轮)"]
-
-    OUTER --> INJECT["注入代码上下文<br/>glob 匹配 → 关键词排序 → 截取 30K"]
-    INJECT --> MODE{debate or<br/>implement?}
-
-    MODE -->|debate| DEBATE["LLM.call()<br/>纯文本分析,不改文件<br/>并行跑 2 个方案"]
-    MODE -->|implement| IMPL["LLM.call_with_tools()<br/>工具循环 (最多 20 轮)<br/>读/搜/改文件"]
-
-    DEBATE --> EVAL["DualEvaluator.evaluate()<br/>Basic + Diffusion 并行打分"]
-    IMPL --> EVAL
-
-    EVAL --> SYNTH["Synthesis<br/>合成最佳方案"]
-    SYNTH --> HOOKS["Hooks<br/>py_compile 检查<br/>git commit (富信息)"]
-
-    HOOKS --> PUSH["git pull --rebase<br/>git push"]
-    PUSH --> PATIENCE{patience<br/>检查}
-    PATIENCE -->|有进步| OUTER
-    PATIENCE -->|5 轮没进步| TAG
-
-    OUTER -->|10 轮跑完| TAG["auto_tag_at_end<br/>打 tag + push tag"]
-    TAG --> CI["GitHub Actions<br/>烟测 → 部署 → 重启"]
-    CI -->|新进程| INIT
-
-    style CONFIG fill:#FFD700,color:black,stroke:none
-    style IMPL fill:#4A90D9,color:white,stroke:none
-    style EVAL fill:#E74C3C,color:white,stroke:none
-    style SYNTH fill:#50C878,color:white,stroke:none
-    style TAG fill:#FF8C42,color:white,stroke:none
-    style CI fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/harness-zh-9.svg" alt="diagram" style="max-width:100%;">
 
 ---
 

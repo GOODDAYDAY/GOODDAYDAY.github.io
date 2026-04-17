@@ -23,22 +23,7 @@ This framework turns **software development best practices** into executable AI 
 
 ## 8-Stage Workflow
 
-{{< mermaid >}}
-graph LR
-    A[Requirement<br/>Analysis] --> B[Technical<br/>Design]
-    B --> C[Implementation]
-    C --> D[Security<br/>Review]
-    D --> E[Code<br/>Cleanup]
-    E --> F[Compliance<br/>Review]
-    F --> G[Verification]
-    G --> H[Archive]
-
-    style A fill:#4A90D9,color:white,stroke:none
-    style C fill:#50C878,color:white,stroke:none
-    style D fill:#E74C3C,color:white,stroke:none
-    style G fill:#FF8C42,color:white,stroke:none
-    style H fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-en-1.svg" alt="diagram" style="max-width:100%;">
 
 | Stage | Skill | What it does |
 |---|---|---|
@@ -57,20 +42,7 @@ A central `/req` orchestrator routes work through the pipeline. Each stage can a
 
 For complex design decisions, instead of one agent deciding, **three agents explore different directions in parallel**:
 
-{{< mermaid >}}
-graph TD
-    NEED[Design Decision] --> A[Agent A<br/>MVP Advocate<br/>max 5 features, fastest path]
-    NEED --> B[Agent B<br/>Product Thinker<br/>complete scope, edge cases]
-    NEED --> C[Agent C<br/>Strategic Challenger<br/>finds the core conflict]
-    A --> SYNTH[User chooses + synthesize]
-    B --> SYNTH
-    C --> SYNTH
-    
-    style A fill:#4A90D9,color:white,stroke:none
-    style B fill:#50C878,color:white,stroke:none
-    style C fill:#E74C3C,color:white,stroke:none
-    style SYNTH fill:#9B59B6,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-en-2.svg" alt="diagram" style="max-width:100%;">
 
 Three perspectives:
 - **A (MVP)**: Cut to minimum viable, ship fast
@@ -99,19 +71,7 @@ No starting over. Partial progress is preserved.
 
 Documents **cannot be edited directly**. Changes go through a formal process:
 
-{{< mermaid >}}
-graph LR
-    DECLARE[Declare scope<br/>F-01, F-03] --> SNAP[Snapshot current version]
-    SNAP --> EDIT[Execute changes]
-    EDIT --> DIFF[Auto-diff detection]
-    DIFF -->|in scope| OK[Pass]
-    DIFF -->|out of scope| WARN[Alert: modified F-02<br/>but undeclared]
-    OK --> LOG[Changelog +1 row]
-    
-    style DECLARE fill:#4A90D9,color:white,stroke:none
-    style WARN fill:#E74C3C,color:white,stroke:none
-    style LOG fill:#50C878,color:white,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-en-3.svg" alt="diagram" style="max-width:100%;">
 
 - Declare affected scope **before** editing
 - System auto-diffs to catch undeclared modifications (mismod detection)
@@ -149,34 +109,7 @@ Critical/High findings are fixed immediately. Medium/Low are presented to the us
 
 ## Orchestration Architecture
 
-{{< mermaid >}}
-graph TD
-    REQ["/req Orchestrator<br/>routing + checkpoint recovery"] --> S1[req-analyze<br/>requirement analysis]
-    REQ --> S2[req-tech<br/>technical design]
-    REQ --> S3[req-code<br/>implementation]
-    REQ --> S4[req-security<br/>security review]
-    REQ --> S5[req-cleanup<br/>code cleanup]
-    REQ --> S6[req-review<br/>compliance review]
-    REQ --> S7[req-verify<br/>verification]
-    REQ --> S8[req-done<br/>archive]
-    
-    REQ --> AMEND[req-amend<br/>change management]
-    REQ --> ARCHIVE[req-archive<br/>batch archive]
-    REQ --> STATUS[req-status<br/>status query]
-    
-    subgraph Shared Layer
-        SHARED[_shared/]
-        SHARED --> ST[status.md<br/>status enum]
-        SHARED --> RC[recovery.md<br/>checkpoint recovery]
-        SHARED --> CL[changelog.md<br/>change log format]
-        SHARED --> DC[diverge-converge.md<br/>multi-agent pattern]
-        SHARED --> GC[git-commit.md<br/>commit conventions]
-    end
-    
-    style REQ fill:#4A90D9,color:white,stroke:none
-    style AMEND fill:#E74C3C,color:white,stroke:none
-    style SHARED fill:#FFD700,color:black,stroke:none
-{{< /mermaid >}}
+<img src="/images/mermaid/skills-en-4.svg" alt="diagram" style="max-width:100%;">
 
 **Key design**: The orchestrator owns all routing logic. Sub-skills are stateless executors — read context, do work, write results, return. This makes the system predictable and auditable.
 
