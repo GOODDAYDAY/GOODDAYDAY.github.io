@@ -310,6 +310,30 @@ _MAX_DELAY: float = 60.0       # cap at 1 minute
 ```
 Each round: call API → get tool instructions → execute → feed results back to LLM → repeat. When `max_tool_turns` is hit, the best proposal wins.
 
+The initial config was minimal — just model, workspace, and max iterations. No concept of "phases" or pipelines:
+```python
+@dataclass
+class HarnessConfig:
+    model: str = "bedrock/claude-sonnet-4-6"
+    max_tokens: int = 8096
+    workspace: str = "."
+    allowed_paths: list[str] = field(default_factory=list)
+    max_iterations: int = 5   # simple loop, run until done
+```
+The main loop was a straightforward `plan → execute → evaluate` cycle:
+```python
+async def run(self, task: str) -> HarnessResult:
+    for i in range(1, self.config.max_iterations + 1):
+        plan = await self.planner.plan(task, context)        # 1. plan
+        result = await self.executor.execute(plan, context)  # 2. execute
+        verdict = await self.evaluator.evaluate(task,        # 3. evaluate
+                                                plan, result)
+        if verdict.passed:
+            return HarnessResult(success=True, ...)
+        context += f"## Iteration {i} Feedback\n{verdict.reason}\n"
+```
+No pipeline JSON, no phase concept — just a for loop.
+
 #### The Golden Age When All Code Fit in Context
 
 The first version's biggest advantage: **the codebase was small enough to fit entirely in an LLM's context window**.
@@ -351,7 +375,38 @@ class PhaseConfig:
     skip_after_round: int | None   # skip after N outer rounds
     run_tests: bool = False        # run tests after changes
 ```
-The R1/R2 pipeline was just three `PhaseConfig` instances chained by `index`.
+The R1/R2 pipeline was just three `PhaseConfig` instances chained by `index`. Here's the actual pipeline JSON they used — three fixed phases in strict order, each with its own prompt and mode:
+
+```json
+{
+  "phases": [
+    {
+      "name": "bug_fix",
+      "index": 0,
+      "mode": "implement",
+      "system_prompt": "Find and fix the most critical defect in the codebase. Reference specific files and functions.",
+      "syntax_check_patterns": ["src/**/*.py"]
+    },
+    {
+      "name": "new_tools_and_features",
+      "index": 1,
+      "mode": "implement",
+      "system_prompt": "Add new tools or feature modules. Follow existing patterns: Tool ABC, async execute(), ToolResult.",
+      "syntax_check_patterns": ["src/**/*.py"],
+      "commit_on_success": true
+    },
+    {
+      "name": "quality_polish",
+      "index": 2,
+      "mode": "implement",
+      "system_prompt": "Code cleanup: remove dead code, merge duplicate logic, add tests.",
+      "syntax_check_patterns": ["src/**/*.py"],
+      "commit_on_success": true
+    }
+  ]
+}
+```
+Three phases executed in strict order: bug → features → polish. No skipping, no reordering.
 
 #### Why It Started Going Wrong
 
@@ -415,6 +470,40 @@ Tool usage: read_file=10, grep_search=9, glob_search=1
 +        assert "symlink" in result.error.lower() or "ELOOP" in str(result.error)
 ```
 The agent discovered the path security check was too permissive (it followed symlinks), fixed the test from "should work" to "should reject", and committed. Nobody told it what to find — it read the code, found a vulnerability, and fixed it.
+
+The pipeline config evolved alongside the architecture — from 3 fixed phases to a more flexible 5-phase structure with debate-mode analysis stages and falsifiable criteria:
+```json
+{
+  "outer_rounds": 10,
+  "inner_rounds": 3,
+  "phases": [
+    {
+      "name": "security_audit",
+      "index": 0,
+      "mode": "debate",
+      "skip_cycle": 3,
+      "system_prompt": "Security audit: find top 3 vulnerabilities. Reference specific files, functions, and line numbers.",
+      "falsifiable_criterion": "Each finding must reference a specific function name and file path."
+    },
+    {
+      "name": "improvement_design",
+      "index": 1,
+      "mode": "debate",
+      "skip_cycle": 3,
+      "system_prompt": "Architecture review: identify top 3 improvements. Reference specific classes and files.",
+      "falsifiable_criterion": "Each improvement must reference specific classes or files."
+    },
+    {
+      "name": "implementation",
+      "index": 2,
+      "mode": "implement",
+      "system_prompt": "Implement improvements. Follow existing patterns. One focused change per round.",
+      "syntax_check_patterns": ["src/**/*.py"]
+    }
+  ]
+}
+```
+Key additions: `skip_cycle` (run a phase only every N rounds instead of every round) and `falsifiable_criterion` (scoring anchors for the evaluator — no more vague scoring).
 
 The cycle log from April 23 shows the maturity of self-orchestration:
 - 67 cycles, each where the agent decided what to change
@@ -480,6 +569,18 @@ _WRITE_TOOLS = {
 }
 ```
 After each cycle, the system generates structured metrics: which tools the agent used, how many files changed, test coverage delta. The evaluator no longer scores in a vacuum — it has concrete data. And the agent can see what it actually accomplished.
+
+The evaluator prompt evolved alongside the metrics system — from a simple "rate this 0-10" to a multi-dimensional judging rubric with explicit gates. Here's the evaluator config from the server self-improvement pipeline:
+
+```json
+{
+  "dual_evaluator": {
+    "basic_system": "Evaluate code changes:\n1. Most critical defect (security hole, race condition, data leak)\n2. BLOAT GATE: net increase >50 lines without equivalent deletions → -3\n3. TOOL GATE: new tool file without merging/removing an existing one → -5\n4. ASYNC SAFETY: blocking I/O in async context → -2\n5. CONSOLIDATION BONUS: merging two tools → +2\n6. Score 0-10",
+    "diffusion_system": "Second-order effects analysis:\n- Does this break the other mode?\n- Does it increase context consumption?\n- Is path security bypassable?\n- SIGNAL SAFETY: is the event loop in a bad state on SIGINT?\n- Any orphaned imports or dead functions?\n\nForce finding at least one negative second-order impact.\nScore 0-10"
+  }
+}
+```
+New additions include TOOL GATE (prevents tool file inflation), BLOAT GATE (controls net line growth), and CONSOLIDATION BONUS (rewards merging over creating) — all rules hardened from repeated pain points in Phases 2 and 3.
 
 For reference, here's the capability distribution at cycle 67 — the metrics system aims to push all points toward the upper right:
 
@@ -547,14 +648,6 @@ The convergence of these two lines also leaves some questions I haven't figured 
 - **Personal vs team projects**: a personal project can iterate freely and refactor aggressively. Team projects have compatibility burdens. How do AI collaboration patterns validated on personal projects scale to large teams?
 
 ## Personal Reflections
-
-### Maintain Your Own Skills
-
-I strongly recommend every long-term Claude Code user maintain their own skills repository:
-- **No more manual typing**: once a skill is written, everything after is just invocation
-- **Grows with you**: as your technical understanding improves, your skills upgrade with it
-- **A reflection of your AI literacy**: the quality of a person's skills almost directly reflects their depth of AI collaboration understanding
-- **Shareable**: well-written skills can be shared and become team assets
 
 ### AI Demands More from Programmers, Not Less
 
