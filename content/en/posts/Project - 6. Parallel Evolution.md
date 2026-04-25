@@ -31,16 +31,16 @@ Before this, every AI interaction meant typing similar prompts by hand. The work
 
 Repeating this every time was both stupid and tedious. This phase generated no documentation — there wasn't even an awareness of "tooling." I was just using.
 
-For example, to implement a user registration endpoint, my prompt would go something like:
+My prompt was a copy-paste template I'd reuse every time:
 ```
-Me: Project is Java Spring + MySQL. Add a registration endpoint in UserController.
-    Structure: Controller/Service/Repository layers.
-AI: OK, here's the Controller layer...
-Me: Wait, first create a requirement doc under requirements/REQ-xxx/.
-AI: OK...
-Me: Also, don't use Lombok.
+Project: Java 17 + Spring Boot 3 + MySQL 8
+Code path: D:/project/my-app
+Conventions: 3-layer (Controller/Service/Repository), no Lombok
+Task: implement user registration
+Output format: write requirement doc to requirements/REQ-xxx/,
+              then design, then code. Wait for my confirmation at each step.
 ```
-Every single task meant re-explaining the project context and conventions. And worse — **the AI had no memory between sessions**, so the next conversation started from scratch.
+Every new task meant copying this block and changing the description. Worse — **the AI had no memory between sessions**, so the next conversation started from scratch.
 
 Once I realized the problem, I decided to codify these repetitive prompts. The first attempt was to write the entire workflow as a single monolithic skill.
 
@@ -108,16 +108,9 @@ This phase introduced **dual-agent adversarial debate** for requirement analysis
 - **Full-Feature Agent**: Argues for complete features — no technical debt
 - **Judge Agent**: Synthesizes the best of both after multi-round debate
 
-Take "user registration" as an example — here's what the debate looked like:
-```
-MVP Agent: "Just do username + password registration.
-    Email verification can come later. Ship fast to validate demand."
-Full-Feature Agent: "Implement email + phone + OAuth all at once.
-    Changing the auth system later with real users is too costly."
-Judge Agent: "Phase 1: email registration only, with OAuth extension
-    points in the backend. Ships fast without painting us into a corner."
-```
-The synthesized proposals were often genuinely better than either side's initial take. But this pattern later revealed its problem: **it's slow, and most small features don't need debate at all**.
+Under this mechanism, each skill file's prompt defined three perspectives upfront. For example, `req-1-analyze/SKILL.md` instructed the LLM to analyze requirements from both MVP and full-feature angles, then produce a synthesis. At runtime, this meant three parallel agent calls — two debate rounds plus one judge round.
+
+The output quality for medium-to-large features was genuinely better than any single-perspective decision. But the problem became clear over time: **it's slow, and most small features don't need debate at all**. A trivial change still loaded three agent prompts, waited for all of them, then aggregated — the overhead far exceeded the benefit.
 
 #### Shared Standards Directory
 
@@ -135,17 +128,24 @@ This was the most important evolution. The `req` role upgraded from a "strict se
 
 The core change: **remove all stage numbers, remove the fixed execution order, let the orchestrator decide which stages to run based on the task**.
 
-Now the same "user registration" request triggers completely different behavior:
+Here are the actual classification rules from the orchestrator SKILL.md (simplified):
 ```
-Me: "Add a user registration feature."
-Orchestrator: → Class B (New REQ) → Creates REQ-008 → Full pipeline
+Scenario A — Trivial:          rename variable, add log line, tweak config
+→ Execute directly, no REQ created
 
-Me: "Change registration to support phone numbers."
-Orchestrator: → Class C (Spec Change) → Locates REQ-008 → Skips analyze → Starts from tech
+Scenario B — New REQ:          implement login, integrate payment API
+→ Create new REQ-xxx, full pipeline
 
-Me: "Change the register button color."
-Orchestrator: → Class A (Trivial) → Edits directly, no REQ created
+Scenario C — Amend spec:      "use OAuth instead", "change TTL to 7 days"
+→ Locate existing REQ, update docs, re-run affected stages
+
+Scenario D — Amend bug fix:   token parsing fails, verify didn't pass
+→ Locate existing REQ, route back to code, re-run verify
+
+Scenario E — Ambiguous:        add "remember-me" after login REQ is completed
+→ Check REQ status: still open = amend, already completed = new REQ
 ```
+Each rule has clear decision criteria: read `requirements/index.md`, check for active REQs, determine if the input references existing REQ code or behavior. **The orchestrator isn't a pipeline worker — it's a decision-maker.**
 
 <img src="/images/mermaid/evolution-en-4.svg" alt="Orchestrator pattern" style="max-width:100%;">
 
@@ -203,14 +203,19 @@ This phase also added:
 
 Recently, I haven't been using `req` as much myself. The main reasons:
 
-Take a simple "add logging to an endpoint" task. In the early version, this is what happened:
+The early pipeline never skipped any stage: analyze → tech → code → security → cleanup → review → verify → done. Every single one, every single time. A trivial "add a log line" task wasted minutes on stages that contributed nothing.
+
+The orchestrator version later fixed this with explicit skip rules:
 ```
-1. req-analyze launches → dual-agent debate on "logging requirements"
-   (MVP: "just add logging." Full-feature: "add monitoring and tracing too.")
-2. req-tech launches → another debate on "which logging framework"
-3. Finally enters req-code
+analyze  → skip when user already provided complete spec
+tech     → skip when change direction is purely mechanical (rename, delete)
+security → skip when no new attack surface (refactor, internal config)
+cleanup  → skip when the change itself IS cleanup
+review   → skip when scope ≤ 3 files and no functional change
+verify   → skip when pure refactor/deletion and existing tests suffice
+code/done → NEVER skip
 ```
-That's 5 minutes of overhead for 30 seconds of writing `log.info()`. **The debate cost was completely disproportionate for small tasks.**
+In other words, the slowness wasn't the debate itself. It was **the lack of stage skipping**.
 
 **Where it's slow — Dual-agent debate overhead**
 
@@ -287,16 +292,23 @@ harness/
 └── prompts/            ← LLM instruction templates
 ```
 
-In practice, a typical tool call round looked like this:
+The core `llm.py` drives the entire LLM call loop. Here's a real snippet — the retry policy for transient API errors:
+```python
+# Transient errors safe to retry (request never reached the model)
+_RETRYABLE_EXCEPTIONS = (
+    OverloadedError,           # HTTP 529 — model overloaded
+    RateLimitError,            # HTTP 429 — rate limit hit
+    InternalServerError,       # HTTP 500 — transient server error
+    APIConnectionError,        # network-level failure
+    APITimeoutError,           # SDK timeout
+)
+
+_MAX_RETRIES: int = 4          # up to 4 retries
+_INITIAL_DELAY: float = 2.0    # seconds before first retry
+_BACKOFF_FACTOR: float = 2.0   # double each wait
+_MAX_DELAY: float = 60.0       # cap at 1 minute
 ```
-LLM reads the code and decides:
-→ read_file('harness/tools/base.py')    # check current tool impl
-→ edit_file(...)                        # add a new tool method
-→ bash('pytest tests/')                 # run tests to verify
-→ read_file('harness/config.py')        # check config before next step
-→ ... loop until max_tool_turns reached
-```
-Each round, the LLM decided "what to look at, what to change" on its own. The core `llm.py` was just the 60 lines driving this loop.
+Each round: call API → get tool instructions → execute → feed results back to LLM → repeat. When `max_tool_turns` is hit, the best proposal wins.
 
 #### The Golden Age When All Code Fit in Context
 
@@ -328,6 +340,19 @@ harness: R2 new_tools_and_features
 ...
 ```
 
+Each phase was defined by a `PhaseConfig` dataclass:
+```python
+@dataclass
+class PhaseConfig:
+    name: str                      # bug_fix / features / polish
+    index: int                     # stage index, fixed order
+    system_prompt: str             # LLM instruction template
+    mode: "debate" | "implement"   # debate=propose, implement=edit code
+    skip_after_round: int | None   # skip after N outer rounds
+    run_tests: bool = False        # run tests after changes
+```
+The R1/R2 pipeline was just three `PhaseConfig` instances chained by `index`.
+
 #### Why It Started Going Wrong
 
 The fixed orchestration's problems emerged quickly:
@@ -358,17 +383,38 @@ R3 also removed the built-in debate mechanism, letting the agent decide what to 
 
 **Figure 4.5 — From fixed debate to self-directed orchestration**
 
-No one tells the agent "this round is bug_fix" or "this round is features." Here's what a real cycle looked like:
+No one tells the agent "this round is bug_fix" or "this round is features." Here's a real diff from an actual cycle commit:
+```diff
+commit 052c651 — harness: R5 traceability_and_structure [score=3.8]
+Tool usage: read_file=10, grep_search=9, glob_search=1
+
+--- a/tests/unit/tools/test_file_read_security.py
++++ b/tests/unit/tools/test_file_read_security.py
+@@ -37,13 +37,13 @@
+ 
+-        # Test 1: Reading through a symlink should work (following symlinks)
++        # Test 1: Reading through a symlink should fail with O_NOFOLLOW
+         result = await tool.execute(config, path=str(symlink_path))
+-        assert not result.is_error
+-        assert "public content" in result.output
++        assert result.is_error
++        assert "symlink" in result.error.lower() or "ELOOP" in str(result.error)
+ 
+         # Test 2: Replace symlink target after validation would occur
+-        # should prevent this.
++        # should prevent this by rejecting symlinks entirely.
+         symlink_path.unlink()
+         symlink_path.symlink_to(secret_file)
+ 
+-        # Attempt read - should still work because we follow symlinks
++        # Attempt read - should fail because symlinks are rejected
+         result = await tool.execute(config, path=str(symlink_path))
+-        assert not result.is_error
+-        assert "secret content" in result.output
++        assert result.is_error
++        assert "symlink" in result.error.lower() or "ELOOP" in str(result.error)
 ```
-Cycle 42 — agent read the code and decided:
-"tools/base.py has duplicated path security checks.
-Refactor: extract _check_path utility, unify error handling."
-→ Modified 3 files
-→ Added 12 new tests
-→ Evaluation score: 7.8/10
-→ Elapsed: 4 min 32 sec
-```
-Nobody told it what to do — it read the code, made a judgment, and executed.
+The agent discovered the path security check was too permissive (it followed symlinks), fixed the test from "should work" to "should reject", and committed. Nobody told it what to find — it read the code, found a vulnerability, and fixed it.
 
 The cycle log from April 23 shows the maturity of self-orchestration:
 - 67 cycles, each where the agent decided what to change
@@ -418,15 +464,22 @@ Core idea: don't let the agent decide "what to improve" in a vacuum:
 2. **Generate metrics**: the implementation produces quantifiable indicators (test coverage, quality score, performance data)
 3. **Metrics closed loop**: use the metrics to drive ongoing improvement — the evaluation now has real anchor points
 
-Now cycle_metrics records data like this:
+For example, `cycle_metrics.py` classifies tools by their role in the improvement loop:
+```python
+# Read-only tools — gather context, never mutate
+_READ_TOOLS = {
+    "read_file", "grep_search", "glob_search",
+    "list_directory", "tree", "symbol_extractor",
+    "git_status", "git_diff", "git_log",
+}
+
+# Write tools — actually modify code
+_WRITE_TOOLS = {
+    "edit_file", "write_file", "delete_file",
+    "move_file", "file_patch", "find_replace",
+}
 ```
-Context quality:        8.2/10  (thorough code reading, accurate understanding)
-Memory & learning:      7.5/10  (remembered prior architectural decisions)
-Evaluation consistency: 6.8/10  (still needs calibration, occasional misjudgment)
-Files affected:         3
-Test coverage change:   +4.2%
-```
-With this, the evaluator has concrete targets to judge against, and the agent gets concrete feedback on what it did right — rather than free-improving in a vacuum.
+After each cycle, the system generates structured metrics: which tools the agent used, how many files changed, test coverage delta. The evaluator no longer scores in a vacuum — it has concrete data. And the agent can see what it actually accomplished.
 
 For reference, here's the capability distribution at cycle 67 — the metrics system aims to push all points toward the upper right:
 
