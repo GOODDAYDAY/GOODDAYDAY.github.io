@@ -7,37 +7,20 @@ categories = ["Project"]
 tags = ["AI", "Claude Code", "Workflow", "Self-Improvement", "DeepSeek", "Anthropic", "Architecture"]
 +++
 
-## 1. Overview
+## Overview
 
 Since the start of this year, I've been using AI intensively (Claude Code in particular) to help with many projects and write a lot of software. Over this time, my understanding of how a programmer should work with AI has gone through stage after stage. There's a lot in my head, and I want to write it down to help myself reflect and synthesize.
 
-### 1.1 Dimensions of the Journey
+### Dimensions of the Journey
 
 Several parallel threads have been evolving in my understanding of AI:
 - **Methodology**: From manual prompting → a skills system → an orchestrator pattern, gradually forming a reusable development workflow
 - **Engineering**: From "let AI help me write code" to "let AI improve its own code" — the boundary keeps expanding
 - **Cognition**: The more I use it, the less it feels like a "tool" and more like a partner that needs continuous collaboration and mutual growth
 
-## 2. Background: The OpenClaw Wave
+## Project One: The Skills Repository
 
-### 2.1 That Moment
-
-Before this year, I'd been using AI to help with all sorts of things — enough to stay current, aware of what's out there. When OpenClaw exploded, I realized: the thing I'd always wanted to do had arrived — or rather, someone else had built the prototype.
-
-The idea is simple: **write project information, personal preferences, and shared conventions into a single foundational file, and have it automatically injected into context every time you use AI**. I'd never been able to make this happen before — the barrier was too high, couldn't push it through at work. When Claude Code introduced the skills/commands concept, I thought: isn't this exactly it?
-
-### 2.2 Claude Code's Experience Upgrade
-
-The experience upgrade Claude Code brings is undeniable:
-- Strong self-orchestration capabilities for holistic analysis
-- Smarter context management
-- Sub-agent support that makes parallel tasks genuinely usable
-
-Everyone who's used it agrees. It became the foundation for everything that followed.
-
-## 3. Project One: The Skills Repository
-
-### 3.1 Phase 1 — The Manual Prompt Era
+### Phase 1 — The Manual Prompt Era
 
 Before this, every AI interaction meant typing similar prompts by hand. The workflow was:
 1. Tell AI the project background
@@ -46,9 +29,9 @@ Before this, every AI interaction meant typing similar prompts by hand. The work
 
 Repeating this every time was both stupid and tedious. This phase generated no documentation — there wasn't even an awareness of "tooling." I was just using.
 
-### 3.2 Phase 2 — The Monolithic `req` Is Born
+### Phase 2 — The Monolithic `req` Is Born
 
-#### 3.2.1 First Version Structure
+#### First Version Structure
 
 The first formal commit of the skills repository included:
 
@@ -64,13 +47,13 @@ create-skill/SKILL.md      ← Utility tool
 _shared/plantuml.md        ← Shared conventions
 ```
 
-#### 3.2.2 Six-Stage Linear Flow
+#### Six-Stage Linear Flow
 
 <img src="/images/mermaid/evolution-en-1.svg" alt="Six-stage linear flow" style="max-width:100%;">
 
 **Figure 3.2 — First version six-stage linear flow (fixed order, user confirmation at each stage)**
 
-#### 3.2.3 The First Taste of Natural Language Programming
+#### The First Taste of Natural Language Programming
 
 The first time I specified "always write requirement documents in a fixed directory, auto-numbered," and it actually understood and followed the convention every time — **that was the first time I truly felt the difference between natural language programming and traditional programming**.
 
@@ -87,13 +70,13 @@ requirements/
 
 The value of this convention: requirement documents become the "contract" for each REQ, enabling traceable comparisons across any future iteration.
 
-### 3.3 Phase 3 — Multi-REQ Modularization
+### Phase 3 — Multi-REQ Modularization
 
-#### 3.3.1 The Motivation to Split
+#### The Motivation to Split
 
 As I learned more about skills, I woke up: **why keep the monolithic skill?** Each stage has its own rules and output requirements. The single file was getting bloated and hard to maintain. A major refactor followed: 19 new files, nearly a thousand lines changed.
 
-#### 3.3.2 Eight-Stage Pipeline
+#### Eight-Stage Pipeline
 
 The split resulted in this structure:
 
@@ -101,7 +84,7 @@ The split resulted in this structure:
 
 **Figure 3.3 — Eight-stage flow with dual-agent debate mechanism**
 
-#### 3.3.3 Dual-Agent Debate in Practice
+#### Dual-Agent Debate in Practice
 
 This phase introduced **dual-agent adversarial debate** for requirement analysis and technical design:
 - **MVP Agent**: Argues for minimum viable product — constrain scope, ship fast
@@ -110,7 +93,7 @@ This phase introduced **dual-agent adversarial debate** for requirement analysis
 
 The synthesized proposals were often genuinely good. But this pattern later revealed its problem: **it's slow, and most small features don't need debate at all**.
 
-#### 3.3.4 Shared Standards Directory
+#### Shared Standards Directory
 
 This phase established the `_shared/` directory, which became the shared convention for all skills:
 
@@ -118,9 +101,9 @@ This phase established the `_shared/` directory, which became the shared convent
 
 **Figure 3.4 — _shared conventions system**
 
-### 3.4 Phase 4 — The Orchestrator `req`
+### Phase 4 — The Orchestrator `req`
 
-#### 3.4.1 From Fixed Pipeline to Intelligent Orchestration
+#### From Fixed Pipeline to Intelligent Orchestration
 
 This was the most important evolution. The `req` role upgraded from a "strict sequential pipeline" to a **"decision-maker that chooses what to do based on the task"**.
 
@@ -130,7 +113,7 @@ The core change: **remove all stage numbers, remove the fixed execution order, l
 
 **Figure 3.5 — Orchestrator pattern: classify → triage → plan → execute**
 
-#### 3.4.2 Task Classification
+#### Task Classification
 
 The orchestrator first classifies input into five categories:
 
@@ -142,7 +125,7 @@ The orchestrator first classifies input into five categories:
 | **D — Amend (Bug)** | Implementation defect | "Token parsing fails" | Amend → fall back to code stage |
 | **E — Ambiguous** | Extension or new REQ? | Add "remember me" to completed login REQ | Check status, then decide |
 
-#### 3.4.3 Stage Skip Conditions
+#### Stage Skip Conditions
 
 Each stage has clear skip criteria:
 
@@ -156,7 +139,7 @@ Each stage has clear skip criteria:
 | verify | Pure refactor/deletion, existing tests sufficient |
 | **code / done** | **Never skipped** |
 
-#### 3.4.4 The Lightweight Task Skill
+#### The Lightweight Task Skill
 
 Around April 2, I added the `task` skill — a lightweight workflow for tasks that don't need the full REQ pipeline.
 
@@ -170,15 +153,15 @@ This phase also added:
 - **Parallel sub-agent** support (independent modules, parallel development)
 - **Batch archive** via req-archive skill
 
-#### 3.4.5 Structural Comparison
+#### Structural Comparison
 
 <img src="/images/mermaid/evolution-en-6.svg" alt="Fixed pipeline vs Smart orchestrator" style="max-width:100%;">
 
 **Figure 3.7 — Fixed pipeline vs Smart orchestrator**
 
-### 3.5 Phase 5 — Current State and Reflection
+### Phase 5 — Current State and Reflection
 
-#### 3.5.1 Why I Use It Less Now
+#### Why I Use It Less Now
 
 Recently, I haven't been using `req` as much myself. The main reasons:
 
@@ -202,7 +185,7 @@ The current `req-analyze` and `req-tech` stages already have triage (fast path v
 
 The AI tools provided at work don't support sub-agents well: sub-agents can't report progress back, users can't see the execution order, and running multiple agents in parallel feels like working in a black box. This makes complex orchestration a worse experience in the corporate environment, so naturally I use it less there.
 
-#### 3.5.2 The Long-Term Value of Skills
+#### The Long-Term Value of Skills
 
 Nevertheless, I strongly recommend everyone maintain their own set of skills:
 
@@ -217,12 +200,12 @@ Nevertheless, I strongly recommend everyone maintain their own set of skills:
 - GitHub: [GOODDAYDAY/my-skills](https://github.com/GOODDAYDAY/my-skills)
 - Detailed post: [Project 5. My Skills — Enterprise Development Workflows as Executable Claude Code Skills](https://gooddayday.github.io/en/2026/04/project-5.-my-skills/)
 
-## 4. Project Two: Harness-Everything
+## Project Two: Harness-Everything
 
 - GitHub: [GOODDAYDAY/Harness-Everything](https://github.com/GOODDAYDAY/Harness-Everything)
 - Detailed post: [Project 3. Harness-Everything — Autonomous AI Code Improvement Harness](https://gooddayday.github.io/en/2026/04/project-3.-harness-everything/)
 
-### 4.1 Core Idea in One Sentence
+### Core Idea in One Sentence
 
 > Feed project code to an LLM, let it analyze, improve, and write code; use tools to read and write files; another LLM call judges quality; iterate multiple rounds, each building on the improved code from the previous round. Because Python modules are loaded once in memory and frozen, the process must restart every N rounds for improvements to take effect — triggered by git tags via CI/CD, forming an unattended self-improvement loop.
 
@@ -232,9 +215,9 @@ This layered model captures the system:
 
 **Figure 4.1 — Each layer solves the previous layer's problem**
 
-### 4.2 Phase 1 — Minimal First Version
+### Phase 1 — Minimal First Version
 
-#### 4.2.1 Origin
+#### Origin
 
 The first snapshot contained the complete initial architecture:
 
@@ -255,7 +238,7 @@ harness/
 └── prompts/            ← LLM instruction templates
 ```
 
-#### 4.2.2 The Golden Age When All Code Fit in Context
+#### The Golden Age When All Code Fit in Context
 
 The first version's biggest advantage: **the codebase was small enough to fit entirely in an LLM's context window**.
 
@@ -265,9 +248,9 @@ This was a brief golden age — the LLM could see the entire project at once, un
 
 **Figure 4.2 — First version data flow: from config to code commit**
 
-### 4.3 Phase 2 — Fixed Orchestration (R1/R2)
+### Phase 2 — Fixed Orchestration (R1/R2)
 
-#### 4.3.1 Three-Stage Fixed Pipeline
+#### Three-Stage Fixed Pipeline
 
 Rounds 1 and 2 used a fixed three-stage pipeline:
 
@@ -285,7 +268,7 @@ harness: R2 new_tools_and_features
 ...
 ```
 
-#### 4.3.2 Why It Started Going Wrong
+#### Why It Started Going Wrong
 
 The fixed orchestration's problems emerged quickly:
 - **The LLM didn't know the overall goal**, only the current stage's name
@@ -295,9 +278,9 @@ The fixed orchestration's problems emerged quickly:
 
 The most emblematic problem: the LLM refactored a file in R2, but R3's LLM didn't know about it, refactored the same logic differently, and reverted the improvement.
 
-### 4.4 Phase 3 — Self-Orchestration (R3 through cycle 67)
+### Phase 3 — Self-Orchestration (R3 through cycle 67)
 
-#### 4.4.1 Architecture Refactoring
+#### Architecture Refactoring
 
 On April 16, R3 was a major restructuring (single commit: 1489 lines deleted, 169 lines added):
 
@@ -305,7 +288,7 @@ On April 16, R3 was a major restructuring (single commit: 1489 lines deleted, 16
 
 **Figure 4.4 — R3 architecture refactoring: from monolithic files to separated concerns**
 
-#### 4.4.2 Removing Debate, Letting the Agent Think
+#### Removing Debate, Letting the Agent Think
 
 R3 also removed the built-in debate mechanism, letting the agent decide what to improve:
 
@@ -318,7 +301,7 @@ The cycle log from April 23 shows the maturity of self-orchestration:
 - Tests grown automatically from zero to 2700+ (written by the agent itself)
 - Continuous code optimization with increasingly clean architecture
 
-#### 4.4.3 What Worked and Where It Hit a Ceiling
+#### What Worked and Where It Hit a Ceiling
 
 **What worked well**:
 - Test coverage improved significantly (every round added tests)
@@ -330,7 +313,7 @@ The cycle log from April 23 shows the maturity of self-orchestration:
 - **Architectural innovation**: changes were always optimizations within existing structures, never spontaneous new architectures
 - **Cross-iteration coherence**: each cycle's LLM was independent, with no memory across rounds
 
-#### 4.4.4 Root Cause Analysis of Slow Iteration
+#### Root Cause Analysis of Slow Iteration
 
 The biggest feeling running it now: **iteration keeps getting slower**. On the surface it looks like code stabilization, but the root cause is elsewhere.
 
@@ -338,11 +321,11 @@ Two core problems:
 - **Inadequate evaluation signals**: the dual evaluator's scores became flat, unable to distinguish "okay" from "genuinely good." Without good evaluation signals, the agent doesn't know where to optimize, so it just polishes within existing structures
 - **No new business driving it**: when the agent just improves freely, it only does subtraction (optimize, clean, add tests). It can't do addition (new features, new capabilities). Without business requirements driving it, the improvement space naturally narrows
 
-### 4.5 Phase 4 — Metrics-Driven
+### Phase 4 — Metrics-Driven
 
 Addressing the two core problems from 4.4.4, the first batch of metrics-driven components has been landed:
 
-#### 4.5.1 Components Built
+#### Components Built
 
 <img src="/images/mermaid/evolution-en-14.svg" alt="Direction-driven + metrics closed loop" style="max-width:100%;">
 
@@ -369,15 +352,15 @@ For reference, here's the capability distribution at cycle 67 — the metrics sy
 
 **Figure 4.7 — Harness self-improvement capability distribution across task types (cycle 67 baseline)**
 
-### 4.6 Four-Version Evolution Timeline
+### Four-Version Evolution Timeline
 
 <img src="/images/mermaid/evolution-en-16.svg" alt="Harness four-version evolution timeline" style="max-width:100%;">
 
 **Figure 4.8 — Harness four-version evolution timeline**
 
-## 5. The Convergence
+## The Convergence
 
-### 5.1 The Strikingly Parallel Trajectory
+### The Strikingly Parallel Trajectory
 
 Skills and Harness are two projects started independently to solve different problems — one manages development workflow, the other manages code self-improvement. But when you lay their evolutionary stages side by side:
 
@@ -394,7 +377,7 @@ Two projects, without knowing about each other's design, walked almost the same 
 
 **Figure 5.1 — Skills and Harness experienced the same evolutionary stages**
 
-### 5.2 What This Pattern Reveals
+### What This Pattern Reveals
 
 **The orchestrator pattern isn't a project-specific design. It's a universal paradigm.**
 
@@ -402,7 +385,7 @@ Whether orchestrating a development workflow or a code improvement loop, the cor
 
 This pattern wasn't designed — it emerged from iteration. Both projects started with fixed pipelines because that's the fastest way to get running, and only evolved into orchestrators when hardcoding stopped working. Which tells you something: **if you have a project that needs continuous iteration, its architecture will grow itself. You don't need to design it perfectly upfront.**
 
-### 5.3 Why You Need a Long-Term Personal Project
+### Why You Need a Long-Term Personal Project
 
 This is the single most important suggestion in this entire document:
 
@@ -418,7 +401,7 @@ Three reasons:
 
 The Skills repository has a `docs/evolution.md` file — a written record of this evolutionary process. Its purpose isn't for others to read; it's for me to look back at — to see how I thought about AI three months ago, and whether I've improved since.
 
-### 5.4 Open Questions
+### Open Questions
 
 The convergence of these two lines also leaves some questions I haven't figured out:
 
@@ -426,9 +409,9 @@ The convergence of these two lines also leaves some questions I haven't figured 
 - **Cross-project pattern reuse**: the pattern Skills revealed (fixed pipeline → split → orchestration) — can it be proactively applied to the next project, rather than discovered after the fact?
 - **Personal vs team projects**: a personal project can iterate freely and refactor aggressively. Team projects have compatibility burdens. How do AI collaboration patterns validated on personal projects scale to large teams?
 
-## 6. Personal Reflections
+## Personal Reflections
 
-### 6.1 Maintain Your Own Skills
+### Maintain Your Own Skills
 
 I strongly recommend every long-term Claude Code user maintain their own skills repository:
 - **No more manual typing**: once a skill is written, everything after is just invocation
@@ -436,7 +419,7 @@ I strongly recommend every long-term Claude Code user maintain their own skills 
 - **A reflection of your AI literacy**: the quality of a person's skills almost directly reflects their depth of AI collaboration understanding
 - **Shareable**: well-written skills can be shared and become team assets
 
-### 6.2 AI Demands More from Programmers, Not Less
+### AI Demands More from Programmers, Not Less
 
 A common misconception is that "AI makes programming easier." My actual experience is the opposite:
 - AI's ceiling is your ceiling — if you can't think clearly, AI is more likely to think wrongly on your behalf
@@ -446,7 +429,7 @@ A common misconception is that "AI makes programming easier." My actual experien
 
 AI is a multiplier, not an adder. If your foundation is weak, multiplying it still leaves you weak.
 
-### 6.3 Choose Your Employer for AI Resources
+### Choose Your Employer for AI Resources
 
 One final practical suggestion: **make sure you join a company that provides unrestricted access to quality AI**.
 
@@ -457,7 +440,7 @@ The AI tooling experience varies dramatically:
 
 If your company's AI resources are constrained, it severely hampers the kind of workflow evolution described above. When evaluating job opportunities, the quality and availability of AI tooling deserves serious consideration.
 
-### 6.4 Current Open Questions
+### Current Open Questions
 
 Questions I'm still thinking about, with no answers yet:
 
