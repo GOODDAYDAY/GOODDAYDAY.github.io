@@ -82,6 +82,16 @@ for turn in range(max_turns):
 
 **就这些。这是整个项目最核心的 60 行。**
 
+**转 — 但工具的代价是"记忆的复利"**
+
+这 60 行代码简单，但隐藏了一个反直觉的成本模型。Anthropic API 是**无状态**的——每次调用都要把整个对话历史重发一遍。第一轮 LLM 调用 20K tokens，第五轮就 30K（多了 4 轮工具调用记录），第十轮 40K，第二十轮 60K。**对话越长，每一轮的花费越高，而且是指数级增长。**
+
+这就是为什么 `max_tool_turns` 从 30 砍到 20 能省 40% 成本——砍掉的是最贵的那十几轮。但砍了轮次，agent 思考空间就小了。这是一个没有好答案的取舍，后续的对话剪枝、主动压缩、文件缓存都是在缓解这个根本矛盾。
+
+**合 — 这 60 行是发动机，后面六层都是安全网和方向盘**
+
+发动机本身不复杂。复杂的是在它周围搭出足够聪明的控制体系，让它不会烧坏引擎、不会开错方向、不会忘了自己开过哪条路。后面每一层，都是为了添一个控制维度。
+
 ### 第 2 层：LLM 会改出 bug
 
 **问题**：LLM 改的代码可能有语法错误,甚至会搞坏项目。
@@ -93,6 +103,14 @@ LLM 改了代码 → py_compile 报错 → 错误信息喂回 LLM → LLM 再改
 ```
 
 这就是 `harness/pipeline/hooks.py` 里的 `SyntaxCheckHook`。
+
+**转 — `py_compile` 抓得住逗号，抓不住糊涂**
+
+语法检查是硬约束——括号没配对、缩进错了、import 拼错了，一抓一个准。但它只能告诉你"代码能跑"，不能告诉你"代码跑得对不对"。LLM 把 `if user.is_admin` 写成了 `if user.is_active`，语法完全正确，逻辑完全错误。而且更微妙的：LLM 看到编译错误后改代码，有时候越改越糟——为了修一个 `SyntaxError` 把整个函数的逻辑重写了。
+
+**合 — 语法检查是底线，不是上限**
+
+它的角色类似于"代码不允许编译不过"。但过线之后的好坏，需要更聪明的判断机制——这就是下一层要解决的问题。
 
 ### 第 3 层：不知道改得好不好
 
@@ -113,7 +131,17 @@ LLM 改了代码
 
 <img src="/images/mermaid/harness-zh-4.svg" alt="diagram" style="max-width:100%;">
 
-这就是 `harness/evaluation/dual_evaluator.py`。本质上是让 LLM 自己评自己,但通过**隔离两个评估视角**来减少自我吹嘘。
+这就是 `harness/evaluation/dual_evaluator.py`。
+
+**转 — "让学生给自己的作业打分"，避不开**
+
+让 LLM 评 LLM，本质上就是让学生给自己作业打分。两个评估者隔离了视角（basic 找缺陷，diffusion 看波及），但如果两个评估者共享同一个模型的底层偏好呢？对漂亮代码的偏好、对特定设计模式的偏好——这些是隔离不住的。
+
+实际跑下来发现：**evaluator 的 prompt 质量远比 isolation 重要**。一个好的 prompt 能让两个评估者的分歧刚好够用；一个模糊的 prompt 会让两个评估者都打出 6-8 分的"安全区间"——什么都好，什么都不突出。
+
+**合 — 双评估是镜子，不是尺子**
+
+它帮你看到两面的倒影，但不能给你绝对坐标。绝对坐标需要客观指标（测试通过率、覆盖率、lint score）来校准——这是 V5 多轴评估想要解决的问题之一。
 
 ### 第 4 层：一次改一点,多轮迭代
 
@@ -139,6 +167,16 @@ Outer Round 2:
 
 这就是 `harness/pipeline/pipeline_loop.py`（外层）和 `harness/pipeline/phase_runner.py`（阶段执行）。
 
+**转 — 阶段越多，视野越窄**
+
+拆阶段的代价是**连贯性丢失**。Phase 2 的 LLM 不知道 Phase 1 分析了什么；Phase 3 改了 Phase 2 刚改的东西又改回去了。每个阶段在自己的上下文里做最优决策，但合在一起可能互相抵消。
+
+这还是**固定阶段顺序**的锅。不管你扔给它一个安全审计任务还是一个加日志的需求，它都走同样的 bug_fix → features → polish 流水线。安全审计对小脚本毫无意义，但每次都跑。后来 R3 砍掉了固定辩论、加了 skip 规则和 falsifiable_criterion，才让 agent 有了按需调度的能力。
+
+**合 — 编排的智慧不在"分几阶段"，在"知道什么时候跳过"**
+
+真正让多阶段系统好用的不是阶段设计本身，而是**跳过规则**。一个阶段的存在价值不体现在它被执行的次数，而体现在执行它的每一次都确实改变了结果。如果一个阶段 80% 的时候都给出相同的结论——它应该被跳过。
+
 ### 第 5 层：改了不生效
 
 **问题**：LLM 在 Round 3 改了 `harness/core/llm.py`,但运行中的进程还在用 Round 1 加载的旧代码。改了等于没改。
@@ -154,6 +192,12 @@ GitHub Actions 看到 tag → SSH 到服务器 → 部署新代码 → 重启进
 ```
 
 **这是你做的最核心的架构决策。** 没有这个循环,自我优化就是假的——LLM 以为自己改了代码,但改动永远不会执行。
+
+**转 — 但重启是有代价的**
+
+每 10 轮才重启一次，意味着这 10 轮里 agent 一直在"用旧的身体执行新的想法"。Round 5 改进了 `llm.py` 的重试逻辑，但 Round 6-10 的 agent 还是用旧的重试逻辑跑——新代码躺在磁盘上等重启，旧代码在内存里继续跑。10 轮足够 agent 产生依赖新行为的代码——如果那个新行为还没生效，后续改动就可能基于错误假设。
+
+这没有完美的解法，只能通过在每次 restart 后让 agent 先"审计自己改过的核心模块"来部分缓解。**批处理重启是一个工程权衡：你想多久看到改进生效，以及你能容忍多久的身体与大脑不同步。**
 
 ### 第 6 层：循环别断了
 
@@ -171,6 +215,140 @@ GitHub Actions 看到 tag → SSH 到服务器 → 部署新代码 → 重启进
 | LLM 把部署脚本改坏了 | prompt 里的 PROTECTION 黑名单 |
 | 部署了坏代码 | CI 烟测 + 回滚到 harness-last-good |
 | 磁盘满 | 清理 cron 每天删旧数据 |
+
+**转 — 安全网齐了，但"判断力"没有跟着涨**
+
+这些安全网解决了"循环不会意外死掉"的问题，但没有解决"循环往哪里走"的问题。第 3 层的双重评估给了 agent 一轮内的判断力，但它没有跨轮次的记忆、没有方向感、没有能力质疑自己的评判标准。而且随着代码越来越规范，**评判信号越来越弱**——agent 把所有明显的缺陷都修了，剩下的都是需要品味和远见的改进，这些恰恰是单一分数搞不定的。
+
+**合 — 前六层让循环能跑，第七层让循环能"思考"**
+
+V4 之前，Harness 是一台越来越不会死的执行机器。V5 要解决的问题不同：不是"别死"，而是"知道往哪跑"。这就是第七层。
+
+### 第 7 层（V5）：评判趋平、没有记忆、不会探索、改不了自己
+
+**起 — 繁荣之下的隐忧**
+
+V4 跑了 67 个 cycle，测试从零涨到 2700+，工具系统稳定运转。表面繁荣，但底下藏着四个结构性瓶颈：
+
+1. **评判趋平** — 单一分数（0-10）区分度越来越差。一个改变量名的 commit 和一个重构 AST 工具的 commit，得分都是 7 分左右。agent 分不清"还行"和"真好"，优化方向模糊。
+2. **没有跨周期记忆** — `memory.jsonl` 存了每一轮"做了什么"，但没有提炼。71 号 cycle 犯的错，73 号还会再犯。agent 每一轮都是失忆状态。
+3. **只会小步优化** — exploitation 是唯一模式。agent 永远在已有结构里打磨——补测试、删死代码、合并重复逻辑——但永远不会说"这个架构不对劲，推了重来"。没有 exploration，就在局部最优附近打转。
+4. **改不了自己** — evaluator 的 prompt 和评估权重硬编码在 Python 文件里。agent 可以改任何代码，唯独改不了"评判自己的标准"。失去了最重要的自我修正能力。
+
+**承 — 四个模块，各破一个瓶颈**
+
+```
+瓶颈 1（评判趋平）      → MultiAxisEvaluator（5 维向量评估）
+瓶颈 2（无跨周期学习）  → ExperienceStore（结构化经验记忆）
+瓶颈 3（纯 exploitation）→ Exploration Mode（探索机制）
+瓶颈 4（无法自修改）    → EvalConfig 热重载 + MetaAgent（策略层）
+```
+
+<img src="/images/mermaid/harness-zh-10.svg" alt="V5 架构总览" style="max-width:100%;">
+
+**1. 多轴评估 — 5 维向量替代一个数字**
+
+旧（V4）：evaluator 输出 `"SCORE: 7.5"` —— 一个数字，区分度低。
+新（V5）：evaluator 输出 5 维向量 `[correctness, code_quality, arch_health, novelty, alignment]`，加权平均得最终分数。
+
+五个维度独立评分（0-10），两个评估视角（basic + diffusion）并行跑：
+
+| 维度 | 默认权重 | 衡量什么 |
+|---|---|---|
+| correctness（正确性） | 35% | 编译/测试通过，没有引入安全问题 |
+| code_quality（代码质量）| 25% | lint 干净，复杂度可控，命名清晰 |
+| arch_health（架构健康）| 15% | 耦合度、内聚度、模块边界 |
+| novelty（新颖度） | 10% | 与已有代码的差异度，是否尝试了新方向 |
+| alignment（策略一致性）| 15% | 是否符合当前 MetaAgent 设定的优化目标 |
+
+权重存在 `harness/config/eval_weights.json`，每次评估前从磁盘热加载。这意味着改权重文件→下次评估立刻用新权重，不用重启进程。
+
+**2. 结构化经验记忆 — 不只是"做了什么"，还有"学到了什么"**
+
+```
+旧（V4 memory.jsonl）:
+  {"cycle": 5, "score": 7.2, "proposal": "改了一堆东西..."}
+  → 流水账，没有提炼，没有检索，没有复用
+
+新（V5 ExperienceStore）:
+  Experience(
+    cycle=5,
+    eval_vector=[8,7,6,5,9],          # 多轴向量
+    action_summary="合并两个 AST 工具减少重复",
+    reflection="共享的 boilerplate 提取为 _ast_utils 是正确的……",  # LLM 的自我反思
+    abstraction="当多个工具共享超过 30% 代码时，提取公共模块到 core/",  # 提炼出可复用的模式
+    tags=["tool_merge", "dedup", "ast"],
+    was_reverted=false,
+  )
+```
+
+四个核心接口：
+- `record(exp)` — 每轮结束后记录经验
+- `query(["evaluator", "scoring"])` — 按标签检索相关历史
+- `compress(ratio)` — 合并相似经验，提炼更抽象的规则
+- `format_context(max_entries)` — 格式化给 LLM 和 MetaAgent 读
+
+**3. 探索机制 — 不只是打磨，还要冒险**
+
+```
+正常轮（exploitation，默认）:
+  权重: correctness 0.35, code_quality 0.25, arch 0.15, novelty 0.10, alignment 0.15
+  → 小步优化，稳妥为主
+
+探索轮（exploration，每 N 轮插入一次）:
+  权重: correctness 0.15, code_quality 0.10, arch 0.10, novelty 0.50, alignment 0.15
+  → 新颖度权重从 10% 提到 50%，鼓励大胆尝试
+  → 放松 gate（允许编译失败），范围限定在单一模块，防止炸毁全局
+  → 每 3 轮（可在 pipeline JSON 里配置 exploration_interval）插入一次
+```
+
+**4. 策略层 + 热重载 — agent 终于能改自己的评判标准了**
+
+```
+┌─────────────────────────────────────────────────────┐
+│ MetaAgent（每 5-10 轮运行一次，不写代码，只出策略）    │
+│                                                     │
+│ 输入:                                                │
+│   • ExperienceStore 里最近 20 条经验的格式化上下文      │
+│   • 各维度分数趋势（正确性在涨但新颖度在下滑？）        │
+│   • 当前评估权重                                      │
+│                                                     │
+│ 输出 (结构化的策略调整):                               │
+│   • focus_axis: "novelty"（接下来重点优化哪个维度）     │
+│   • adjust_weights: {"novelty": 0.3, ...}（调整权重）  │
+│   • exploration_frequency: 2（调整探索频率）            │
+│   • reasoning: "代码越来越规范但缺乏新方向，增加..."     │
+│                                                     │
+│ MetaAgent 的决策 → 写入 eval_weights.json → 下次评估   │
+│ 热加载新权重 → 不重启就生效                             │
+└─────────────────────────────────────────────────────┘
+```
+
+配合 `GetSelfConfigTool`——注册给 agent 的自感知工具——agent 可以查询"我的配置文件在哪"，然后自己修改 evaluator prompt 和权重。agent 第一次能改变评判自己的标准。
+
+**转 — 权重不是魔法，prompt 才是瓶颈**
+
+V5 落地后，两个发现让原有假设受到了挑战：
+
+第一，**改权重远不如改 prompt 有效**。把 novelty 从 10% 调到 50%，的确让 agent 更愿意尝试新方向，但如果 evaluator prompt 里没有清晰定义"什么叫好的新颖度"，agent 就会在随机改变量名和实质性重构之间打转。**权重量化了"多重要"，但 prompt 定义了"是什么"**。
+
+第二，**MetaAgent 自身也有决策质量问题**。它从 ExperienceStore 读经验、看趋势、出策略——但如果 ExperienceStore 里存的经验本身质量不高（前几个 cycle 的评估是不准的），MetaAgent 的决策就会偏。这是一个**冷启动问题**：没有好经验→策略不准→产出差经验→策略更不准。解法是在前几轮用保守默认权重跑出一批高质量经验，再启动 MetaAgent。
+
+**合 — V5 的意义不在于"又一个版本"**
+
+V5 之前，Harness 是一个**执行器**——它跑得很快，改得很好，但"往哪跑"和"怎么评判跑得好不好"是人设定的。V5 之后，它开始有了**方向感**——它记得跑过的路，知道哪些方向值得再试，能看出自己在原地打转，偶尔还会冒险走一条新路。
+
+但最终，**谁来定义"好"**——这个问题 V5 只是推远了一步，没有解决。MetaAgent 可以调整权重，但权重依附于人类设计的五个维度。哪天 agent 能自己提出第六个维度——那才是真正的转折点。
+
+**V5 新增文件**：
+
+| 文件 | 职责 | 替代了谁 |
+|---|---|---|
+| `harness/evaluation/multi_axis.py` | 5 维向量评估器 | dual_evaluator（向下兼容，仍可用） |
+| `harness/core/experience.py` | 结构化经验记忆 | memory.py（JSONL 流水账） |
+| `harness/pipeline/meta_agent.py` | 策略层：分析趋势，调整方向 | 无（全新能力） |
+| `harness/core/eval_config.py` | 热重载配置：prompt + 权重从磁盘读 | 无（替代硬编码 import） |
+| `harness/tools/self_config.py` | Agent 自感知工具 | 无（全新能力） |
 
 ---
 
@@ -395,18 +573,43 @@ PipelineConfig                     # 顶层配置
 ├── outer_rounds: 10               #   每个 chunk 跑几轮
 ├── patience: 5                    #   几轮没进步就早停
 ├── auto_push_interval: 1          #   每轮 push
-└── auto_tag_at_end: true          #   退出必打 tag
+├── auto_tag_at_end: true          #   退出必打 tag
+├── evaluation_engine: "multi_axis"# V5 评估引擎（"dual" 或 "multi_axis"）
+├── exploration_interval: 3        # V5 探索轮频率（0=禁用）
+├── meta_agent_interval: 5         # V5 策略层频率（0=禁用）
+└── eval_weights: {correctness:0.35,...} # V5 多轴权重
+
+EvalVector (V5)                    # 多轴评估向量
+├── correctness: float             #   正确性（0-10）
+├── code_quality: float            #   代码质量（0-10）
+├── arch_health: float             #   架构健康（0-10）
+├── novelty: float                 #   新颖度（0-10）
+└── alignment: float               #   策略一致性（0-10）
+
+Experience (V5)                    # 结构化经验条目
+├── eval_vector: [float]           #   多轴评估向量
+├── action_summary: str            #   做了什么
+├── reflection: str                #   LLM 的自我反思
+├── abstraction: str               #   提炼出的可复用模式
+├── tags: [str]                    #   可检索标签
+└── was_reverted: bool             #   是否被回滚
+
+MetaStrategy (V5)                  # MetaAgent 输出
+├── focus_axis: str                #   重点优化维度
+├── adjust_weights: dict           #   权重调整
+├── exploration_frequency: int     #   探索频率建议
+└── reasoning: str                 #   策略推理过程
 
 InnerResult                        # 单次尝试的结果
 ├── proposal: str                  #   LLM 的提案或改动
-├── dual_score                     #   双重评分
-│   ├── basic: (score, critique)   #     缺陷评估
-│   └── diffusion: (score, critique)#    波及效应
+├── eval_vector: EvalVector (V5)   #   多轴评估（V4 为 dual_score）
+│   ├── basic: (score, critique)   #     缺陷评估（V4 legacy）
+│   └── diffusion: (score, critique)#    波及效应（V4 legacy）
 └── tool_call_log: [dict]          #   工具调用记录
 
 PhaseResult                        # 阶段结果
 ├── synthesis: str                 #   合成后的最终方案
-├── best_score: float              #   最高分
+├── best_score: float              #   最高分（加权平均）
 └── inner_results: [InnerResult]   #   所有尝试
 ```
 
@@ -421,7 +624,12 @@ PhaseResult                        # 阶段结果
 | `harness/core/config.py` | 配置 | JSON → 配置对象,路径安全验证 |
 | `harness/pipeline/pipeline_loop.py` | 外层循环 | 轮次编排、push、tag、早停、关闭 |
 | `harness/pipeline/phase_runner.py` | 阶段执行 | 代码注入、内层轮次、评估、合成、hooks |
-| `harness/evaluation/dual_evaluator.py` | 质量把关 | 两个 LLM 并行打分,选最好的方案 |
+| `harness/evaluation/dual_evaluator.py` | 质量把关 | 两个 LLM 并行打分,选最好的方案（V4） |
+| `harness/evaluation/multi_axis.py` | **V5 多轴评估** | 5 维向量（correctness/code_quality/arch_health/novelty/alignment）替代单一分数 |
+| `harness/core/experience.py` | **V5 经验记忆** | 结构化经验存储：记录 + 反思 + 抽象 + 检索 |
+| `harness/pipeline/meta_agent.py` | **V5 策略层** | 每 N 轮分析趋势，调整评估权重和探索频率 |
+| `harness/core/eval_config.py` | **V5 热重载** | Evaluator prompt + 权重从磁盘热加载，改文件即生效 |
+| `harness/tools/self_config.py` | **V5 自感知** | 让 agent 查询自己的配置文件路径 |
 | `harness/tools/registry.py` | 工具分发 | 工具注册、参数校验、异常封装 |
 | `harness/tools/base.py` | 工具安全 | `_check_path` 路径边界检查 |
 | `harness/pipeline/hooks.py` | 验证 | 语法检查 + git commit（富信息） |
@@ -439,4 +647,4 @@ PhaseResult                        # 阶段结果
 
 ## 一段话总结
 
-> 把项目代码扔给 LLM,让它分析、提改进方案、用工具改代码。用另一个 LLM 调用评判改得好不好,选最好的方案 commit。多轮迭代,每轮都比上一轮基于更好的代码。因为 Python 模块加载后就固化在内存里,所以每 10 轮重启一次进程让改进生效。重启通过 git tag 触发 GitHub Actions 自动部署实现,形成无人值守的自改进循环。工具系统（30 个文件/搜索/执行工具）本质上只是给 LLM 戴的安全手套——只留一个 bash 也能跑,但更危险、更费 token。
+> 把项目代码扔给 LLM,让它分析、提改进方案、用工具改代码。用另一个 LLM 调用评判改得好不好,选最好的方案 commit。多轮迭代,每轮都比上一轮基于更好的代码。因为 Python 模块加载后就固化在内存里,所以每 10 轮重启一次进程让改进生效。重启通过 git tag 触发 GitHub Actions 自动部署实现,形成无人值守的自改进循环。V5 引入了多轴评估（5 维向量替代单一分数）、结构化经验记忆（不只记做了什么,还提炼"学到了什么"）、探索机制（偶尔冒险尝试新方向）和策略层（MetaAgent 定期分析趋势、调整评估权重和探索频率——agent 第一次能改变评判自己的标准）。工具系统（30 个文件/搜索/执行工具）本质上只是给 LLM 戴的安全手套——只留一个 bash 也能跑,但更危险、更费 token。
