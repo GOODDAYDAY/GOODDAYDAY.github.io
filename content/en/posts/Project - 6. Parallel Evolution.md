@@ -340,6 +340,10 @@ The first version's biggest advantage: **the codebase was small enough to fit en
 
 This was a brief golden age — the LLM could see the entire project at once, understand the big picture, and make systemic improvements. This is why the first version's output quality was quite good.
 
+But it didn't last long. As the codebase grew, the context window couldn't hold the entire project anymore. The LLM could only see fragments — fix one thing, forget another. More importantly, **the simple loop's structural flaw became clear**: every task went through the same plan → execute → evaluate cycle, regardless of size. Large features had no way to prioritize, small tweaks couldn't bypass the overhead. I needed a way to decompose work into phases, each with its own context and evaluation criteria.
+
+That's what drove the pipeline mode — Phase 2's fixed three-stage orchestration.
+
 <img src="/images/mermaid/evolution-en-10.svg" alt="First version complete data flow" style="max-width:100%;">
 
 **Figure 4.2 — First version data flow: from config to code commit**
@@ -581,6 +585,18 @@ The evaluator prompt evolved alongside the metrics system — from a simple "rat
 }
 ```
 New additions include TOOL GATE (prevents tool file inflation), BLOAT GATE (controls net line growth), and CONSOLIDATION BONUS (rewards merging over creating) — all rules hardened from repeated pain points in Phases 2 and 3.
+
+#### Results and Current State
+
+These components landed and the most visible change was **the evaluator scores started discriminating**. Previously everything clustered in the 5-7 range. Now bad proposals get 2-3 and good ones reach 8-9. The agent finally has a clear optimization signal — not "change things randomly and see what scores well" but "doing X gets penalized by TOOL GATE, doing Y earns CONSOLIDATION BONUS." Tool file count has dropped from a peak of 35 back to 30 after several rounds of consolidation — proof that TOOL GATE is working.
+
+But some problems are still open, or were at least clearly identified:
+
+- **Evaluator calibration is still manual**: the calibration benchmark framework is built, but there isn't enough data yet to truly calibrate the evaluator's score distribution
+- **No cross-session memory**: every pipeline run starts fresh — everything the agent learned last time is gone
+- **Still can't do addition**: metrics help the agent do better subtraction (more precise cleanup and optimization), but "add a new capability, design a new module" still requires a human to drive it
+
+In other words, metrics-driven iteration is higher quality now, but it hasn't changed **who decides what direction to go**. That might be the next problem for Harness — or it might be the inherent ceiling of "pure code self-improvement" as a goal.
 
 For reference, here's the capability distribution at cycle 67 — the metrics system aims to push all points toward the upper right:
 
