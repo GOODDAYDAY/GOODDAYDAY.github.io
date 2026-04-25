@@ -2,6 +2,7 @@
 date = '2026-04-25T12:00:00+08:00'
 draft = false
 title = '[Project] 6. 平行演化 — 两个独立 AI 项目的趋同进化之路'
+featuredImage = "/images/Project%20-%206%20-%20Parallel%20Evolution/cover.png"
 categories = ["Project"]
 tags = ["AI", "Claude Code", "Project", "Evolution", "Architecture"]
 +++

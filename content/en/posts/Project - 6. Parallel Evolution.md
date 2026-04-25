@@ -2,6 +2,7 @@
 date = '2026-04-25T12:00:00+08:00'
 draft = false
 title = '[Project] 6. Parallel Evolution — Two Independent AI Projects That Evolved the Same Way'
+featuredImage = "/images/Project%20-%206%20-%20Parallel%20Evolution/cover.png"
 categories = ["Project"]
 tags = ["AI", "Claude Code", "Project", "Evolution", "Architecture"]
 +++
