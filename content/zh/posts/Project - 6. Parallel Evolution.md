@@ -310,28 +310,6 @@ _MAX_DELAY: float = 60.0       # 最长等待 1 分钟
 ```
 每回合 LLM 调用 API → 拿到工具调用指令 → 执行 → 结果送回 LLM → 继续。等到超过 max_tool_turns 就停止，选出最优方案。
 
-初版的配置极其简单——只有模型、工作空间、最大迭代次数，没有阶段的概念：
-```python
-@dataclass
-class HarnessConfig:
-    model: str = "bedrock/claude-sonnet-4-6"
-    max_tokens: int = 8096
-    workspace: str = "."
-    allowed_paths: list[str] = field(default_factory=list)
-    max_iterations: int = 5   # 简单循环，跑完为止
-```
-对应的主循环就是 `plan → execute → evaluate` 三段：
-```python
-async def run(self, task: str) -> HarnessResult:
-    for i in range(1, self.config.max_iterations + 1):
-        plan = await self.planner.plan(task, context)        # 1. 计划
-        result = await self.executor.execute(plan, context)  # 2. 执行
-        verdict = await self.evaluator.evaluate(task,        # 3. 评判
-                                                plan, result)
-        if verdict.passed:
-            return HarnessResult(success=True, ...)
-        context += f"## Iteration {i} Feedback\n{verdict.reason}\n"
-```
 没有 pipeline JSON，没有 phase 概念，就是一个简单的 for 循环。
 
 #### 能装入全部代码的黄金时代
@@ -339,10 +317,6 @@ async def run(self, task: str) -> HarnessResult:
 初版最大的特点：**代码小，能全部装进 LLM 的 Context**。
 
 这是一个短暂的黄金状态——LLM 可以一次性看到整个项目，理解全局，做出系统性改进。这让第一版的输出质量相当不错。
-
-但这个状态没有持续多久。随着项目代码越写越多，Context 装不下整个项目了。LLM 只能看到代码片段，改了一个地方就忘了另一个地方。更重要的是，**简单循环的结构缺陷暴露了**：不管什么任务都走同一套 plan → execute → evaluate，大功能分不清优先级，小改动绕不过 overhead。我意识到需要一个机制来把任务拆成阶段，每个阶段有独立的上下文和评判标准。
-
-于是有了 pipeline 模式的雏形——Phase 2 的固定三阶段编排。
 
 <img src="/images/mermaid/evolution-zh-10.svg" alt="初版完整数据流" style="max-width:100%;">
 
@@ -382,39 +356,6 @@ class PhaseConfig:
     run_tests: bool = False        # 改完后要不要跑测试
 ```
 
-这是 R1/R2 实际使用的 pipeline 配置——三个阶段按 `index` 固定排序，每个阶段有独立的 prompt 和模式：
-```json
-{
-  "phases": [
-    {
-      "name": "bug_fix",
-      "index": 0,
-      "mode": "implement",
-      "system_prompt": "找到当前代码库中最严重的缺陷并修复。\n引用具体文件和函数。",
-      "syntax_check_patterns": ["src/**/*.py"]
-    },
-    {
-      "name": "new_tools_and_features",
-      "index": 1,
-      "mode": "implement",
-      "system_prompt": "添加新工具或功能模块。\n遵循现有模式：Tool ABC、async execute()、ToolResult。",
-      "syntax_check_patterns": ["src/**/*.py"],
-      "commit_on_success": true
-    },
-    {
-      "name": "quality_polish",
-      "index": 2,
-      "mode": "implement",
-      "system_prompt": "代码清理：删除死代码、合并重复逻辑、补充测试。",
-      "syntax_check_patterns": ["src/**/*.py"],
-      "commit_on_success": true
-    }
-  ]
-}
-```
-三个阶段严格执行 bug → features → polish 的顺序，不允许跳过或重新排序。
-
-这种固定编排的问题很快暴露：
 - **LLM 不知道整体目标**，只知道当前阶段的名字
 - **三个阶段的分工模糊**：`quality_polish` 和 `bug_fix` 的边界说不清
 - **代码越来越大**，装不进 Context，LLM 开始对着片段修改，缺乏全局视野
@@ -475,40 +416,6 @@ Tool usage: read_file=10, grep_search=9, glob_search=1
 ```
 agent 自己发现路径安全检查不够严格（跟随了符号链接），自己把测试从"跟随符号链接应该正常工作"改成了"应该拒绝符号链接"。没有人在前面告诉它要改什么——它自己读代码、自己发现的漏洞、自己修的。
 没有人在前面指挥它——它自己看的代码、自己做的判断。
-
-R3 同步演进了 pipeline 配置：从 3 个固定阶段扩展到 5 个，增加了 debate 模式的分析阶段，prompt 也更有针对性：
-```json
-{
-  "outer_rounds": 10,
-  "inner_rounds": 3,
-  "phases": [
-    {
-      "name": "security_audit",
-      "index": 0,
-      "mode": "debate",
-      "skip_cycle": 3,
-      "system_prompt": "安全审计：找出 top 3 安全漏洞。\n引用具体文件、函数和行号。",
-      "falsifiable_criterion": "每个发现必须引用具体函数名和文件路径。"
-    },
-    {
-      "name": "improvement_design",
-      "index": 1,
-      "mode": "debate",
-      "skip_cycle": 3,
-      "system_prompt": "架构评审：识别 top 3 改进点。\n引用具体的类和文件。",
-      "falsifiable_criterion": "每个改进必须引用具体类或文件。"
-    },
-    {
-      "name": "implementation",
-      "index": 2,
-      "mode": "implement",
-      "system_prompt": "实现改进。遵守现有模式。\n每轮聚焦一个改进。",
-      "syntax_check_patterns": ["src/**/*.py"]
-    }
-  ]
-}
-```
-最大变化是加了 `skip_cycle` 和 `falsifiable_criterion`——阶段不再每轮必跑，评判标准也有了明确的锚点。
 
 从 4 月 23 日的 cycle 记录可以看到自我编排的成熟：
 - 67 次 cycle，每次 agent 自己决定改哪里
@@ -574,29 +481,6 @@ _WRITE_TOOLS = {
 }
 ```
 每轮 cycle 结束后，系统会根据 agent 用了哪些工具、改了多少文件、测试覆盖率变化，生成结构化指标。有了这些，evaluator 不再凭空打分，agent 也能看到自己"做对了什么"。
-
-配套的 evaluator prompt 也从简单的"打分"进化成多维度评判——以服务器自改进配置为例，评判标准覆盖安全、膨胀控制、异步安全、合并奖励等多个维度：
-```json
-{
-  "dual_evaluator": {
-    "basic_system": "评估代码变更：\n1. 最关键缺陷（安全漏洞、竞态条件、数据泄露）\n2. BLOAT GATE：净增 >50 行且没有相应删除 → -3分\n3. TOOL GATE：新增工具文件且未合并/删除已有 → -5分\n4. ASYNC SAFETY：在 async 上下文引入阻塞 I/O → -2分\n5. CONSOLIDATION BONUS：合并两个工具 → +2分\n6. Score 0-10",
-    "diffusion_system": "二阶效应分析：\n- 改动是否破坏了另一种模式？\n- 是否增加了上下文窗口消耗？\n- 路径安全是否可绕过？\n- SIGNAL SAFETY：SIGINT 时事件循环是否会处于错误状态？\n- 是否留下孤立的 import 或死函数？\n\n强制找到至少一个负面二阶效应。\nScore 0-10"
-  }
-}
-```
-新增了 TOOL GATE（防止工具文件膨胀）、BLOAT GATE（控制净增行数）、CONSOLIDATION BONUS（鼓励合并而非新增）——这些都是在 Phase 2/3 时期反复踩坑后沉淀下来的规则。
-
-#### 效果与现状
-
-这些组件落地后，最明显的变化是 **evaluator 给出的分数开始有区分度了**。以前所有改动都集中在 5-7 分，现在差的提议能拿到 2-3 分，好的能到 8-9 分。这让 agent 有了明确的优化方向——不再是"随便改改看分数"，而是"这样做会被 TOOL GATE 扣分、那样做有 CONSOLIDATION BONUS"。tool 文件数也在多轮迭代后从高峰期的 35 个降到了 30 个，说明 TOOL GATE 确实抑制了膨胀。
-
-但也有一些问题没有解决，或者说刚被明确识别出来：
-
-- **评估器校准还靠手动**：calibration benchmark 框架搭好了，但还没有跑出足够的数据来真正校准 evaluator 的评分分布
-- **没有跨 session 记忆**：每次 pipeline 跑完，agent 学到的东西就丢了，下一次又是从零开始
-- **依然做不出加法**：指标驱动能帮 agent 做更好的减法（更精准的清理和优化），但"加一个新能力、设计一个新模块"还是得人来推动
-
-换句话说，指标驱动让迭代质量更高了，但还没有改变"谁来决定方向"这件事。这可能是 Harness 下一步需要解决的问题——也可能是它作为"纯粹代码自我改进"这个目标的固有边界。
 
 ### 阶段五——V5 结构化演进（2026-04-24）
 
