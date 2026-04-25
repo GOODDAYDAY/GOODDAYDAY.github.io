@@ -18,6 +18,25 @@ Several parallel threads have been evolving in my understanding of AI:
 - **Engineering**: From "let AI help me write code" to "let AI improve its own code" — the boundary keeps expanding
 - **Cognition**: The more I use it, the less it feels like a "tool" and more like a partner that needs continuous collaboration and mutual growth
 
+## Background
+
+### The Moment
+
+Before this year, I had been using AI to help with various things — honestly, just keeping up with the field, knowing a bit about everything. It was when OpenClaw took off that I realized what I had always wanted to do was finally here — or rather, someone had built the prototype.
+
+What I wanted was simple: **put project information, personal preferences, and shared conventions into a single base file, and have it automatically injected into the context every time I use AI**. I'd never been able to make this happen before — the barrier was too high, I couldn't push it through at work. When Claude Code introduced skills and commands, I realized: this is exactly it.
+
+### Claude Code's UX Leap
+
+The experience upgrade from Claude Code was undeniable:
+- Self-orchestration capabilities — it could do holistic analysis
+- Smarter context management
+- Sub-agent support made parallel tasks truly usable
+
+Everyone who used it agreed. And it became the foundation for everything that followed.
+
+With this foundation, I started bringing my ideas to life step by step. The first project was the Skills repository.
+
 ## Project One: The Skills Repository
 
 ### Phase 1 — The Manual Prompt Era
@@ -28,6 +47,8 @@ Before this, every AI interaction meant typing similar prompts by hand. The work
 3. Manually specify output format
 
 Repeating this every time was both stupid and tedious. This phase generated no documentation — there wasn't even an awareness of "tooling." I was just using.
+
+Once I realized the problem, I decided to codify these repetitive prompts. The first attempt was to write the entire workflow as a single monolithic skill.
 
 ### Phase 2 — The Monolithic `req` Is Born
 
@@ -200,6 +221,8 @@ Nevertheless, I strongly recommend everyone maintain their own set of skills:
 - GitHub: [GOODDAYDAY/my-skills](https://github.com/GOODDAYDAY/my-skills)
 - Detailed post: [Project 5. My Skills — Enterprise Development Workflows as Executable Claude Code Skills](https://gooddayday.github.io/en/2026/04/project-5.-my-skills/)
 
+While Skills was evolving, I was actually working on another project on the side — **Harness-Everything**. Its goal was completely different: Skills was about "how AI helps me write code," while Harness was about "can AI improve its own code." Two independent projects, running in parallel without interfering with each other. Until one day I looked back and realized they had traced strikingly similar paths.
+
 ## Project Two: Harness-Everything
 
 - GitHub: [GOODDAYDAY/Harness-Everything](https://github.com/GOODDAYDAY/Harness-Everything)
@@ -278,6 +301,8 @@ The fixed orchestration's problems emerged quickly:
 
 The most emblematic problem: the LLM refactored a file in R2, but R3's LLM didn't know about it, refactored the same logic differently, and reverted the improvement.
 
+The root cause was that fixed orchestration was too rigid. I realized that instead of telling the LLM "do bug_fix first, then polish," I should let it read the code itself and decide what to improve. That's what drove the R3 architecture refactoring.
+
 ### Phase 3 — Self-Orchestration (R3 through cycle 67)
 
 #### Architecture Refactoring
@@ -323,7 +348,7 @@ Two core problems:
 
 ### Phase 4 — Metrics-Driven
 
-Addressing the two core problems from 4.4.4, the first batch of metrics-driven components has been landed:
+Addressing the two core problems just mentioned, the first batch of metrics-driven components has been landed:
 
 #### Components Built
 
@@ -357,6 +382,8 @@ For reference, here's the capability distribution at cycle 67 — the metrics sy
 <img src="/images/mermaid/evolution-en-16.svg" alt="Harness four-version evolution timeline" style="max-width:100%;">
 
 **Figure 4.8 — Harness four-version evolution timeline**
+
+Harness had gone through four phases, Skills had gone through five. On the surface, they look like two unrelated technical stories — nothing special. But when I laid the timelines side by side, I found something I never expected.
 
 ## The Convergence
 
