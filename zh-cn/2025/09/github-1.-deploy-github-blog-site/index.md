@@ -1,0 +1,413 @@
+# [Github] 1. 部署 GitHub 博客站点
+
+
+## 简介
+
+- GitHub Pages 是一个静态网站托管服务，它直接从 GitHub 仓库中获取 HTML、CSS 和 JavaScript 文件，可选地通过构建过程运行这些文件，然后发布网站。
+
+## 准备工作
+
+### 创建仓库
+
+- 创建一个名为 `your_github_username.github.io` 的仓库，其中 `your_github_username` 是你的 GitHub 用户名。例如，如果你的 GitHub 用户名是 `octocat`，那么仓库名应该是 `octocat.github.io`。
+
+### 安装 Hugo
+
+- 从 [Hugo 官方发布页面](https://gohugo.io/installation/) 下载最新版本的 Hugo
+
+## 创建博客站点
+
+### [初始化 Hugo 站点](https://gohugo.io/getting-started/quick-start/)
+
+```bash
+# 创建目录
+mkdir your_github_username.github.io
+# 进入目录
+cd your_github_username.github.io
+# 初始化站点
+hugo new site .
+# git 初始化，确保这是一个 git 仓库
+git init
+```
+
+### [添加主题](https://themes.gohugo.io/)
+
+```bash
+# 添加主题，这里我们使用 LoveIt 主题
+git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
+# 现在 git 在 main 分支上，这个分支不稳定，我们需要切换到最新的稳定版本
+cd themes/LoveIt
+git checkout v0.3.0
+cd ../..
+# 现在，你的目录中应该有一个 .gitmodules 文件。如果没有，你需要先运行 `git init`
+# 复制示例站点配置文件到根目录
+cp themes/LoveIt/exampleSite/hugo.toml .
+```
+
+### 修改配置文件
+
+- 修改配置文件 hugo.toml
+
+#### 基础 URL
+
+```toml
+baseURL = "https://gooddayday.github.io"
+```
+
+#### 主题目录
+
+```toml
+# themes directory
+# 主题目录
+themesDir = "./themes"
+```
+
+#### 网站标题
+
+```toml
+# website title
+# 网站标题
+title = "GoodyHao's Blog"
+```
+
+#### 网站图片
+
+```toml
+# website images for Open Graph and Twitter Cards
+# 网站图片, 用于 Open Graph 和 Twitter Cards
+images = ["/logo.jpg"]
+```
+
+#### 网站图标
+
+- 将图标文件放在 `static` 目录中
+
+#### Git 仓库
+
+- 修改 gitRepo 为你的公共 git 仓库 URL
+
+```bash
+# public git repo url only then enableGitInfo is true
+# 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效
+gitRepo = "https://github.com/GOODDAYDAY/GOODDAYDAY.github.io"
+```
+
+## GitHub 部署
+
+### 创建工作流文件
+
+- 创建文件 `.github/workflows/deploy.yaml`，并添加以下内容：
+
+```yaml
+name: Deploy Hugo to GitHub Pages
+on:
+  push:  # 触发条件：推送代码到master分支
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # 使用Ubuntu环境
+    steps:
+      # 1. 检出仓库代码（递归拉取主题submodule）
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # 2. 安装Hugo（使用extended版本，支持SASS）
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'  # 或指定版本（如'0.147.2'）
+          extended: true
+
+      # 3. 缓存依赖（加快后续构建速度）
+      - uses: actions/cache@v3
+        with:
+          path: |
+            resources/_gen
+            public
+          key: ${{ runner.os }}-hugo-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-hugo-
+
+      # 4. 构建Hugo站点（开启压缩）
+      - name: Build Hugo site
+        run: hugo --minify
+
+      # 5. 部署到GitHub Pages（自动推送public目录到gh-pages分支）
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN  }}  # GitHub自动提供的Token（无需手动创建）
+          publish_dir: ./public  # 指向Hugo生成的静态文件目录
+          force_orphan: true  # 强制创建新提交（避免分支历史混乱）
+```
+
+- GitHub 仓库设置 -> Pages -> Source -> 选择 `gh-pages` 分支和 `/ (root)` 文件夹 -> 保存
+  - 如果 gh-pages 分支不存在，需要先将代码推送到 GitHub
+
+![1. github-page-setting.png](/images/1.%20deploy%20github%20blog%20site.md/1.%20github-page-setting.png)
+
+- 需要设置 token
+
+![2. github-generate-token-setting-1.png](/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-1.png)
+
+- 生成具有 `repo` 和 `workflow` 权限的新 token
+
+![2. github-generate-token-setting-2.png](/images/1.%20deploy%20github%20blog%20site.md/2.%20github-generate-token-setting-2.png)
+
+- 将 token 添加到 GitHub secrets，名称为 `TOKEN_GITHUB`
+
+![3. github-token-setting.png](/images/1.%20deploy%20github%20blog%20site.md/3.%20github-token-setting.png)
+
+### 推送代码到 GitHub
+
+```bash
+# 添加所有文件
+git add .
+# 提交
+git commit -m "first commit"
+# 推送到 GitHub
+git push -u origin master
+```
+
+### 检查工作流
+
+- 在 GitHub Actions 中检查工作流
+
+![4. github-workflow-check.png](/images/1.%20deploy%20github%20blog%20site.md/4.%20github-workflow-check.png)
+
+## 访问博客站点
+
+- 使用 `https://your_github_username.github.io` 访问博客站点，例如，`https://gooddayday.github.io`
+
+## 其他
+
+### 添加新文章
+
+```bash
+# 创建新文章
+hugo new posts/first-post.md
+# 编辑文章
+vim content/posts/first-post.md
+# 编辑后，需要将文章设置为已发布
+# 设置 draft = false
+# 然后提交并推送到 GitHub
+git add .
+git commit -m "add first post"
+git push
+```
+
+- 如果你想在文章中添加图片，需要将图片放在 `static` 目录中，例如 `static/images/first-post-image.png`，然后你可以在文章中使用 `/images/first-post-image.png` 访问图片。
+
+### gitignore
+
+- 在根目录中创建 `.gitignore` 文件，并添加以下内容：
+
+```aiignore
+public/*
+```
+
+- 我们不需要将 `public` 目录推送到 GitHub，因为它会在工作流中由 Hugo 生成。
+
+### 标签和分类生成
+
+- 标签和分类会由 Hugo 自动生成，无需手动创建。
+- 但如果没有显示下面的 index.html，你需要添加模板。
+
+![5. github-display-indexhtml.png](/images/1.%20deploy%20github%20blog%20site.md/5.%20github-display-indexhtml.png)
+
+- 只需将 `themes/LoveIt/layouts/taxonomy/list.html` 复制到不同路径，并重命名为 `layouts/taxonomy/tag.html` 和 `layouts/taxonomy/category.html`
+
+![6. github-taxonomy-tempaltes.png](/images/1.%20deploy%20github%20blog%20site.md/6.%20github-taxonomy-tempaltes.png)
+
+- 然后，运行 Hugo 服务器检查结果是否有像下图一样的 index.html：
+
+![5. github-display-indexhtml.png](/images/1.%20deploy%20github%20blog%20site.md/5.%20github-display-indexhtml.png)
+
+### 使用 giscus 设置评论系统
+
+- 默认情况下，LoveIt 主题使用 Valine 评论系统，但我们推荐使用基于 GitHub Discussions 的 Giscus。Giscus 是免费的、稳定的，并将评论数据存储在你自己的 GitHub 仓库中。
+
+#### 禁用其他评论系统
+
+- 首先，确保在 `hugo.toml` 中禁用其他评论系统：
+
+```toml
+# 禁用 Valine
+[params.page.comment.valine]
+enable = false
+
+# 禁用 Disqus
+[params.page.comment.disqus]
+enable = false
+
+# 禁用 Gitalk
+[params.page.comment.gitalk]
+enable = false
+```
+
+#### 启用 GitHub Discussions
+
+- 转到你的 GitHub 仓库设置：`https://github.com/your-username/your-username.github.io/settings`
+- 导航到 **Features** 部分
+- 勾选 **Discussions** 复选框以启用它
+
+![7. github-setting-discussions.png](/images/1.%20deploy%20github%20blog%20site.md/7.%20github-setting-discussions.png)
+
+#### 配置 giscus
+
+- 访问 [giscus.app](https://giscus.app/) 生成配置
+- 填写仓库字段：`your-username/your-username.github.io`
+- 点击 `The giscus app is installed, otherwise visitors will not be able to comment and react.` 并将 giscus 安装到你的仓库。
+
+![8. github-giscus-homepage.png](/images/1.%20deploy%20github%20blog%20site.md/8.%20github-giscus-homepage.png)
+
+#### 更新 hugo.toml
+
+- 将 giscus 配置添加到你的 `hugo.toml`：
+
+```toml
+[params.page.comment.giscus]
+enable = true
+repo = "your-username/your-username.github.io"
+repoId = "your-repo-id-from-giscus"
+category = "General"  # 或你选择的分类
+categoryId = "your-category-id-from-giscus"
+lang = ""  # 空值表示自动检测
+mapping = "pathname"
+reactionsEnabled = "1"
+emitMetadata = "0"
+inputPosition = "bottom"
+lazyLoading = false
+lightTheme = "light"
+darkTheme = "dark"
+```
+
+- 像 `repoId` 和 `categoryId` 这样的数据可以在你之前生成的 giscus 配置中找到。
+
+![9. github-giscus-output-script.png](/images/1.%20deploy%20github%20blog%20site.md/9.%20github-giscus-output-script.png)
+
+### 语言切换设置
+
+- 随着 AI 的发展，将博客内容翻译成不同语言变得容易。这里我们以英语和中文为例。
+- 首先，我们需要在 `content` 目录中创建两个目录：`en` 和 `zh`，然后将对应语言的内容放在各自的目录中。
+
+![10. github-multi-language-display.png](/images/1.%20deploy%20github%20blog%20site.md/10.%20github-multi-language-display.png)
+
+- 不同语言文件的名称应该相同，例如，`content/en/posts/1.deploy-github-blog-site.md` 和 `content/zh/posts/1.deploy-github-blog-site.md`
+  - 如果不一样，Hugo 会将它们视为不同的文章，并在不同的语言列表中显示它们。
+
+- 然后，我们需要修改 `hugo.toml` 文件以启用多语言支持：
+
+```toml
+# determines default content language ["en", "zh-cn", "fr", "pl", ...]
+# 设置默认的语言 ["en", "zh-cn", "fr", "pl", ...]
+defaultContentLanguage = "en"
+# whether to include default language in URL path
+# 是否在URL路径中包含默认语言 (设为true让所有语言都有前缀，设为false让默认语言无前缀)
+defaultContentLanguageInSubdir = true
+
+....
+
+# 是否包括中日韩文字
+hasCJKLanguage = false
+hasCJKLanguage = true
+
+...
+
+# Multilingual
+# 多语言
+[languages]
+[languages.en]
+weight = 1
+languageCode = "en"
+languageName = "English"
+hasCJKLanguage = false
+copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+contentDir = "content"
+contentDir = "content/en"
+
+...
+
+[languages.zh-cn]
+weight = 2
+languageCode = "zh-CN"
+languageName = "简体中文"
+hasCJKLanguage = true
+copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+contentDir = "content/zh"
+```
+
+### 语言切换显示自定义
+
+- 默认情况下，语言切换按钮显示在网站的右上角。如果你想切换语言，需要点击两次，人们可能不会注意到还有另一种语言。
+- 所以，对我来说，我想在标题菜单中显示语言切换按钮，这样人们可以轻松找到它并切换语言。
+- 要实现这一点，我们需要将 `themes/LoveIt/layouts/partials/header.html` 文件复制到 `layouts/partials/header.html`。
+- 然后，我们需要修改 `layouts/partials/header.html` 文件，在标题菜单中添加语言切换按钮。
+
+- 修改前：
+
+```html
+    {{- if hugo.IsMultilingual -}}
+    <a href="javascript:void(0);" class="menu-item language" title="{{ T "selectLanguage" }}">
+        <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+        <select class="language-select" id="language-select-desktop" onchange="location = this.value;">
+            {{- if eq .Kind "404" -}}
+                {{- /* https://github.com/dillonzq/LoveIt/issues/378 */ -}}
+                {{- range .Sites -}}
+                    {{- $link := printf "%v/404.html" .LanguagePrefix -}}
+                    <option value="{{ $link }}"{{ if eq . $.Site }} selected{{ end }}>
+                        {{- .Language.LanguageName -}}
+                    </option>
+                {{- end -}}
+            {{- else -}}
+                {{- range .AllTranslations -}}
+                    <option value="{{ .RelPermalink }}"{{ if eq .Lang $.Lang }} selected{{ end }}>
+                        {{- .Language.LanguageName -}}
+                    </option>
+                {{- end -}}
+            {{- end -}}
+        </select>
+    </a>
+{{- end -}}
+```
+
+- 修改后：
+
+```html
+{{- /* 直接切换语言按钮 */ -}}
+{{- if hugo.IsMultilingual -}}
+    {{- if eq .Kind "404" -}}
+        {{- /* https://github.com/dillonzq/LoveIt/issues/378 */ -}}
+        {{- range .Sites -}}
+            {{- if ne . $.Site -}}
+                <a class="menu-item" href="{{ printf "%v/404.html" .LanguagePrefix }}" title="{{ .Language.LanguageName }}">
+                    {{- if eq .Language.LanguageCode "zh-CN" -}}
+                        中文
+                    {{- else -}}
+                        English
+                    {{- end -}}
+                </a>
+            {{- end -}}
+        {{- end -}}
+    {{- else -}}
+        {{- range .AllTranslations -}}
+            {{- if ne .Lang $.Lang -}}
+                <a class="menu-item" href="{{ .RelPermalink }}" title="{{ .Language.LanguageName }}">
+                    {{- if eq .Language.LanguageCode "zh-CN" -}}
+                        中文
+                    {{- else -}}
+                        English
+                    {{- end -}}
+                </a>
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+```
+
+- 结果显示如下：
+
+![11. github-language-switch-display.gif](/images/1.%20deploy%20github%20blog%20site.md/11.%20github-language-switch-display.gif)
+

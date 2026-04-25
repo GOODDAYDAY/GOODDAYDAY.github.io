@@ -1,0 +1,44 @@
+@startuml 08-multi-region
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Correct Multi-Region MySQL Architecture
+
+package "Singapore Region" as sg #LightGreen {
+    package "MGR Cluster" as sg_mgr {
+        database "Primary" as sg_p #Gold
+        database "Secondary" as sg_s1 #LightYellow
+        database "Secondary" as sg_s2 #LightYellow
+    }
+    rectangle "SG Users" as sg_users #LightBlue
+    sg_users --> sg_p : Read/Write
+    note bottom of sg_mgr
+      AZ latency < 2ms
+      Strong consistency
+    end note
+}
+
+package "New York Region" as ny #LightCoral {
+    package "MGR Cluster" as ny_mgr {
+        database "Primary" as ny_p #Gold
+        database "Secondary" as ny_s1 #LightYellow
+        database "Secondary" as ny_s2 #LightYellow
+    }
+    rectangle "NY Users" as ny_users #LightBlue
+    ny_users --> ny_p : Read/Write
+}
+
+sg_p -[#blue,dashed]-> ny_p : Async Replication\n(~200ms delay)
+ny_p -[#blue,dashed]-> sg_p : Async Replication
+
+note bottom
+  **Architecture Principle:**
+  - MGR within single region (low latency)
+  - Async replication across regions
+  - Accept eventual consistency for cross-region
+  - Route users to nearest region
+end note
+
+@enduml

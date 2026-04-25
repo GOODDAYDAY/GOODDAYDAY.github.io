@@ -1,0 +1,71 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam rectangle {
+    RoundCorner 10
+}
+
+skinparam card {
+    RoundCorner 5
+}
+
+title Lua Scripts: Cross-Slot Problem & Hash Tag Solution
+
+package "Solution: Use Hash Tag" as solution #E8F5E9 {
+
+    card "**Lua Script with Hash Tag**\n----\nEVAL script 2\n~{user:1001~}:profile\n~{user:1001~}:order" as lua2 #FFF9C4
+
+    rectangle "Cluster Node B\n(Slots 5461-10922)" as nodeB2 #C8E6C9 {
+        card "~{user:1001~}:profile\nslot = 5474" as key3 #A5D6A7
+        card "~{user:1001~}:order\nslot = 5474" as key4 #A5D6A7
+    }
+
+    lua2 --> key3 : Success!
+    lua2 --> key4 : Same slot
+}
+
+package "Problem: Keys in Different Slots" as problem #FFEBEE {
+
+    card "**Lua Script**\n----\nEVAL script 2\nuser:1001 order:5001" as lua1 #FFF9C4
+
+    rectangle "Cluster Node A\n(Slots 0-5460)" as nodeA #E3F2FD {
+        card "user:1001\nslot = 5474" as key1 #BBDEFB
+    }
+
+    rectangle "Cluster Node B\n(Slots 5461-10922)" as nodeB #FFF3E0 {
+        card "order:5001\nslot = 8829" as key2 #FFE0B2
+    }
+
+    lua1 -[#E53935,dashed]-> key1 : CROSSSLOT
+    lua1 -[#E53935,dashed]-> key2 : Error!
+}
+
+rectangle "Redis Cluster" as cluster #F3E5F5 {
+    together {
+        database "Master A\nSlots 0-5460" as masterA #FFCDD2
+        database "Master B\nSlots 5461-10922" as masterB #FFCDD2
+        database "Master C\nSlots 10923-16383" as masterC #FFCDD2
+    }
+
+    together {
+        database "Slave A1" as slaveA #C8E6C9
+        database "Slave B1" as slaveB #C8E6C9
+        database "Slave C1" as slaveC #C8E6C9
+    }
+}
+
+key3 --> masterB : Located in Slot 5474
+key4 --> masterB : Located in Slot 8829
+key1 --> masterB : Located in Slot 5474
+key2 --> masterC : Located in Slot 8829
+
+masterA -down-> slaveA : Replicate
+masterB -down-> slaveB : Replicate
+masterC -down-> slaveC : Replicate
+
+masterA <-right-> masterB : Gossip
+masterB <-right-> masterC : Gossip
+@enduml

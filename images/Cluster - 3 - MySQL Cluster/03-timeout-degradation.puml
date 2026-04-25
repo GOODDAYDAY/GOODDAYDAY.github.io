@@ -1,0 +1,69 @@
+@startuml 03-timeout-degradation
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Semi-Sync Timeout and Degradation
+
+participant "Client" as client
+participant "Master" as master
+participant "Slave" as slave
+participant "                    " as spacer
+
+== Normal Semi-Sync ==
+
+client -> master : Write Transaction
+master -> master : Write to Binlog
+master -> slave : Send Binlog
+slave --> master : ACK received
+master -> master : Commit to InnoDB
+master --> client : Return Success
+
+== Slave Dies - Timeout Scenario ==
+
+client -> master : Write Transaction
+master -> master : Write to Binlog
+master ->x slave : Send Binlog (Failed)
+
+note right of slave #Orange
+  Slave unreachable:
+  - Network broken
+  - Slave crashed
+  - Disk failure
+end note
+
+master -> master : Waiting for ACK...
+
+note right of master
+  rpl_semi_sync_master_timeout
+  (default: 10 seconds)
+end note
+
+master -> master : Timeout reached (10s)
+master -> master : **Degrade to Async Mode**
+master -> master : Commit locally
+master --> client : Return Success
+
+note over master #Pink
+  **Unprotected Period**
+  All subsequent transactions
+  commit without Slave ACK
+end note
+
+== Slave Recovers ==
+
+slave -> master : IO Thread Reconnects
+master -> master : Detect Rpl_semi_sync_master_clients = 1
+master -> master : Switch Rpl_semi_sync_master_status = ON
+slave -> master : Request Binlog (from last position)
+master -> slave : Send accumulated backlog
+
+note over master, slave #LightGreen
+  **Protection Resumes**
+  Next transaction waits for Slave ACK
+end note
+
+@enduml

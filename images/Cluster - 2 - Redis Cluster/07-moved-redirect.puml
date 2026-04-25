@@ -1,0 +1,31 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title MOVED Redirect - Permanent Redirection
+
+actor Client as client
+participant "Node A\n(Wrong Node)" as nodeA #FFCDD2
+participant "Node B\n(Correct Node)" as nodeB #C8E6C9
+
+client -> nodeA : GET user:1001\n(thinks slot 9999 is A)
+nodeA --> client : <color:red>MOVED 9999 192.168.1.2:6379</color>
+
+note right of client
+  <b>Client updates local cache:</b>
+  Slot 9999 = 192.168.1.2
+  (Permanent update)
+end note
+
+client -> nodeB : GET user:1001
+nodeB --> client : "John Doe"
+
+note over client, nodeB
+  Next request for slot 9999
+  goes directly to Node B
+end note
+
+@enduml

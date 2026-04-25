@@ -1,0 +1,26 @@
+@startuml 01-single-node
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Single Node MySQL Architecture
+
+rectangle "Application" as app #LightBlue
+database "MySQL\n(Single Instance)" as mysql #LightGreen {
+    storage "InnoDB" as innodb
+    storage "Binlog" as binlog
+}
+storage "Disk" as disk #LightGray
+
+app --> mysql : Read/Write
+mysql --> disk : Persist
+
+note right of mysql
+  **Problems:**
+  - Single Point of Failure
+  - Limited by single disk
+  - No horizontal scaling
+end note
+
+@enduml

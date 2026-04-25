@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title min-replicas-to-write - Consistency Protection
+
+actor Client as client
+participant "Master" as master #FFCDD2
+participant "Slaves\n(disconnected)" as slaves #E0E0E0
+
+note over master
+  <b>Config:</b>
+  min-replicas-to-write 1
+  min-replicas-max-lag 10
+end note
+
+client -> master : SET x 100
+
+master -> master : Check: Any connected slave\nwith lag < 10 seconds?
+
+note right of slaves #FFEBEE
+  All slaves disconnected
+  or lagging > 10 seconds
+end note
+
+master --> client : <color:red>NOREPLICAS</color>\nWrite REJECTED
+
+note over client, slaves #FFFDE7
+  <b>Trade-off:</b>
+  Better consistency (no orphan writes)
+  <b>but</b> sacrifices availability
+end note
+
+@enduml

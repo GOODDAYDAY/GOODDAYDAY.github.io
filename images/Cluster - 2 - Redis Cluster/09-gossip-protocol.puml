@@ -1,0 +1,34 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Gossip Protocol - Decentralized Communication
+
+rectangle "Node A" as nodeA #FFCDD2
+rectangle "Node B" as nodeB #C8E6C9
+rectangle "Node C" as nodeC #BBDEFB
+rectangle "Node D" as nodeD #FFF9C4
+
+nodeA <-right-> nodeB : PING/PONG
+nodeB <-right-> nodeC : PING/PONG
+nodeC <-down-> nodeD : PING/PONG
+nodeD <-left-> nodeA : PING/PONG
+nodeA <-down-> nodeC : PING/PONG
+nodeB <-down-> nodeD : PING/PONG
+
+note bottom of nodeA
+  <b>Each PING/PONG contains:</b>
+  - My Slots (2KB bitmap)
+  - My ConfigEpoch
+  - Gossip about 10% of other nodes
+end note
+
+note top of nodeC
+  <b>No central coordinator!</b>
+  Nodes learn cluster state
+  through periodic gossip
+end note
+
+@enduml

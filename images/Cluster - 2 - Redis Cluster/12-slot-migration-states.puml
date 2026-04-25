@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Slot Migration State Machine
+
+rectangle "Node A (Source)" as nodeA #FFCDD2 {
+    rectangle "Slot X Status:\n<b>MIGRATING</b>\nto Node B" as migrating
+}
+
+rectangle "Node B (Target)" as nodeB #C8E6C9 {
+    rectangle "Slot X Status:\n<b>IMPORTING</b>\nfrom Node A" as importing
+}
+
+migrating -right-> importing : Keys move\none by one
+
+note bottom of nodeA
+  <b>MIGRATING behavior:</b>
+  - Key exists locally: serve normally
+  - Key not found: ASK redirect to B
+end note
+
+note bottom of nodeB
+  <b>IMPORTING behavior:</b>
+  - Accept ASKING commands
+  - Reject normal commands for this slot
+end note
+
+rectangle "Migration Complete" as done #E8F5E9 {
+    rectangle "Node B owns Slot X\nconfigEpoch++\nBroadcast to all" as final
+}
+
+importing -down-> done : All keys\nmigrated
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml 03-semi-sync
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+title Semi-Synchronous Replication
+
+participant "Client" as client
+participant "Master" as master
+participant "Slave 1" as slave1
+participant "Slave 2" as slave2
+
+client -> master : BEGIN; INSERT...; COMMIT;
+activate master
+
+master -> master : Write to Binlog
+master -> slave1 : Send Binlog
+master -> slave2 : Send Binlog
+
+slave1 -> slave1 : Write to Relay Log
+slave1 --> master : ACK
+
+note over master
+  Wait for **at least 1** ACK
+  before returning to client
+end note
+
+master --> client : OK (Commit Success)
+deactivate master
+
+slave2 -> slave2 : Write to Relay Log
+slave2 --> master : ACK (late, doesn't matter)
+
+note bottom
+  **Degradation Risk:**
+  If no ACK received within timeout,
+  falls back to async replication
+end note
+
+@enduml

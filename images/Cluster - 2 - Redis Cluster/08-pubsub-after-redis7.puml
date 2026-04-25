@@ -1,0 +1,60 @@
+@startuml 08-pubsub-after-redis7-Sharded Pub Sub
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam actor {
+    BackgroundColor #E3F2FD
+    BorderColor #1976D2
+}
+
+skinparam rectangle {
+    RoundCorner 10
+}
+
+title After Redis 7.0: Sharded Pub/Sub (Precision Mailbox)
+
+' === Clients (Smart Clients!) ===
+actor "Publisher Client" as pubClient #FFECB3
+actor "Subscriber Client 1" as subClient1 #C8E6C9
+actor "Subscriber Client 2" as subClient2 #C8E6C9
+
+note left of pubClient #FFF9C4
+  **Smart Client**
+  Calculates: CRC16("news") % 16384
+  = Slot 5234 -> Node A
+  Connects directly to Node A
+end note
+
+' === Cluster ===
+package "Redis Cluster" as cluster {
+    rectangle "Node A\nSlots 0-5460\n**owns Channel: news**" as nodeA #C8E6C9
+    rectangle "Node B\nSlots 5461-10922" as nodeB #ECEFF1
+    rectangle "Node C\nSlots 10923-16383" as nodeC #ECEFF1
+}
+
+' === All clients connect to the SAME node (owner of channel) ===
+pubClient --> nodeA : 1. SPUBLISH news "hello"
+subClient1 --> nodeA : SSUBSCRIBE news
+subClient2 --> nodeA : SSUBSCRIBE news
+
+' === Local delivery only ===
+nodeA --> subClient1 : 2. deliver locally
+nodeA --> subClient2 : 2. deliver locally
+
+note bottom of cluster #E8F5E9
+  **Benefit: O(1) messages**
+  Channel "news" is a Key with Slot!
+  All Pub/Sub happens on ONE node
+
+  100 nodes = still just 1 node involved
+end note
+
+note right of nodeB #ECEFF1
+  Node B & C are
+  NOT involved at all!
+  No broadcast needed
+end note
+
+@enduml

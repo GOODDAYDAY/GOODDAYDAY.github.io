@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 13
+
+title Redis Cluster Design Philosophy
+
+rectangle "Design Choices" as choices #E3F2FD {
+
+    rectangle "Chose: Decentralized (Gossip)" as g1 #C8E6C9
+    rectangle "Over: Centralized (ZooKeeper)" as g1b #FFCDD2
+
+    rectangle "Chose: Availability (AP)" as g2 #C8E6C9
+    rectangle "Over: Consistency (CP)" as g2b #FFCDD2
+
+    rectangle "Chose: Async Replication" as g3 #C8E6C9
+    rectangle "Over: Sync Replication" as g3b #FFCDD2
+
+    rectangle "Chose: Fixed Slots (16384)" as g4 #C8E6C9
+    rectangle "Over: Consistent Hashing" as g4b #FFCDD2
+}
+
+g1 -right-> g1b
+g2 -right-> g2b
+g3 -right-> g3b
+g4 -right-> g4b
+
+rectangle "Perfect For" as good #E8F5E9 {
+    rectangle "- High-throughput caching\n- Session storage\n- Real-time analytics\n- Leaderboards" as goodUse
+}
+
+rectangle "Not Ideal For" as bad #FFEBEE {
+    rectangle "- Financial transactions\n- Inventory management\n- Data loss unacceptable" as badUse
+}
+
+choices -down-> good
+choices -down-> bad
+
+@enduml

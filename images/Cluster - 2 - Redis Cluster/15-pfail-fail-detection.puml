@@ -1,0 +1,43 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title PFAIL vs FAIL - Two-Phase Failure Detection
+
+participant "Node A\n(Failing)" as nodeA #FFCDD2
+participant "Node B" as nodeB #C8E6C9
+participant "Node C" as nodeC #BBDEFB
+participant "Node D" as nodeD #FFF9C4
+
+nodeA ->x nodeB : No response
+note right of nodeB #FFFDE7
+  After cluster-node-timeout
+  (default 15s)
+end note
+
+nodeB -> nodeB : Mark A as <b>PFAIL</b>\n"I think A is dead"
+
+nodeB -> nodeC : Gossip: "A is PFAIL"
+nodeB -> nodeD : Gossip: "A is PFAIL"
+
+nodeC -> nodeC : Check: "Did I also\nmark A as PFAIL?"
+nodeD -> nodeD : Check: "Did I also\nmark A as PFAIL?"
+
+note over nodeB, nodeD #E8F5E9
+  <b>Majority of masters agree A is PFAIL</b>
+end note
+
+nodeB -> nodeB : Mark A as <b>FAIL</b>\n"A confirmed dead"
+
+nodeB -> nodeC : Broadcast: <color:red>FAIL A</color>
+nodeB -> nodeD : Broadcast: <color:red>FAIL A</color>
+
+note over nodeA, nodeD
+  FAIL message propagates immediately
+  to all nodes (not through gossip)
+end note
+
+@enduml

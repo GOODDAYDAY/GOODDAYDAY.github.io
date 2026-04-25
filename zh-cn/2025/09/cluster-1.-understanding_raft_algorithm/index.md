@@ -1,0 +1,248 @@
+# [Cluster] 1. 浅谈RAFT算法：从单节点到分布式共识的完整演进
+
+
+## 引言
+
+- RAFT（Raft Consensus Algorithm）是一种分布式共识算法，旨在解决分布式系统中多个节点对数据状态达成一致的问题。
+- 相比于著名的Paxos算法，RAFT的设计理念是"可理解性"（understandability），通过清晰的角色划分和简洁的状态转换，让开发者更容易理解和实现。
+- 本文将通过11个详细的图例，展示RAFT算法从单节点到多节点集群的完整演进过程，包括正常运行、故障处理、网络分区和冲突解决等关键场景。
+
+## RAFT核心概念
+
+- 在深入分析之前，让我们先了解RAFT的几个核心概念：
+
+**节点状态(Node States)**：
+- **Leader（领导者）**：负责处理客户端请求，向其他节点复制日志条目
+- **Follower（跟随者）**：被动接收Leader的日志复制请求
+- **Candidate（候选者）**：Leader选举过程中的临时状态
+
+**关键数据结构**：
+- **Log（日志）**：存储操作命令的有序序列
+- **Term（任期）**：单调递增的逻辑时钟，用于检测过期信息
+- **CommitIndex（提交索引）**：已知被提交的最高日志条目索引
+- **ApplyIndex/LastApplied（应用索引）**：已应用到状态机的最高日志条目索引
+- **State（状态机）**：实际的业务数据状态
+
+## 阶段一：单节点启动（图1）
+
+```
+Node1启动为Leader，初始状态：
+- Log=[]（空日志）
+- Term=0（初始任期）
+- CommitIndex=0, ApplyIndex=0（无已提交/应用的条目）
+- State={}（空状态机）
+```
+
+![1. single node.svg](/images/9.%20raft/1.%20single%20node.svg)
+
+单节点集群中，节点自动成为Leader，因为它构成了"多数派"（1 > 1/2）。这是RAFT算法的一个重要特性：任何时刻最多只能有一个Leader。
+
+## 阶段二：处理客户端请求（图2）
+
+```
+客户端请求：x=1
+
+处理流程：
+1. Leader将"x=1"追加到日志（Log=[x=1]）
+2. 更新Term=1（在某些实现中，term在接收客户端请求时更新）
+3. 单节点立即提交（CommitIndex=1）
+4. 应用到状态机（ApplyIndex=1, State={x:1}）
+```
+
+![2. add value.svg](/images/9.%20raft/2.%20add%20value.svg)
+
+这展示了RAFT的基本工作流程：日志追加 → 复制 → 提交 → 应用。在单节点场景下，这个过程会立即完成。
+
+## 阶段三：节点加入集群（图3）
+
+```
+Node2和Node3以Follower身份加入：
+- 新节点初始状态：Term=0, 空日志，空状态机
+- 通过"join"操作发现已存在的Leader
+```
+
+![3. add nodes.svg](/images/9.%20raft/3.%20add%20nodes.svg)
+
+新节点加入时处于Follower状态，需要从Leader同步历史数据。这体现了RAFT的动态成员变更能力。
+
+## 阶段四：日志同步（图4）
+
+```
+Leader同步过程：
+1. Node1向Node2和Node3发送AppendEntries RPC
+2. 包含历史日志条目"x=1"
+3. Followers更新自己的状态：
+   - Term=1（同步Leader的任期）
+   - Log=[x=1]（复制日志条目）
+   - CommitIndex=1, ApplyIndex=1（提交并应用）
+   - State={x:1}（状态机同步）
+```
+![4. node sync.svg](/images/9.%20raft/4.%20node%20sync.svg)
+
+
+这个阶段展示了RAFT的核心机制：**日志复制**。Leader确保所有Followers的日志与自己保持一致。
+
+## 阶段五：集群扩展（图5）
+
+```
+继续添加Node4和Node5：
+- 新节点通过"join & rpc sync"一步完成加入和同步
+- 最终形成5节点集群，所有节点状态一致
+```
+
+![5. add nodes.svg](/images/9.%20raft/5.%20add%20nodes.svg)
+
+集群可以动态扩展，新节点加入时会自动完成历史数据的同步。
+
+## 阶段六：批量操作与故障（图6-图6结果）
+
+**图6展示问题场景**：
+```
+Leader处理多个客户端请求：
+- x=2, y=1, y=2, update term
+- Node1状态：Term=2, CommitIndex=4, State={x:2, y:2}
+```
+
+![6. add value & update term.svg](/images/9.%20raft/6.%20add%20value%20%26%20update%20term.svg)
+
+**图6结果展示恢复状态**：
+```
+Leader继续工作：
+- Node1成功同步到Node2, Node4, Node5
+- Node3故障，保持旧状态（x=1）
+- 集群在多数节点正常的情况下继续提供服务
+```
+
+![6. add value & update term - result.svg](/images/9.%20raft/6.%20add%20value%20%26%20update%20term%20-%20result.svg)
+
+这体现了RAFT的**容错性**：只要多数节点正常，集群就能继续工作。
+
+## 阶段七：选举失败场景（图7）
+
+```
+网络分区发生：
+- Node1被隔离（单独分区）
+- Node3尝试选举但失败：
+  - 更新Term=2，变为Candidate
+  - 但无法获得多数票（日志过于陈旧）
+
+分区状态：
+- 分区1：Node1（孤立的旧Leader）
+- 分区2：Node2,Node3,Node4,Node5（无新Leader）
+```
+
+![7. vote fail.svg](/images/9.%20raft/7.%20vote%20fail.svg)
+
+这展示了RAFT处理**网络分区**的机制：日志较新的节点更有可能成为新Leader。
+
+## 阶段八：分区中的选举（图8）
+
+```
+Node2发起选举：
+- Term=3，成为Candidate
+- 向Node4、Node5、Node3发送RequestVote RPC
+- 即便Node3日志落后，但是仍可以投票给Node2
+- 同时，被隔离的Node1继续接收客户端请求"x=9"
+```
+
+![8. fail but command.svg](/images/9.%20raft/8.%20fail%20but%20command.svg)
+
+- 被分区的旧Leader仍然处理请求，但这些操作**不会被提交**，因为无法获得多数确认。
+
+## 阶段九：新Leader确立但存在分区（图9）
+
+```
+Node2成为新Leader：
+- 获得足够选票，Term=3
+- 开始向其他节点同步
+- Node1和Node3状态不同步：
+  - Node1：有未提交的"x=9"，Term=2
+  - Node3：仍然是旧数据，Term=1
+```
+
+![10. node2 new leader.svg](/images/9.%20raft/10.%20node2%20new%20leader.svg)
+
+这证明了RAFT的**分区容忍性**：即使部分节点不可达，多数派仍能正常工作。
+
+## 阶段十：冲突检测（图10）
+
+```
+Node2作为新Leader开始工作：
+- 向Node4和Node5同步（成功）
+- Node1和Node3恢复
+- 集群在可用的多数节点上继续运行
+```
+
+![9. fail node back.svg](/images/9.%20raft/9.%20fail%20node%20back.svg)
+
+这个状态展示了**脑裂**问题：系统中存在新旧两个Leader的状态。
+
+## 阶段十一：分区愈合与冲突解决（图11）
+
+```
+网络分区修复后的最终状态：
+- 所有节点重新连接
+- Node2仍为Leader，Term=3
+- 冲突解决过程：
+  1. Node1发现更高的term，降级为Follower
+  2. Node1的未提交操作"x=9"被丢弃（日志截断）
+  3. Node3同步到最新状态
+  4. 所有节点最终一致：State={x:2, y:2}
+
+数据丢失：x=9永久丢失，因为它从未被多数确认
+```
+
+![11. sync & abandon.svg](/images/9.%20raft/11.%20sync%20%26%20abandon.svg)
+
+这是RAFT处理**日志冲突**的经典场景：
+- 更高term的Leader是权威的
+- 未被多数确认的操作会被丢弃
+- 最终所有节点达到强一致性
+
+## RAFT算法的关键特性分析
+
+通过这11个图例，我们可以总结RAFT的重要特性：
+
+**1. 强一致性（Strong Consistency）**
+- 所有节点最终达到相同状态
+- 通过多数派提交确保数据可靠性
+
+**2. 分区容忍性（Partition Tolerance）**
+- 网络分区时，多数派分区继续服务
+- 少数派分区无法处理写操作
+
+**3. 领导选举（Leader Election）**
+- 任何时刻最多一个Leader
+- 通过term和日志比较确保最新节点当选
+
+**4. 日志复制（Log Replication）**
+- Leader负责向所有Followers复制日志
+- 保证日志的顺序性和一致性
+
+**5. 故障恢复（Failure Recovery）**
+- 节点故障后重新加入能自动同步
+- 冲突日志会被正确覆盖
+
+## 实际应用考虑
+
+**性能特点**：
+- 写操作需要多数确认，延迟较高
+- 读操作可以从Leader或Follower进行
+- 网络分区会影响可用性
+
+**适用场景**：
+- 配置管理系统（如etcd）
+- 分布式数据库（如TiKV）
+- 分布式锁服务
+
+**注意事项**：
+- 奇数节点集群更好（避免脑裂）
+- 网络质量对性能影响很大
+- 需要考虑成员变更的安全性
+
+## 结论
+
+RAFT算法通过清晰的角色划分和简单的规则，优雅地解决了分布式共识问题。本文通过11个渐进式图例，完整展示了从单节点到复杂故障场景的处理过程。理解这些场景对于设计和实现可靠的分布式系统具有重要意义。
+
+RAFT的成功在于其**可理解性**：相比Paxos的复杂证明，RAFT用直观的概念（任期、选举、日志复制）让开发者能够真正理解并正确实现分布式一致性系统。
+

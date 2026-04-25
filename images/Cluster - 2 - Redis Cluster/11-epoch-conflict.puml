@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title ConfigEpoch - Resolving Slot Ownership Conflicts
+
+participant "Node A\nconfigEpoch = 5" as nodeA #FFCDD2
+participant "Other Nodes" as others #E0E0E0
+participant "Node B\nconfigEpoch = 7" as nodeB #C8E6C9
+
+nodeA -> others : I own slots 0-100\n(epoch 5)
+nodeB -> others : I own slots 0-100\n(epoch 7)
+
+note over others #FFFDE7
+  <b>Conflict!</b>
+  Two nodes claim same slots
+end note
+
+others -> others : Compare epochs:\n7 > 5
+
+note over others #E8F5E9
+  <b>Resolution:</b>
+  Node B wins (higher epoch)
+end note
+
+others -> nodeA : Update your slot table:\nSlots 0-100 belong to Node B
+
+nodeA -> nodeA : Give up claim\nRemove slots 0-100
+
+note over nodeA, nodeB
+  <b>Epoch increments when:</b>
+  - Slave wins election (new master)
+  - Slot migration completes
+  - Manual failover
+end note
+
+@enduml

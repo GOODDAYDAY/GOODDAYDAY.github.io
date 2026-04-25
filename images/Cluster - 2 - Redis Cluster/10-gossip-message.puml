@@ -1,0 +1,43 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 13
+
+title Gossip Message Structure
+
+rectangle "clusterMsg" as msg #E3F2FD {
+    rectangle "Header" as header #BBDEFB {
+        rectangle "sig[4]: 'RCmb'" as sig
+        rectangle "type: PING/PONG/MEET/FAIL" as type
+        rectangle "count: N gossip entries" as count
+    }
+
+    rectangle "Sender Info" as sender #C8E6C9 {
+        rectangle "sender[40]: Node ID" as senderId
+        rectangle "myslots[2048]: Slot bitmap (16384 bits)" as slots
+        rectangle "configEpoch: My version" as epoch
+        rectangle "currentEpoch: Cluster version" as cEpoch
+        rectangle "flags: MASTER/SLAVE/PFAIL/FAIL" as flags
+    }
+
+    rectangle "Gossip Section" as gossip #FFF9C4 {
+        rectangle "gossip[0]: Info about Node X" as g0
+        rectangle "gossip[1]: Info about Node Y" as g1
+        rectangle "gossip[N]: Info about Node Z" as gN
+    }
+}
+
+header -[hidden]down-> sender
+sender -[hidden]down-> gossip
+
+note right of gossip
+  Each gossip entry:
+  - nodename[40]
+  - ping_sent
+  - pong_received
+  - ip, port
+  - flags (my view)
+end note
+
+@enduml

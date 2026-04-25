@@ -1,0 +1,415 @@
+# [Spring] 1. Spring Web CompletionStage Overview
+
+
+## Introduction
+
+- Spring-web provides excellent support for asynchronous operations, which can be used for many optimizations through asynchronous return forms:
+  - Improve throughput
+  - Fine-tune execution thread pools for various business operations
+
+## Sample Code
+
+```java
+/**
+ * async interface controller
+ *
+ * @author Goody
+ * @version 1.0, 2024/9/19
+ */
+@RestController
+@RequestMapping("/goody")
+@RequiredArgsConstructor
+@Slf4j
+public class GoodyAsyncController {
+
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
+    private static final Executor EXECUTOR = new ThreadPoolExecutor(
+        10,
+        10,
+        10,
+        TimeUnit.SECONDS,
+        new ArrayBlockingQueue<>(10),
+        r -> new Thread(r, String.format("customer-t-%s", COUNT.addAndGet(1)))
+    );
+
+    @GetMapping("async/query1")
+    public CompletionStage<String> asyncQuery1() {
+        log.info("async query start");
+        return CompletableFuture.supplyAsync(() -> {
+            log.info("async query sleep start");
+            ThreadUtils.sleep(1000);
+            log.info("async query sleep done");
+            log.info("async query done");
+            return "done";
+        }, EXECUTOR);
+    }
+
+    @GetMapping("sync/query1")
+    public String syncQuery1() throws InterruptedException {
+        log.info("sync query start");
+        final CountDownLatch latch = new CountDownLatch(1);
+        EXECUTOR.execute(() -> {
+            log.info("sync query sleep start");
+            ThreadUtils.sleep(1000);
+            log.info("sync query sleep done");
+            latch.countDown();
+        });
+        latch.await();
+        log.info("sync query done");
+        return "done";
+    }
+}
+```
+
+- Defined a custom thread pool for use in asynchronous scenarios
+- Here's one synchronous and one asynchronous endpoint, let's look at the specific request scenarios
+
+### Single Request
+
+#### Request Async Interface
+
+> curl --location '127.0.0.1:50012/goody/async/query1'
+
+```text
+2024-09-19 15:56:43.408  INFO 24912 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 15:56:43.411  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 15:56:44.417  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 15:56:44.417  INFO 24912 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query done
+```
+
+#### Request Sync Interface
+
+> curl --location '127.0.0.1:50012/goody/sync/query1'
+
+```text
+2024-09-19 16:03:00.916  INFO 25780 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:03:00.917  INFO 25780 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:03:01.924  INFO 25780 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:03:01.924  INFO 25780 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+```
+
+#### Analysis
+
+- Actually, from a single request example, the difference isn't that significant. But let's analyze step by step.
+- From the async interface, we can see that after `CompletableFuture` takes over, everything is handled by the `custom thread pool`, and all unpacking is handled by the spring-web framework.
+- From the sync interface, we can see that after `CompletableFuture` takes over, the spring-web thread waits. We can actually infer that this is synchronous waiting.
+
+### Concurrent Requests
+
+- The Java program has been set to `web threads=1`, `custom business threads=10`
+
+#### Request Script
+
+```python
+import threading
+import requests
+import datetime
+
+def get_current_time():
+    current_time = datetime.datetime.now()
+    return current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+url = "http://127.0.0.1:50012/goody/async/query1"
+num_threads = 10
+
+def send_request():
+    response = requests.get(url)
+    print(f"{get_current_time()} Request finished with status code: {response.status_code}")
+
+threads = []
+
+for _ in range(num_threads):
+    thread = threading.Thread(target=send_request)
+    threads.append(thread)
+    thread.start()
+
+# Wait for all threads to complete
+for t in threads:
+    t.join()
+```
+
+#### Request Async Interface
+
+**Java Output**
+
+```text
+2024-09-19 16:11:19.983  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.986  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.991  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.992  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.992  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.993  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.993  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.994  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.994  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.995  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.995  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.996  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.997  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.997  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.997  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.998  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.998  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:19.999  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:19.999  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : async query start
+2024-09-19 16:11:20.000  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query sleep start
+2024-09-19 16:11:20.989  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:20.989  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.005  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.004  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.004  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.006  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query sleep done
+2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : async query done
+2024-09-19 16:11:21.007  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : async query done
+```
+
+**Python Script Output**
+
+```text
+PS D:\desktop> & C:/Users/86570/AppData/Local/Programs/Python/Python311/python.exe d:/desktop/toy.py
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+2024-09-19 16:11:21 Request finished with status code: 200
+```
+
+#### Request Sync Interface
+
+**Java Output**
+
+```text
+2024-09-19 16:16:12.918  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:12.919  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:13.923  INFO 11712 --- [   customer-t-1] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:13.923  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:13.927  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:13.927  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:14.940  INFO 11712 --- [   customer-t-8] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:14.941  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:14.943  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:14.943  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:15.957  INFO 11712 --- [   customer-t-7] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:15.957  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:15.961  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:15.961  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:16.967  INFO 11712 --- [   customer-t-2] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:16.967  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:16.972  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:16.972  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:17.987  INFO 11712 --- [   customer-t-9] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:17.987  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:17.990  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:17.991  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:18.996  INFO 11712 --- [  customer-t-10] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:18.996  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:18.999  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:18.999  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:20.003  INFO 11712 --- [   customer-t-6] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:20.003  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:20.007  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:20.007  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:21.012  INFO 11712 --- [   customer-t-4] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:21.012  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:21.016  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:21.016  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:22.018  INFO 11712 --- [   customer-t-5] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:22.018  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+2024-09-19 16:16:22.020  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query start
+2024-09-19 16:16:22.020  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : sync query sleep start
+2024-09-19 16:16:23.026  INFO 11712 --- [   customer-t-3] c.g.u.j.controller.GoodyAsyncController  : sync query sleep done
+2024-09-19 16:16:23.027  INFO 11712 --- [io-50012-exec-1] c.g.u.j.controller.GoodyAsyncController  : sync query done
+```
+
+**Python Script Output**
+
+```text
+PS D:\desktop> & C:/Users/86570/AppData/Local/Programs/Python/Python311/python.exe d:/desktop/toy.py
+2024-09-19 16:16:13 Request finished with status code: 200
+2024-09-19 16:16:14 Request finished with status code: 200
+2024-09-19 16:16:15 Request finished with status code: 200
+2024-09-19 16:16:16 Request finished with status code: 200
+2024-09-19 16:16:17 Request finished with status code: 200
+2024-09-19 16:16:18 Request finished with status code: 200
+2024-09-19 16:16:20 Request finished with status code: 200
+2024-09-19 16:16:21 Request finished with status code: 200
+2024-09-19 16:16:22 Request finished with status code: 200
+2024-09-19 16:16:23 Request finished with status code: 200
+```
+
+#### Analysis
+
+- At this point, you can clearly see the difference. When web threads are the bottleneck, `return CompletionStage` provides Spring-level optimizations. After placing business logic in the business thread pool, spring-web threads are released to handle their own web-related business processing.
+- So in async mode, the web thread directly dispatches 10 tasks.
+- So in sync mode, the web thread must wait for each task to complete before continuing to execute the next request.
+- If you're familiar with the `Netty network model`, you'll find this is a classic `Event Loop` + `Channel` + `Selector` pattern.
+    - That is, spring-web threads act as business dispatchers performing `dispatch` and `response`, while custom business thread pools act as business executors `executing business`. Through this approach, IO throughput can be greatly improved and business execution capabilities can be better controlled.
+
+## Source Code Analysis
+
+```java
+    protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    HttpServletRequest processedRequest = request;
+    HandlerExecutionChain mappedHandler = null;
+    boolean multipartRequestParsed = false;
+
+    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+
+    try {
+        ModelAndView mv = null;
+        Exception dispatchException = null;
+
+        try {
+            processedRequest = checkMultipart(request);
+            multipartRequestParsed = (processedRequest != request);
+
+            // ===========================================
+            // Determine handler for the current request.
+            // ===========================================
+            mappedHandler = getHandler(processedRequest);
+            if (mappedHandler == null) {
+                noHandlerFound(processedRequest, response);
+                return;
+            }
+
+            // ===========================================
+            // Determine handler adapter for the current request.
+            // ===========================================
+            HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+
+            // Process last-modified header, if supported by the handler.
+            String method = request.getMethod();
+            boolean isGet = "GET".equals(method);
+            if (isGet || "HEAD".equals(method)) {
+                long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+                if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
+                    return;
+                }
+            }
+
+            // ===========================================
+            // Pre-processing
+            // ===========================================
+            if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+                return;
+            }
+
+            // ===========================================
+            // Actually invoke the handler.
+            // asyncManager.isConcurrentHandlingStarted() = false
+            // org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#handleInternal
+            // org.springframework.web.servlet.mvc.method.annotation.DeferredResultMethodReturnValueHandler
+            // ===========================================
+            mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+            // ===========================================
+            // asyncManager.isConcurrentHandlingStarted() = true
+            // ===========================================
+
+            // ===========================================
+            // If it's an async return, this will be true, and subsequent post-processing won't execute
+            // ===========================================
+            if (asyncManager.isConcurrentHandlingStarted()) {
+                return;
+            }
+
+            applyDefaultViewName(processedRequest, mv);
+            mappedHandler.applyPostHandle(processedRequest, response, mv);
+        } catch (Exception ex) {
+            dispatchException = ex;
+        } catch (Throwable err) {
+            // As of 4.3, we're processing Errors thrown from handler methods as well,
+            // making them available for @ExceptionHandler methods and other scenarios.
+            dispatchException = new NestedServletException("Handler dispatch failed", err);
+        }
+        processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+    } catch (Exception ex) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
+    } catch (Throwable err) {
+        triggerAfterCompletion(processedRequest, response, mappedHandler,
+            new NestedServletException("Handler processing failed", err));
+    } finally {
+        if (asyncManager.isConcurrentHandlingStarted()) {
+            // Instead of postHandle and afterCompletion
+            if (mappedHandler != null) {
+                // ===========================================
+                // What's actually added is the following post-processing to restore context after awakening
+                // org.springframework.boot.actuate.metrics.web.servlet.LongTaskTimingHandlerInterceptor
+                // org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor
+                // org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor
+                // ===========================================
+                mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
+            }
+        } else {
+            // Clean up any resources used by a multipart request.
+            if (multipartRequestParsed) {
+                cleanupMultipart(processedRequest);
+            }
+        }
+    }
+}
+```
+
+- This is very Spring-style code:
+    1. Pre-load various processors.
+    2. Execute pre-processors
+    3. Start execution
+    4. Execute post-processors
+- However, one processor `DeferredResultMethodReturnValueHandler` will determine if the result is asynchronous. When it's asynchronous, it will directly short-circuit the subsequent post-processor logic.
+  ```java
+      @Override
+    public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
+            ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+
+        if (returnValue == null) {
+            mavContainer.setRequestHandled(true);
+            return;
+        }
+
+        DeferredResult<?> result;
+
+        if (returnValue instanceof DeferredResult) {
+            result = (DeferredResult<?>) returnValue;
+        }
+        else if (returnValue instanceof ListenableFuture) {
+            result = adaptListenableFuture((ListenableFuture<?>) returnValue);
+        }
+        else if (returnValue instanceof CompletionStage) {
+            // ===========================================
+            // Handle CompletionStage async-related follow-up logic here
+            // ===========================================
+            result = adaptCompletionStage((CompletionStage<?>) returnValue);
+        }
+        else {
+            // Should not happen...
+            throw new IllegalStateException("Unexpected return value type: " + returnValue);
+        }
+
+        WebAsyncUtils.getAsyncManager(webRequest).startDeferredResultProcessing(result, mavContainer);
+  }
+  ```
+
+- At this point, wait for async `CompletionStage`
+- It's worth mentioning that spring-web context passing here is very interesting, the passing path is `web-thread` -> `biz-thread` -> `web-thread`
+- Sleep and wake operations specifically use the `park()` and `unpark()` methods from `java.util.concurrent.locks.LockSupport`
+
+- I drew a diagram for reference
+
+  ![img1.png](/images/5.%20spring-web-CompletionStage/img1.png)
+

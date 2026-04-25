@@ -1,0 +1,51 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Redis Cluster - Multi-Master Architecture - Special
+
+rectangle "Redis Cluster" as cluster #F3E5F5 {
+    together {
+        database "Master A\nSlots 0-99" as masterA #FFCDD2
+        database "Master B\nSlots 100-199" as masterB #FFCDD2
+        database "Master C\nSlots 200-16383" as masterC #FFCDD2
+    }
+
+    together {
+        database "Slave A1" as slaveA1 #C8E6C9
+        database "Slave A2" as slaveA2 #C8E6C9
+        database "Slave A3" as slaveA3 #C8E6C9
+        database "Slave A4" as slaveA4 #C8E6C9
+        database "Slave A5" as slaveA5 #C8E6C9
+        database "Slave A6" as slaveA6 #C8E6C9
+        database "Slave A7" as slaveA7 #C8E6C9
+        database "Slave B1" as slaveB1 #C8E6C9
+        database "Slave C1" as slaveC1 #C8E6C9
+        database "Slave C2" as slaveC2 #C8E6C9
+    }
+}
+
+masterA -down-> slaveA1 : Replicate
+masterA -down-> slaveA2 : Replicate
+masterA -down-> slaveA3 : Replicate
+masterA -down-> slaveA4 : Replicate
+masterA -down-> slaveA5 : Replicate
+masterA -down-> slaveA6 : Replicate
+masterA -down-> slaveA7 : Replicate
+masterB -down-> slaveB1 : Replicate
+masterC -down-> slaveC1 : Replicate
+masterC -down-> slaveC2 : Replicate
+
+masterA <-right-> masterB : Gossip
+masterB <-right-> masterC : Gossip
+
+note bottom of cluster
+  <b>Key Features:</b>
+  - Decentralized (No ZooKeeper)
+  - Multi-Master (Horizontal Scaling)
+  - Automatic Failover
+end note
+
+@enduml

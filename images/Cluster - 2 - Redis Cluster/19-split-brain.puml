@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 13
+
+title Split Brain Scenario
+
+rectangle "Before Partition" as before #E8F5E9 {
+    rectangle "Normal Cluster" as normal {
+        database "Master A" as masterA1 #FFCDD2
+        database "Master B" as masterB1 #FFCDD2
+        database "Master C" as masterC1 #FFCDD2
+        database "Slave A1" as slaveA1_1 #C8E6C9
+    }
+    masterA1 <-right-> masterB1
+    masterB1 <-right-> masterC1
+    masterA1 -down-> slaveA1_1
+}
+
+rectangle "After Network Partition" as after #FFEBEE {
+    rectangle "Partition 1\n(Minority)" as p1 #FFF9C4 {
+        database "Master A" as masterA2 #FFCDD2
+        actor "Client" as client1
+        client1 -> masterA2 : writes
+    }
+
+    rectangle "Partition 2\n(Majority)" as p2 #E3F2FD {
+        database "Master B" as masterB2 #FFCDD2
+        database "Master C" as masterC2 #FFCDD2
+        database "Slave A1\nbecomes <b>New Master A</b>" as slaveA1_2 #C8E6C9
+        actor "Client" as client2
+        client2 -> slaveA1_2 : writes
+    }
+}
+
+note bottom of after
+  <color:red><b>TWO MASTERS FOR SAME SLOTS!</b></color>
+
+  Partition 1: Client writes SET key1 "value_A" to old Master A
+  Partition 2: New Master A accepts SET key1 "value_B"
+
+  <b>After partition heals:</b>
+  - Old Master A has lower configEpoch
+  - Old Master A demoted, syncs from new master
+  - <color:red>"value_A" is LOST, replaced by "value_B"</color>
+end note
+
+@enduml

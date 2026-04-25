@@ -1,0 +1,409 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>All Posts - GoodyHao's Blog</title><link>https://gooddayday.github.io/en/posts/</link><description>All Posts | GoodyHao's Blog</description><generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>865700600@qq.com (GoodyHao)</managingEditor><webMaster>865700600@qq.com (GoodyHao)</webMaster><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 25 Apr 2026 12:00:00 +0800</lastBuildDate><atom:link href="https://gooddayday.github.io/en/posts/" rel="self" type="application/rss+xml"/><item><title>[Project] 6. Parallel Evolution — A Record of AI Collaboration Between Skills and Harness</title><link>https://gooddayday.github.io/en/2026/04/project-6.-parallel-evolution/</link><pubDate>Sat, 25 Apr 2026 12:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/04/project-6.-parallel-evolution/</guid><description><![CDATA[<div class="featured-image">
+                <img src="/images/Project%20-%206%20-%20Parallel%20Evolution/cover.png" referrerpolicy="no-referrer">
+            </div><h2 id="overview">Overview</h2>
+<p>Since the start of this year, I&rsquo;ve been using AI intensively (Claude Code in particular) to help with many projects and write a lot of software. Over this time, my understanding of how a programmer should work with AI has gone through stage after stage. There&rsquo;s a lot in my head, and I want to write it down to help myself reflect and synthesize.</p>
+<h3 id="dimensions-of-the-journey">Dimensions of the Journey</h3>
+<p>Several parallel threads have been evolving in my understanding of AI:</p>]]></description></item><item><title>[Project] 5. My Skills — Enterprise Development Workflows as Executable Claude Code Skills</title><link>https://gooddayday.github.io/en/2026/04/project-5.-my-skills/</link><pubDate>Fri, 17 Apr 2026 14:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/04/project-5.-my-skills/</guid><description><![CDATA[<div class="featured-image">
+                <img src="/images/Project%20-%205%20-%20My%20Skills/cover.png" referrerpolicy="no-referrer">
+            </div><h2 id="one-line-summary">One-Line Summary</h2>
+<p>A complete requirement-driven development framework that turns the full software lifecycle — requirement analysis, technical design, coding, security audit, cleanup, compliance review, verification, and archival — into 8 executable skills for Claude Code, with checkpoint recovery and formal change management.</p>
+<h2 id="why-this-exists">Why This Exists</h2>
+<p>The biggest problem with AI-generated code isn&rsquo;t that it &ldquo;can&rsquo;t write code&rdquo; — it&rsquo;s that <strong>it writes without discipline</strong>:</p>
+<ul>
+<li>Starts coding before understanding requirements</li>
+<li>Makes a bunch of changes but can&rsquo;t tell if they&rsquo;re correct</li>
+<li>Interruptions mean starting over</li>
+<li>Security vulnerabilities go unchecked</li>
+<li>Requirements drift silently</li>
+</ul>
+<p>This framework turns <strong>software development best practices</strong> into executable AI skills. Claude Code follows a structured process instead of winging it.</p>]]></description></item><item><title>[Project] 4. Multi-Agent AI Investment Research — 16 Agents with Bull-vs-Bear Debate</title><link>https://gooddayday.github.io/en/2026/04/project-4.-ai-investment-research/</link><pubDate>Fri, 17 Apr 2026 13:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/04/project-4.-ai-investment-research/</guid><description><![CDATA[<div class="featured-image">
+                <img src="/images/Project%20-%204%20-%20AI%20Investment%20Research/cover.png" referrerpolicy="no-referrer">
+            </div><h2 id="one-line-summary">One-Line Summary</h2>
+<p>16 specialized AI agents analyze a stock from every angle — macro, sector, fundamentals, technicals, sentiment, news, filings — then two agents debate bullish vs bearish cases while a judge moderates. Final buy/hold/sell recommendation backed by recomputable numbers. Supports Chinese A-shares, Hong Kong, and US equities.</p>
+<h2 id="system-overview">System Overview</h2>
+
+<h2 id="core-design-why-16-agents">Core Design: Why 16 Agents?</h2>
+<p>Ask a single LLM &ldquo;should I buy this stock?&rdquo; and you get:</p>
+<ul>
+<li><strong>Hallucination</strong>: Made-up financial data</li>
+<li><strong>Tunnel vision</strong>: Only technical analysis, or only fundamentals</li>
+<li><strong>Unverifiable</strong>: No numeric evidence behind the claim</li>
+</ul>
+<p>So we split into 16 specialized agents, each doing one thing, <strong>using real data instead of LLM-generated data</strong>:</p>]]></description></item><item><title>[Project] 3. Harness-Everything — Autonomous AI Code Improvement Harness</title><link>https://gooddayday.github.io/en/2026/04/project-3.-harness-everything/</link><pubDate>Fri, 17 Apr 2026 12:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/04/project-3.-harness-everything/</guid><description><![CDATA[<div class="featured-image">
+                <img src="/images/Project%20-%203%20-%20Harness-Everything/cover.png" referrerpolicy="no-referrer">
+            </div><h2 id="big-picture">Big Picture</h2>
+
+<blockquote>
+<p><strong>The LLM is the brain, the Harness is the hands, the project code is what gets modified. The LLM never directly touches the filesystem — it only says &ldquo;I want to do X&rdquo;, and your code executes it.</strong></p>
+</blockquote>
+<h2 id="the-essence-three-sentences">The Essence: Three Sentences</h2>
+<ol>
+<li><strong>The LLM is the engine</strong>: Feed project code to a language model, let it analyze, suggest improvements, and write code. At its core, it&rsquo;s just a while loop asking the LLM &ldquo;what else can be improved?&rdquo;</li>
+<li><strong>Tools are the hands</strong>: The LLM can&rsquo;t directly read or write files. It uses Anthropic&rsquo;s tool_use protocol to tell your code &ldquo;I want to read this file&rdquo; / &ldquo;I want to edit this line&rdquo;, and your code executes it. You could run the whole thing with just a <code>bash</code> tool.</li>
+<li><strong>Process restart is the key</strong>: Python modules are loaded once at startup and stay frozen in memory. When the LLM modifies its own <code>.py</code> files, the running process still uses the old code. A process restart is the only way to apply improvements. That&rsquo;s why we have the push → tag → CI deploy → restart loop.</li>
+</ol>
+<hr>
+<h2 id="from-simplest-to-complete-system-each-layer-solves-one-problem">From Simplest to Complete System: Each Layer Solves One Problem</h2>
+<h3 id="simplest-version-conceptual">Simplest Version (Conceptual)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">code</span> <span class="o">=</span> <span class="n">read_all_project_files</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">LLM</span><span class="p">(</span><span class="s2">&#34;Here&#39;s the code, improve it:&#34;</span> <span class="o">+</span> <span class="n">code</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">write_back</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This works. But it runs into problems. <strong>Each layer below solves the previous layer&rsquo;s problem</strong>:</p>]]></description></item><item><title>[Project] 2. Synapulse — A Self-Hosted Personal AI Assistant</title><link>https://gooddayday.github.io/en/2026/03/project-2.-synapulse/</link><pubDate>Tue, 10 Mar 2026 23:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/03/project-2.-synapulse/</guid><description><![CDATA[<div align="center">
+
+</div>
+<h2 id="overview">Overview</h2>
+<p>Synapulse (Synapse + Pulse) is a self-hosted personal AI assistant that lives in your Discord server. The idea came from <a href="https://github.com/nicepkg/openclaw" target="_blank" rel="noopener noreffer ">OpenClaw</a> — after seeing what it could do, I decided to build the personal assistant I had always wanted, one that is lightweight, transparent, and fully under my control.</p>
+<ul>
+<li>GitHub: <a href="https://github.com/GOODDAYDAY/Synapulse" target="_blank" rel="noopener noreffer ">GOODDAYDAY/Synapulse</a></li>
+</ul>
+<h2 id="demo">Demo</h2>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Weather query</th>
+          <th style="text-align: center">Web search + recommendation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Reminder (notify mode)</th>
+          <th style="text-align: center">Reminder (prompt mode)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">File creation + send</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="features">Features</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>AI Chat</strong></td>
+          <td>@mention the bot in Discord to chat, supports multiple AI providers</td>
+      </tr>
+      <tr>
+          <td><strong>Tool Calling</strong></td>
+          <td>Multi-round AI tool-call loop (up to 10 rounds), tools auto-discovered at startup, with token compression</td>
+      </tr>
+      <tr>
+          <td><strong>Shell Execution</strong></td>
+          <td>AI proactively uses shell commands for system queries, calculations, git operations. Cross-platform: PowerShell on Windows, bash on Linux/macOS</td>
+      </tr>
+      <tr>
+          <td><strong>Persistent Memory</strong></td>
+          <td>Conversations saved and auto-summarized, cross-session memory</td>
+      </tr>
+      <tr>
+          <td><strong>Task Management</strong></td>
+          <td>To-dos with priorities and due dates, AI sees pending tasks proactively</td>
+      </tr>
+      <tr>
+          <td><strong>Memo / Notes</strong></td>
+          <td>Save and search personal notes via natural language</td>
+      </tr>
+      <tr>
+          <td><strong>Reminders</strong></td>
+          <td>Set reminders with relative time (<code>+5m</code>, <code>+1h</code>) or absolute time. Two modes: <strong>notify</strong> for passive nudges, <strong>prompt</strong> for scheduled AI actions (e.g. &ldquo;tell me the weather in 1 hour&rdquo;)</td>
+      </tr>
+      <tr>
+          <td><strong>File Operations</strong></td>
+          <td>Read, write, search, and manage local files within allowed paths</td>
+      </tr>
+      <tr>
+          <td><strong>Email Monitoring</strong></td>
+          <td>Background jobs watch Gmail, Outlook, QQ Mail via IMAP, push summaries to Discord</td>
+      </tr>
+      <tr>
+          <td><strong>MCP Integration</strong></td>
+          <td>Connect to 55+ pre-configured MCP servers (GitHub, Notion, filesystem, databases), on-demand loading to save tokens</td>
+      </tr>
+      <tr>
+          <td><strong>Model Rotation</strong></td>
+          <td>Multi-endpoint YAML config with tag-based routing, priority, and automatic rate-limit fallback</td>
+      </tr>
+      <tr>
+          <td><strong>File &amp; Shell</strong></td>
+          <td>Read/write local files, execute shell commands with safety blacklist and timeout</td>
+      </tr>
+      <tr>
+          <td><strong>Notification Interaction</strong></td>
+          <td>Reply to any bot message and the AI sees the original content as context</td>
+      </tr>
+      <tr>
+          <td><strong>Hot-Reload Config</strong></td>
+          <td>Edit job schedules, prompts, MCP servers, model endpoints at runtime without restart</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="architecture">Architecture</h2>
+<h3 id="tech-stack">Tech Stack</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Component</th>
+          <th>Technology</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Language</strong></td>
+          <td>Python 3.11+</td>
+      </tr>
+      <tr>
+          <td><strong>Channel</strong></td>
+          <td>Discord (discord.py)</td>
+      </tr>
+      <tr>
+          <td><strong>AI Providers</strong></td>
+          <td>OpenAI-compatible (GitHub Models, Ollama, custom endpoints)</td>
+      </tr>
+      <tr>
+          <td><strong>Storage</strong></td>
+          <td>JSON file-based (one file per data type)</td>
+      </tr>
+      <tr>
+          <td><strong>Tool Extension</strong></td>
+          <td>MCP (Model Context Protocol) + native auto-discovery</td>
+      </tr>
+      <tr>
+          <td><strong>Background Jobs</strong></td>
+          <td>Async cron jobs for email monitoring, reminder checking</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="project-structure">Project Structure</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">apps</span><span class="o">/</span><span class="n">bot</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>                    <span class="c1"># Entry point</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">config</span><span class="o">/</span>                    <span class="c1"># Settings, prompts, logging</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">core</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">handler</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># Bootstrap: wire all components via DI</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">loader</span><span class="o">.</span><span class="n">py</span>              <span class="c1"># Auto-discover tools and jobs from folders</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">mention</span><span class="o">.</span><span class="n">py</span>             <span class="c1"># Tool-call loop, memory load/save, summarization</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">reminder</span><span class="o">.</span><span class="n">py</span>            <span class="c1"># Background reminder checker</span>
+</span></span><span class="line"><span class="cl"><span class="n">config</span><span class="o">/</span>                          <span class="c1"># Runtime config (models.yaml, mcp.json, jobs.json)</span>
+</span></span><span class="line"><span class="cl"><span class="n">output</span><span class="o">/</span>                          <span class="c1"># Runtime output (logs, data)</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">provider</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">base</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># OpenAIProvider, AnthropicProvider</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">py</span>            <span class="c1"># EndpointPool: rotation, rate-limit fallback</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">copilot</span><span class="o">/</span><span class="n">auth</span><span class="o">.</span><span class="n">py</span>        <span class="c1"># GitHub OAuth Device Flow</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">channel</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">discord</span><span class="o">/</span><span class="n">client</span><span class="o">.</span><span class="n">py</span>      <span class="c1"># Discord bot integration</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="k">tool</span><span class="o">/</span>                      <span class="c1"># Native tools (auto-discovered)</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">base</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># BaseTool, OpenAITool, AnthropicTool</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">brave_search</span><span class="o">/</span>          <span class="c1"># Web search</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">local_files</span><span class="o">/</span>           <span class="c1"># Read/write local files (sandboxed)</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">memo</span><span class="o">/</span>                  <span class="c1"># Notes management</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">task</span><span class="o">/</span>                  <span class="c1"># Todo list</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">reminder</span><span class="o">/</span>              <span class="c1"># Reminders</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">weather</span><span class="o">/</span>               <span class="c1"># Weather via OpenWeatherMap</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">shell_exec</span><span class="o">/</span>            <span class="c1"># Shell commands (with safety blacklist)</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">mcp_server</span><span class="o">/</span>            <span class="c1"># Manage MCP connections via chat</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">job</span><span class="o">/</span>                       <span class="c1"># Background jobs (auto-discovered)</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">cron</span><span class="o">.</span><span class="n">py</span>                <span class="c1"># CronJob base with hot-reload</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">gmail</span><span class="o">/</span>                 <span class="c1"># Gmail monitoring</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">├──</span> <span class="n">outlook</span><span class="o">/</span>               <span class="c1"># Outlook monitoring</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">qqmail</span><span class="o">/</span>                <span class="c1"># QQ Mail monitoring</span>
+</span></span><span class="line"><span class="cl"><span class="err">├──</span> <span class="n">mcp</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl"><span class="err">│</span>   <span class="err">└──</span> <span class="n">client</span><span class="o">.</span><span class="n">py</span>              <span class="c1"># MCPManager: spawn, discover, route</span>
+</span></span><span class="line"><span class="cl"><span class="err">└──</span> <span class="n">memory</span><span class="o">/</span>
+</span></span><span class="line"><span class="cl">    <span class="err">└──</span> <span class="n">database</span><span class="o">.</span><span class="n">py</span>            <span class="c1"># JSON file persistence</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="core-loop">Core Loop</h3>
+<p>The tool-call loop in <code>core/mention.py</code>:</p>]]></description></item><item><title>[Project] 1. ChromePilot — Control Any Webpage with Natural Language</title><link>https://gooddayday.github.io/en/2026/03/project-1.-chromepilot/</link><pubDate>Tue, 10 Mar 2026 22:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2026/03/project-1.-chromepilot/</guid><description><![CDATA[<div align="center">
+
+</div>
+<h2 id="overview">Overview</h2>
+<p>ChromePilot is a Chrome extension that lets you control any webpage using natural language. Type a command like &ldquo;click the login button&rdquo; or &ldquo;fill in my email&rdquo;, and ChromePilot executes it automatically — clicking, typing, scrolling, and navigating on your behalf.</p>
+<ul>
+<li>Built with AI (Claude) assistance: <strong>3 hours for the initial prototype, 5 hours to polish into v1.0</strong></li>
+<li>Current status: <strong>v1.0</strong> — functional and usable, with room for further optimization</li>
+<li>GitHub: <a href="https://github.com/GOODDAYDAY/ChromePilot" target="_blank" rel="noopener noreffer ">GOODDAYDAY/ChromePilot</a></li>
+</ul>
+<h2 id="features">Features</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Natural Language Control</strong></td>
+          <td>Type commands like &ldquo;click the submit button&rdquo; or &ldquo;type hello in the search box&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>Multi-step Automation</strong></td>
+          <td>Chain complex tasks: &ldquo;Go to Habitica and complete all my daily tasks&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>URL Navigation</strong></td>
+          <td>Say &ldquo;open YouTube&rdquo; or &ldquo;go to google.com&rdquo; to navigate anywhere</td>
+      </tr>
+      <tr>
+          <td><strong>Smart Result Extraction</strong></td>
+          <td>Ask &ldquo;translate &lsquo;hello&rsquo; on Google Translate&rdquo; and get the answer in the chat</td>
+      </tr>
+      <tr>
+          <td><strong>Persistent Side Panel</strong></td>
+          <td>Panel stays open across tab switches (Chrome Side Panel API)</td>
+      </tr>
+      <tr>
+          <td><strong>Multi-provider LLM Support</strong></td>
+          <td>Works with OpenAI, Anthropic Claude, GitHub Copilot, Ollama (local), or any OpenAI-compatible API</td>
+      </tr>
+      <tr>
+          <td><strong>Debug Overlay</strong></td>
+          <td>Visualize all detected interactive elements with index numbers</td>
+      </tr>
+      <tr>
+          <td><strong>Teach Mode</strong></td>
+          <td>Record user actions and save as demonstrations</td>
+      </tr>
+      <tr>
+          <td><strong>Action Preview &amp; Confirm</strong></td>
+          <td>Review planned actions with visual highlights before execution; provide feedback to re-analyze</td>
+      </tr>
+      <tr>
+          <td><strong>Auto-run Mode</strong></td>
+          <td>Toggle to skip confirmation and execute actions immediately</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="demo">Demo</h2>
+<h3 id="basic-actions--click-repetition">Basic Actions — Click Repetition</h3>
+<blockquote>
+<p>Command: <em>&ldquo;drink water 10 times&rdquo;</em></p>]]></description></item><item><title>[Cluster] - 3. MySQL Cluster</title><link>https://gooddayday.github.io/en/2025/12/cluster-3.-mysql-cluster/</link><pubDate>Mon, 08 Dec 2025 10:00:00 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/12/cluster-3.-mysql-cluster/</guid><description><![CDATA[<h2 id="overview">Overview</h2>
+<ul>
+<li>MySQL is the most widely used relational database in the world.</li>
+<li>As business grows, a single MySQL instance becomes the bottleneck — both in capacity and reliability.</li>
+<li>This blog traces the evolution of MySQL high availability: from simple replication to consensus-based clustering.</li>
+</ul>
+<h2 id="evolution-history-the-long-road-to-high-availability">Evolution History: The Long Road to High Availability</h2>
+<h3 id="single-node-era">Single Node Era</h3>
+<p></p>
+<p>The starting point. One MySQL instance handles everything.</p>]]></description></item><item><title>[Cluster] - 2. Redis Cluster</title><link>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</link><pubDate>Mon, 01 Dec 2025 17:36:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/12/cluster-2.-redis-cluster/</guid><description><![CDATA[<h2 id="overview">Overview</h2>
+<ul>
+<li>The common three cluster modes are Redis(Split Cluster), MySQL(Master-Slave), Kafka(RAFT).</li>
+<li>This blog will introduce from the single node to the cluster mode of Redis.</li>
+</ul>
+<h2 id="evolution-history-from-single-node-to-cluster">Evolution History: From Single Node to Cluster</h2>
+<h3 id="single-node-era">Single Node Era</h3>
+<ul>
+<li>This is the common monolithic architecture of Redis.</li>
+</ul>
+<p></p>
+<table>
+  <thead>
+      <tr>
+          <th>Problems</th>
+          <th style="text-align: center">Single Node</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Single point of failure (SPOF)</td>
+          <td style="text-align: center">T</td>
+      </tr>
+      <tr>
+          <td>Memory limited to single machine</td>
+          <td style="text-align: center">T</td>
+      </tr>
+      <tr>
+          <td>Write throughput bottleneck</td>
+          <td style="text-align: center">T</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="master-slave-replication">Master-Slave Replication</h3>
+<ul>
+<li>As to reliability, it is easy to think adding some nodes as Master-Slave.</li>
+</ul>
+<p></p>]]></description></item><item><title>[Algorithm] 1. Dynamic Programming</title><link>https://gooddayday.github.io/en/2025/11/algorithm-1.-dynamic-programming/</link><pubDate>Thu, 27 Nov 2025 11:49:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/11/algorithm-1.-dynamic-programming/</guid><description><![CDATA[<h2 id="introduction">Introduction</h2>
+<h3 id="what-is-dynamic-programming">What is Dynamic Programming?</h3>
+<p>Dynamic Programming (DP) is often considered one of the most challenging topics in computer science algorithms. However, at its core, it is simply <strong>an optimization technique</strong>.</p>
+<p>The fundamental idea of DP is <strong>&ldquo;Don&rsquo;t Repeat Yourself.&rdquo;</strong></p>
+<p>If you have already solved a sub-problem, you should save the result (cache it) so that you never have to calculate it again. By trading a little bit of <strong>space</strong> (to store results) for <strong>time</strong> (to avoid re-calculation), DP can turn an inefficient exponential algorithm ($O(2^n)$) into a highly efficient linear one ($O(n)$).</p>]]></description></item><item><title>[Spring] 2. Analysis of Custom Thread Pools and Thread Reuse in Spring Async Interfaces</title><link>https://gooddayday.github.io/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</link><pubDate>Thu, 02 Oct 2025 10:23:17 +0800</pubDate><author>GoodyHao</author><guid>https://gooddayday.github.io/en/2025/10/spring-2.-spring-async-threadpool-and-thread-reuse/</guid><description><![CDATA[<h2 id="preface">Preface</h2>
+<p>When handling high-concurrency scenarios in Spring applications, proper use of asynchronous programming and thread pool management is crucial. This article provides an in-depth analysis of Spring&rsquo;s default thread pool, custom thread pools, and thread reuse mechanisms through practical code examples.</p>
+<h2 id="why-use-custom-thread-pools">Why Use Custom Thread Pools?</h2>
+<p>When a Spring Boot application starts, it automatically configures a global task executor (TaskExecutor) with the default name <code>applicationTaskExecutor</code>. However, <strong>using Spring&rsquo;s default thread pool directly in production environments is not recommended</strong> for the following reasons:</p>]]></description></item></channel></rss>

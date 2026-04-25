@@ -1,0 +1,41 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Redis Cluster Limitations
+
+rectangle "Multi-Key Operations" as multiKey #FFEBEE {
+    rectangle "MGET user:1 user:2 user:3" as mget
+    rectangle "<color:red>CROSSSLOT Error!</color>\nKeys hash to different slots" as error1
+}
+
+rectangle "Transactions" as tx #FFEBEE {
+    rectangle "MULTI\nSET order:123 ...\nSET user:456 ...\nEXEC" as txCmd
+    rectangle "<color:red>Cross-slot transactions\nare IMPOSSIBLE</color>" as error2
+}
+
+rectangle "Lua Scripts" as lua #FFEBEE {
+    rectangle "redis.call('SET','key1',...)\nredis.call('SET','key2',...)" as luaCmd
+    rectangle "<color:red>All keys must be\nin same slot</color>" as error3
+}
+
+rectangle "Database Selection" as db #FFEBEE {
+    rectangle "SELECT 1" as dbCmd
+    rectangle "<color:red>Only DB 0 allowed\nin cluster mode</color>" as error4
+}
+
+rectangle "Solution: Hash Tags" as solution #E8F5E9 {
+    rectangle "{user}:1, {user}:2, {user}:3\nAll go to same slot!" as hashTag
+}
+
+multiKey -[hidden]right-> tx
+tx -[hidden]right-> lua
+lua -[hidden]right-> db
+
+multiKey -down-> solution
+tx -down-> solution
+lua -down-> solution
+
+@enduml

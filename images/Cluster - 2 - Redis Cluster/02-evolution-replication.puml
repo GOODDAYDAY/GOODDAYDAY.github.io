@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Master-Slave Replication
+
+rectangle "Application" as app #E3F2FD
+
+database "Redis Master" as master #FFCDD2
+database "Redis Slave 1" as slave1 #C8E6C9
+database "Redis Slave 2" as slave2 #C8E6C9
+
+app -down-> master : Write
+app -down-> slave1 : Read
+app -down-> slave2 : Read
+
+master -right-> slave1 : Async\nReplication
+master -right-> slave2 : Async\nReplication
+
+note bottom of master
+  <b>Solved:</b> Read scalability, Data backup
+  <b>Not Solved:</b> No auto failover, Write bottleneck
+end note
+
+@enduml

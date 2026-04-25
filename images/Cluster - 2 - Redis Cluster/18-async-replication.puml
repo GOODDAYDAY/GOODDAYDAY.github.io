@@ -1,0 +1,46 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+skinparam sequenceMessageAlign center
+
+title Asynchronous Replication - Data Loss Window
+
+actor Client as client
+participant "Master" as master #FFCDD2
+participant "Slave" as slave #C8E6C9
+
+client -> master : SET x 100
+master --> client : <color:green>OK</color>
+
+note right of client #E8F5E9
+  Client gets OK
+  <b>BEFORE</b> replication!
+end note
+
+master -> slave : REPLICATE SET x 100
+
+note over master #FFEBEE
+  <color:red><b>CRASH!</b></color>
+  Master dies here
+end note
+
+slave --> master : ACK
+
+note over master, slave
+  Replication never completed!
+end note
+
+== After Failover ==
+
+client -> slave : GET x
+slave --> client : <color:red>(nil)</color>
+
+note over client, slave #FFEBEE
+  <b>Data LOST!</b>
+  Write was acknowledged but lost
+  during master crash
+end note
+
+@enduml

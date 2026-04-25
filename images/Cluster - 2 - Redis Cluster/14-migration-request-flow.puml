@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "Helvetica"
+skinparam defaultFontSize 14
+
+title Request Flow During Slot Migration
+
+start
+
+:Client sends request\nfor key in migrating slot;
+
+:Request arrives at\nNode A (Source, MIGRATING);
+
+if (Key exists locally?) then (yes)
+  :Serve request normally\n(GET/SET/etc);
+  stop
+else (no)
+  :Return ASK redirect\nto Node B;
+endif
+
+:Client sends ASKING\nto Node B;
+
+:Client sends original\ncommand to Node B;
+
+:Node B (Target, IMPORTING);
+
+if (ASKING flag set?) then (yes)
+  :Serve request;
+  stop
+else (no)
+  :Return MOVED redirect\nback to Node A;
+  note right
+    Prevents clients from
+    bypassing migration
+  end note
+  stop
+endif
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml Secondary Index Structure
+!theme plain
+
+title Secondary Index vs Clustered Index Structure
+
+package "Secondary Index: idx_AB (A, B)" {
+  rectangle "Root Page" {
+    rectangle "Keys: (A=2,*)\n(A=4,*)\nPointers:\nP1|P2|P3" as sec_root
+  }
+
+  rectangle "Internal Pages" {
+    rectangle "Keys: (A=4,B=2)\n(A=5,B=1)\nPointers:\nP10|P11|P12" as sec_internal3
+    rectangle "Keys: (A=2,B=2)\n(A=3,B=3)\nPointers:\nP7|P8|P9" as sec_internal2
+    rectangle "Keys: (A=1,B=2)\n(A=1,B=4)\nPointers:\nP4|P5|P6" as sec_internal1
+  }
+
+  rectangle "Leaf Pages (Index Data Only)" {
+    rectangle "(A=1,B=1,id=10)\n(A=1,B=2,id=25)\n(A=1,B=3,id=33)\n→PK References" as sec_leaf1
+    rectangle "(A=1,B=4,id=45)\n(A=2,B=1,id=12)\n(A=2,B=2,id=28)\n→PK References" as sec_leaf2
+    rectangle "(A=2,B=3,id=37)\n(A=3,B=1,id=19)\n(A=3,B=2,id=42)\n→PK References" as sec_leaf3
+    rectangle "(A=3,B=3,id=51)\n(A=4,B=1,id=15)\n(A=4,B=2,id=39)\n→PK References" as sec_leaf4
+  }
+
+  ' Tree connections
+  sec_root -down-> sec_internal1
+  sec_root -down-> sec_internal2
+  sec_root -down-> sec_internal3
+
+  sec_internal1 -down-> sec_leaf1
+  sec_internal1 -down-> sec_leaf2
+  sec_internal2 -down-> sec_leaf3
+  sec_internal2 -down-> sec_leaf4
+
+  ' Leaf linked list
+  sec_leaf1 -right-> sec_leaf2
+  sec_leaf2 -right-> sec_leaf3
+  sec_leaf3 -right-> sec_leaf4
+}
+@enduml
