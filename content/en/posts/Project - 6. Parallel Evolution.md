@@ -18,24 +18,7 @@ Several parallel threads have been evolving in my understanding of AI:
 - **Engineering**: From "let AI help me write code" to "let AI improve its own code" — the boundary keeps expanding
 - **Cognition**: The more I use it, the less it feels like a "tool" and more like a partner that needs continuous collaboration and mutual growth
 
-## Background
-
-### The Moment
-
-Before this year, I had been using AI to help with various things — honestly, just keeping up with the field, knowing a bit about everything. It was when OpenClaw took off that I realized what I had always wanted to do was finally here — or rather, someone had built the prototype.
-
-What I wanted was simple: **put project information, personal preferences, and shared conventions into a single base file, and have it automatically injected into the context every time I use AI**. I'd never been able to make this happen before — the barrier was too high, I couldn't push it through at work. When Claude Code introduced skills and commands, I realized: this is exactly it.
-
-### Claude Code's UX Leap
-
-The experience upgrade from Claude Code was undeniable:
-- Self-orchestration capabilities — it could do holistic analysis
-- Smarter context management
-- Sub-agent support made parallel tasks truly usable
-
-Everyone who used it agreed. And it became the foundation for everything that followed.
-
-With this foundation, I started bringing my ideas to life step by step. The first project was the Skills repository.
+With these insights, I started bringing my ideas to life step by step. The first project was the Skills repository.
 
 ## Project One: The Skills Repository
 
@@ -47,6 +30,17 @@ Before this, every AI interaction meant typing similar prompts by hand. The work
 3. Manually specify output format
 
 Repeating this every time was both stupid and tedious. This phase generated no documentation — there wasn't even an awareness of "tooling." I was just using.
+
+For example, to implement a user registration endpoint, my prompt would go something like:
+```
+Me: Project is Java Spring + MySQL. Add a registration endpoint in UserController.
+    Structure: Controller/Service/Repository layers.
+AI: OK, here's the Controller layer...
+Me: Wait, first create a requirement doc under requirements/REQ-xxx/.
+AI: OK...
+Me: Also, don't use Lombok.
+```
+Every single task meant re-explaining the project context and conventions. And worse — **the AI had no memory between sessions**, so the next conversation started from scratch.
 
 Once I realized the problem, I decided to codify these repetitive prompts. The first attempt was to write the entire workflow as a single monolithic skill.
 
@@ -73,6 +67,8 @@ _shared/plantuml.md        ← Shared conventions
 <img src="/images/mermaid/evolution-en-1.svg" alt="Six-stage linear flow" style="max-width:100%;">
 
 **Figure 3.2 — First version six-stage linear flow (fixed order, user confirmation at each stage)**
+
+With this skill, saying "implement user registration" no longer meant re-typing the project background. The AI would automatically walk through all 6 stages: write the requirement doc under REQ-003, design the solution, then code. Each stage paused for my confirmation. The flow was rigid, but **at least I didn't have to re-explain everything every time**.
 
 #### The First Taste of Natural Language Programming
 
@@ -112,7 +108,16 @@ This phase introduced **dual-agent adversarial debate** for requirement analysis
 - **Full-Feature Agent**: Argues for complete features — no technical debt
 - **Judge Agent**: Synthesizes the best of both after multi-round debate
 
-The synthesized proposals were often genuinely good. But this pattern later revealed its problem: **it's slow, and most small features don't need debate at all**.
+Take "user registration" as an example — here's what the debate looked like:
+```
+MVP Agent: "Just do username + password registration.
+    Email verification can come later. Ship fast to validate demand."
+Full-Feature Agent: "Implement email + phone + OAuth all at once.
+    Changing the auth system later with real users is too costly."
+Judge Agent: "Phase 1: email registration only, with OAuth extension
+    points in the backend. Ships fast without painting us into a corner."
+```
+The synthesized proposals were often genuinely better than either side's initial take. But this pattern later revealed its problem: **it's slow, and most small features don't need debate at all**.
 
 #### Shared Standards Directory
 
@@ -129,6 +134,18 @@ This phase established the `_shared/` directory, which became the shared convent
 This was the most important evolution. The `req` role upgraded from a "strict sequential pipeline" to a **"decision-maker that chooses what to do based on the task"**.
 
 The core change: **remove all stage numbers, remove the fixed execution order, let the orchestrator decide which stages to run based on the task**.
+
+Now the same "user registration" request triggers completely different behavior:
+```
+Me: "Add a user registration feature."
+Orchestrator: → Class B (New REQ) → Creates REQ-008 → Full pipeline
+
+Me: "Change registration to support phone numbers."
+Orchestrator: → Class C (Spec Change) → Locates REQ-008 → Skips analyze → Starts from tech
+
+Me: "Change the register button color."
+Orchestrator: → Class A (Trivial) → Edits directly, no REQ created
+```
 
 <img src="/images/mermaid/evolution-en-4.svg" alt="Orchestrator pattern" style="max-width:100%;">
 
@@ -185,6 +202,15 @@ This phase also added:
 #### Why I Use It Less Now
 
 Recently, I haven't been using `req` as much myself. The main reasons:
+
+Take a simple "add logging to an endpoint" task. In the early version, this is what happened:
+```
+1. req-analyze launches → dual-agent debate on "logging requirements"
+   (MVP: "just add logging." Full-feature: "add monitoring and tracing too.")
+2. req-tech launches → another debate on "which logging framework"
+3. Finally enters req-code
+```
+That's 5 minutes of overhead for 30 seconds of writing `log.info()`. **The debate cost was completely disproportionate for small tasks.**
 
 **Where it's slow — Dual-agent debate overhead**
 
@@ -261,6 +287,17 @@ harness/
 └── prompts/            ← LLM instruction templates
 ```
 
+In practice, a typical tool call round looked like this:
+```
+LLM reads the code and decides:
+→ read_file('harness/tools/base.py')    # check current tool impl
+→ edit_file(...)                        # add a new tool method
+→ bash('pytest tests/')                 # run tests to verify
+→ read_file('harness/config.py')        # check config before next step
+→ ... loop until max_tool_turns reached
+```
+Each round, the LLM decided "what to look at, what to change" on its own. The core `llm.py` was just the 60 lines driving this loop.
+
 #### The Golden Age When All Code Fit in Context
 
 The first version's biggest advantage: **the codebase was small enough to fit entirely in an LLM's context window**.
@@ -321,6 +358,18 @@ R3 also removed the built-in debate mechanism, letting the agent decide what to 
 
 **Figure 4.5 — From fixed debate to self-directed orchestration**
 
+No one tells the agent "this round is bug_fix" or "this round is features." Here's what a real cycle looked like:
+```
+Cycle 42 — agent read the code and decided:
+"tools/base.py has duplicated path security checks.
+Refactor: extract _check_path utility, unify error handling."
+→ Modified 3 files
+→ Added 12 new tests
+→ Evaluation score: 7.8/10
+→ Elapsed: 4 min 32 sec
+```
+Nobody told it what to do — it read the code, made a judgment, and executed.
+
 The cycle log from April 23 shows the maturity of self-orchestration:
 - 67 cycles, each where the agent decided what to change
 - Tests grown automatically from zero to 2700+ (written by the agent itself)
@@ -369,6 +418,14 @@ Core idea: don't let the agent decide "what to improve" in a vacuum:
 2. **Generate metrics**: the implementation produces quantifiable indicators (test coverage, quality score, performance data)
 3. **Metrics closed loop**: use the metrics to drive ongoing improvement — the evaluation now has real anchor points
 
+Now cycle_metrics records data like this:
+```
+Context quality:        8.2/10  (thorough code reading, accurate understanding)
+Memory & learning:      7.5/10  (remembered prior architectural decisions)
+Evaluation consistency: 6.8/10  (still needs calibration, occasional misjudgment)
+Files affected:         3
+Test coverage change:   +4.2%
+```
 With this, the evaluator has concrete targets to judge against, and the agent gets concrete feedback on what it did right — rather than free-improving in a vacuum.
 
 For reference, here's the capability distribution at cycle 67 — the metrics system aims to push all points toward the upper right:
